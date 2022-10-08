@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.npssocial.nps_social">
    <application
-        android:label="nps_social"
+        android:label="NPS Social"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

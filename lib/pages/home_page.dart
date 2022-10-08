@@ -14,11 +14,12 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.find<AuthController>().isLoggedIn = false;
-        Get.find<AuthController>().update();
+        Get.find<AuthController>().logOut();
       },
-      child: Container(
-        color: Colors.green,
+      child: Scaffold(
+        body: Container(
+          color: Colors.green,
+        ),
       ),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/foundation.dart';
 import 'package:nps_social/configs/app_key.dart';
 
 class CrudRepository {
@@ -13,11 +13,10 @@ class CrudRepository {
       res = await _dio.get(path, queryParameters: parameters);
       return res;
     } on DioError catch (e) {
-      // print(e.response);
       if (e.response != null) {
-        print(e.response?.data);
+        debugPrint(e.response?.data);
       } else {
-        print(e.message);
+        debugPrint(e.message);
       }
     }
 
@@ -36,12 +35,9 @@ class CrudRepository {
       return res;
     } on DioError catch (e) {
       if (e.response != null) {
-        print(e.response?.data);
-        print(e.response?.headers);
-        print(e.response?.requestOptions);
+        debugPrint(e.response?.data);
       } else {
-        print(e.requestOptions);
-        print(e.message);
+        debugPrint(e.message);
       }
     }
 

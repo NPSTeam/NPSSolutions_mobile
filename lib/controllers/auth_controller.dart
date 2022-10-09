@@ -1,18 +1,15 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/spref_key.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/pages/home_page.dart';
 import 'package:nps_social/repositories/auth_repo.dart';
 import 'package:nps_social/services/spref.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:nps_social/widgets/widget_snackbar.dart';
 
 class AuthController extends GetxController {
   UserModel? currentUser;
@@ -24,7 +21,7 @@ class AuthController extends GetxController {
 
   init() async {
     await getMe();
-    print("access token - $currentUserAccessToken");
+    debugPrint("access token - $currentUserAccessToken");
   }
 
   bool isLoggedIn() {
@@ -48,11 +45,17 @@ class AuthController extends GetxController {
           .set(SPrefKey.ACCESS_TOKEN, currentUser?.accessToken ?? '');
       Get.offAll(const HomePage());
     } else {
-      showTopSnackBar(
-        context,
-        const CustomSnackBar.error(
-            message: "The email or password is incorrect."),
+      WidgetSnackbar.showSnackbar(
+        title: "Alert",
+        message: "The email or password is incorrect.",
+        icon: const Icon(Ionicons.alert_circle_outline),
       );
+      // showTopSnackBar(
+      //   context,
+      //   const CustomSnackBar.error(
+      //       message: "The email or password is incorrect."),
+      //   displayDuration: const Duration(seconds: 1),
+      // );
     }
     update();
   }
@@ -66,7 +69,7 @@ class AuthController extends GetxController {
   Future getMe() async {
     await Future.delayed(const Duration(seconds: 2));
     currentUserAccessToken = SPref.instance.get(SPrefKey.ACCESS_TOKEN);
-    print(currentUserAccessToken);
+    debugPrint(currentUserAccessToken);
     update();
     FlutterNativeSplash.remove();
   }

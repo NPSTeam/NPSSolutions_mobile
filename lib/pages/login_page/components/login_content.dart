@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
-import 'package:nps_social/pages/home_page.dart';
 import 'package:nps_social/pages/sign_up_page/sign_up_page.dart';
 import 'package:nps_social/widgets/widget_icon_textfield.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
-
+import 'package:nps_social/widgets/widget_snackbar.dart';
 import '../../../utils/constants.dart';
 
 class LoginContent extends StatefulWidget {
@@ -26,18 +23,6 @@ class _LoginContentState extends State<LoginContent>
 
   final AuthController _authController = Get.find();
 
-  Widget inputField(
-      TextEditingController controller, String hint, IconData iconData) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 8),
-      child: WidgetIconTextfield(
-        controller: controller,
-        iconData: iconData,
-        hintText: hint,
-      ),
-    );
-  }
-
   Widget loginButton(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 135, vertical: 16),
@@ -45,10 +30,10 @@ class _LoginContentState extends State<LoginContent>
         onPressed: () async {
           if (emailTextController.text.trim() == '' ||
               passwordTextController.text.trim() == '') {
-            showTopSnackBar(
-              context,
-              const CustomSnackBar.info(
-                  message: "Please enter your email/password."),
+            WidgetSnackbar.showSnackbar(
+              title: "Alert",
+              message: "Please enter your email/password.",
+              icon: const Icon(Ionicons.alert_circle_outline),
             );
             return;
           }
@@ -131,9 +116,26 @@ class _LoginContentState extends State<LoginContent>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                inputField(emailTextController, 'Email', Ionicons.mail_outline),
-                inputField(passwordTextController, 'Password',
-                    Ionicons.lock_closed_outline),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 36, vertical: 8),
+                  child: WidgetIconTextfield(
+                    controller: emailTextController,
+                    iconData: Ionicons.mail_outline,
+                    hintText: 'Email',
+                    enableSuggestions: false,
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 36, vertical: 8),
+                  child: WidgetIconTextfield(
+                    controller: passwordTextController,
+                    iconData: Ionicons.lock_closed_outline,
+                    hintText: 'Password',
+                    obscureText: true,
+                  ),
+                ),
                 loginButton('Log In'),
                 forgotPassword(),
               ],
@@ -143,7 +145,8 @@ class _LoginContentState extends State<LoginContent>
             alignment: Alignment.center,
             child: GestureDetector(
               onTap: () {
-                Get.to(const SignUpPage());
+                FocusScope.of(context).unfocus();
+                Get.to(() => const SignUpPage());
               },
               child: Padding(
                 padding: const EdgeInsets.all(16),

@@ -15,6 +15,23 @@ class UserModel {
   // List<Object>? following;
   // List<Object>? followers;
   // List<Object>? requests;
+  String? accessToken;
+
+  UserModel({
+    this.firstName,
+    this.lastName,
+    this.username,
+    this.email,
+    this.password,
+    this.picture,
+    this.cover,
+    this.gender,
+    this.bYear,
+    this.bMonth,
+    this.bDay,
+    this.verified,
+    this.accessToken,
+  });
 
   UserModel.fromJson(dynamic json) {
     firstName = json['firstName'];
@@ -29,6 +46,7 @@ class UserModel {
     bMonth = json['bMonth'];
     bDay = json['bDay'];
     verified = json['verified'];
+    accessToken = json['access_token'];
   }
 
   Map<String, dynamic> toJson() {

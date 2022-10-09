@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
+import 'package:nps_social/pages/home_page.dart';
 import 'package:nps_social/pages/sign_up_page/sign_up_page.dart';
+import 'package:nps_social/widgets/widget_icon_textfield.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../utils/constants.dart';
 
@@ -17,33 +21,19 @@ class _LoginContentState extends State<LoginContent>
     with TickerProviderStateMixin {
   late final List<Widget> createAccountContent;
   late final List<Widget> loginContent;
+  late TextEditingController emailTextController;
+  late TextEditingController passwordTextController;
 
   final AuthController _authController = Get.find();
 
-  Widget inputField(String hint, IconData iconData) {
+  Widget inputField(
+      TextEditingController controller, String hint, IconData iconData) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 8),
-      child: SizedBox(
-        height: 50,
-        child: Material(
-          elevation: 8,
-          shadowColor: Colors.black87,
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(30),
-          child: TextField(
-            textAlignVertical: TextAlignVertical.bottom,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.white,
-              hintText: hint,
-              prefixIcon: Icon(iconData),
-            ),
-          ),
-        ),
+      child: WidgetIconTextfield(
+        controller: controller,
+        iconData: iconData,
+        hintText: hint,
       ),
     );
   }
@@ -52,8 +42,21 @@ class _LoginContentState extends State<LoginContent>
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 135, vertical: 16),
       child: ElevatedButton(
-        onPressed: () {
-          _authController.logIn();
+        onPressed: () async {
+          if (emailTextController.text.trim() == '' ||
+              passwordTextController.text.trim() == '') {
+            showTopSnackBar(
+              context,
+              const CustomSnackBar.info(
+                  message: "Please enter your email/password."),
+            );
+            return;
+          }
+          await _authController.logIn(
+            email: emailTextController.text.trim(),
+            password: passwordTextController.text.trim(),
+            context: context,
+          );
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -73,52 +76,6 @@ class _LoginContentState extends State<LoginContent>
     );
   }
 
-  Widget orDivider() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 130, vertical: 8),
-      child: Row(
-        children: [
-          Flexible(
-            child: Container(
-              height: 1,
-              color: kPrimaryColor,
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              'or',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          Flexible(
-            child: Container(
-              height: 1,
-              color: kPrimaryColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget logos() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset('assets/images/facebook.png'),
-          const SizedBox(width: 24),
-          Image.asset('assets/images/google.png'),
-        ],
-      ),
-    );
-  }
-
   Widget forgotPassword() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 110),
@@ -134,6 +91,20 @@ class _LoginContentState extends State<LoginContent>
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    emailTextController = TextEditingController();
+    passwordTextController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailTextController.dispose();
+    passwordTextController.dispose();
+    super.dispose();
   }
 
   @override
@@ -160,8 +131,9 @@ class _LoginContentState extends State<LoginContent>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                inputField('Email/Username', Ionicons.mail_outline),
-                inputField('Password', Ionicons.lock_closed_outline),
+                inputField(emailTextController, 'Email', Ionicons.mail_outline),
+                inputField(passwordTextController, 'Password',
+                    Ionicons.lock_closed_outline),
                 loginButton('Log In'),
                 forgotPassword(),
               ],

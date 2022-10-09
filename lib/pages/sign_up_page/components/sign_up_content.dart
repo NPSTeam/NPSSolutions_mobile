@@ -52,7 +52,7 @@ class _SignUpContentState extends State<SignUpContent>
       padding: const EdgeInsets.symmetric(horizontal: 135, vertical: 16),
       child: ElevatedButton(
         onPressed: () {
-          _authController.logIn();
+          // _authController.logIn();
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -171,7 +171,9 @@ class _SignUpContentState extends State<SignUpContent>
           Align(
             alignment: Alignment.center,
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Get.back();
+              },
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: RichText(

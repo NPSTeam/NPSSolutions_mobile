@@ -35,7 +35,7 @@ class CrudRepository {
       return res;
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint(e.response?.data);
+        debugPrint("${e.response?.data}");
       } else {
         debugPrint(e.message);
       }

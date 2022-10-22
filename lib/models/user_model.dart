@@ -1,68 +1,45 @@
 class UserModel {
   String? firstName;
   String? lastName;
-  String? username;
+  String? fullName;
+  String? mobile;
   String? email;
   String? password;
-  String? picture;
-  String? cover;
+  String? avatar;
   String? gender;
-  int? bYear;
-  int? bMonth;
-  int? bDay;
-  bool? verified;
-  // List<Object>? friends;
-  // List<Object>? following;
-  // List<Object>? followers;
-  // List<Object>? requests;
-  String? accessToken;
 
   UserModel({
     this.firstName,
     this.lastName,
-    this.username,
+    this.fullName,
+    this.mobile,
     this.email,
     this.password,
-    this.picture,
-    this.cover,
+    this.avatar,
     this.gender,
-    this.bYear,
-    this.bMonth,
-    this.bDay,
-    this.verified,
-    this.accessToken,
   });
 
   UserModel.fromJson(dynamic json) {
     firstName = json['firstName'];
     lastName = json['lastName'];
-    username = json['username'];
+    fullName = json['fullName'];
+    mobile = json['mobile'];
     email = json['email'];
     password = json['password'];
-    picture = json['picture'];
-    cover = json['cover'];
+    avatar = json['avatar'];
     gender = json['gender'];
-    bYear = json['bYear'];
-    bMonth = json['bMonth'];
-    bDay = json['bDay'];
-    verified = json['verified'];
-    accessToken = json['access_token'];
   }
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
     map['firstName'] = firstName;
     map['lastName'] = lastName;
-    map['username'] = username;
+    map['fullName'] = fullName;
+    map['mobile'] = mobile;
     map['email'] = email;
     map['password'] = password;
-    map['picture'] = picture;
-    map['cover'] = cover;
+    map['avatar'] = avatar;
     map['gender'] = gender;
-    map['bYear'] = bYear;
-    map['bMonth'] = bMonth;
-    map['bDay'] = bDay;
-    map['verified'] = verified;
     return map;
   }
 }

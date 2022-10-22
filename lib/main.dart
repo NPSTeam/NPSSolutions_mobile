@@ -27,19 +27,24 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'NPS Social',
-      home: FutureBuilder(
-        future: _authController.getMe(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container(
-              decoration: const BoxDecoration(color: Colors.white),
-            );
-          }
-          return _authController.isLoggedIn()
-              ? const HomePage()
-              : const LoginPage();
-        },
-      ),
+      home: GetBuilder<AuthController>(builder: (controller) {
+        if (controller.auth != null) return const HomePage();
+        return const LoginPage();
+      }),
     );
+    //   FutureBuilder(
+    //     future: _authController.checkLogin(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.connectionState == ConnectionState.waiting) {
+    //         return Container(
+    //           decoration: const BoxDecoration(color: Colors.white),
+    //         );
+    //       }
+    //       return _authController.isLoggedIn()
+    //           ? const HomePage()
+    //           : const LoginPage();
+    //     },
+    //   ),
+    // );
   }
 }

@@ -40,7 +40,6 @@ class _LoginContentState extends State<LoginContent>
           await _authController.logIn(
             email: emailTextController.text.trim(),
             password: passwordTextController.text.trim(),
-            context: context,
           );
         },
         style: ElevatedButton.styleFrom(

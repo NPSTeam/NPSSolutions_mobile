@@ -3,4 +3,5 @@
 class SPrefKey {
   static const String USER_ID = 'user-id';
   static const String ACCESS_TOKEN = 'access-token';
+  static const String REFRESH_TOKEN = 'refresh-token';
 }

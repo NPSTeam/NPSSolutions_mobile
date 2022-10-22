@@ -11,6 +11,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final AuthController _authController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -20,9 +22,13 @@ class _HomePageState extends State<HomePage> {
             .then((_) => Get.offAll(const LoginPage()));
       },
       child: Scaffold(
-        body: Container(
-          color: Colors.green,
-          child: const Center(child: Text('Home Page')),
+        body: GetBuilder<AuthController>(
+          builder: (controller) => Container(
+            color: Colors.green,
+            child: Center(
+              child: Text(_authController.currentUser?.fullName ?? "Home Page"),
+            ),
+          ),
         ),
       ),
     );

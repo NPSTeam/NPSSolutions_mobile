@@ -5,6 +5,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/spref_key.dart';
+import 'package:nps_social/models/auth_model.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/pages/home_page.dart';
 import 'package:nps_social/repositories/auth_repo.dart';
@@ -13,36 +14,40 @@ import 'package:nps_social/widgets/widget_snackbar.dart';
 
 class AuthController extends GetxController {
   UserModel? currentUser;
-  String? currentUserAccessToken;
+  String? accessToken;
+  String? refreshToken;
+  AuthModel? auth;
 
   AuthController() {
     init();
+    checkLogin();
   }
 
   init() async {
-    await getMe();
-    debugPrint("access token - $currentUserAccessToken");
+    accessToken = SPref.instance.get(SPrefKey.ACCESS_TOKEN);
+    refreshToken = SPref.instance.get(SPrefKey.REFRESH_TOKEN);
+    debugPrint("access token - $accessToken");
+    debugPrint("refresh token - $refreshToken");
   }
 
   bool isLoggedIn() {
-    return currentUserAccessToken != null;
+    return accessToken != null;
   }
 
   Future logIn({
     required String email,
     required String password,
-    required BuildContext context,
   }) async {
-    UserModel user = await authRepository.login(
+    auth = await authRepository.login(
       email: email,
       password: password,
     );
 
-    if (user.accessToken != null) {
-      currentUserAccessToken = currentUser?.accessToken;
-      currentUser = user;
+    if (auth?.accessToken != null) {
+      currentUser = auth?.user;
+      await SPref.instance.set(SPrefKey.ACCESS_TOKEN, auth?.accessToken ?? '');
       await SPref.instance
-          .set(SPrefKey.ACCESS_TOKEN, currentUser?.accessToken ?? '');
+          .set(SPrefKey.REFRESH_TOKEN, auth?.refreshToken ?? '');
       Get.offAll(const HomePage());
     } else {
       WidgetSnackbar.showSnackbar(
@@ -50,26 +55,23 @@ class AuthController extends GetxController {
         message: "The email or password is incorrect.",
         icon: const Icon(Ionicons.alert_circle_outline),
       );
-      // showTopSnackBar(
-      //   context,
-      //   const CustomSnackBar.error(
-      //       message: "The email or password is incorrect."),
-      //   displayDuration: const Duration(seconds: 1),
-      // );
     }
     update();
   }
 
   Future logOut() async {
-    currentUserAccessToken = null;
+    accessToken = null;
     SPref.instance.clearAll();
     update();
   }
 
-  Future getMe() async {
-    await Future.delayed(const Duration(seconds: 2));
-    currentUserAccessToken = SPref.instance.get(SPrefKey.ACCESS_TOKEN);
-    debugPrint(currentUserAccessToken);
+  Future checkLogin() async {
+    await Future.delayed(const Duration(seconds: 1));
+    auth = await authRepository.checkLogin(
+      accessToken: accessToken ?? '',
+      refreshToken: refreshToken ?? '',
+    );
+    currentUser = auth?.user;
     update();
     FlutterNativeSplash.remove();
   }

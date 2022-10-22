@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nps_social/controllers/auth_controller.dart';
 import 'dart:math' as math;
 
 import 'package:nps_social/pages/login_page/components/cener_widget/center_widget.dart';

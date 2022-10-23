@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
+import 'package:nps_social/models/user_model.dart';
+import 'package:nps_social/widgets/widget_dialog.dart';
 import 'package:nps_social/widgets/widget_icon_textfield.dart';
 
 import '../../../utils/constants.dart';
@@ -58,8 +60,28 @@ class _SignUpContentState extends State<SignUpContent>
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 16),
       child: ElevatedButton(
-        onPressed: () {
-          // _authController.logIn();
+        onPressed: () async {
+          UserModel? user = await _authController.register(
+            firstName: firstNameTextController.text.trim(),
+            lastName: lastNameTextController.text.trim(),
+            email: emailTextController.text.trim(),
+            password: passwordTextController.text.trim(),
+            mobile: mobileTextController.text.trim(),
+            sex: sexTextController.text.trim(),
+          );
+          if (user != null) {
+            debugPrint(user.email);
+            WidgetDialog.showDialog(
+              title: "Confirm",
+              middleText:
+                  "Confirm before sending activation email. ${user.email}",
+              cancelText: "Cancel",
+              confirmText: "Ok",
+              onConfirm: () async {
+                await _authController.sendVerificationEmail(user: user);
+              },
+            );
+          }
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -132,7 +154,7 @@ class _SignUpContentState extends State<SignUpContent>
     emailTextController = TextEditingController();
     passwordTextController = TextEditingController();
     mobileTextController = TextEditingController();
-    sexTextController = TextEditingController();
+    sexTextController = TextEditingController(text: 'Male');
     super.initState();
   }
 
@@ -204,6 +226,7 @@ class _SignUpContentState extends State<SignUpContent>
                     controller: emailTextController,
                     iconData: Ionicons.mail_outline,
                     hintText: 'Email',
+                    keyboardType: TextInputType.emailAddress,
                   ),
                 ),
                 Padding(
@@ -218,57 +241,59 @@ class _SignUpContentState extends State<SignUpContent>
                 Row(
                   children: [
                     Flexible(
+                      flex: 3,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: WidgetIconTextfield(
                           controller: mobileTextController,
                           iconData: Ionicons.call_outline,
                           hintText: 'Mobile',
+                          keyboardType: TextInputType.phone,
                         ),
                       ),
                     ),
                     const SizedBox(width: 5),
                     Flexible(
+                      flex: 2,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: SizedBox(
-                          height: 50,
-                          child: Material(
-                            elevation: 8,
-                            shadowColor: Colors.black87,
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(30),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: DropdownButton<String>(
-                                  isExpanded: true,
-                                  enableFeedback: true,
-                                  value: sexTextController.text,
-                                  icon:
-                                      const Icon(Ionicons.transgender_outline),
-                                  underline: Container(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      sexTextController.text = value ?? '';
-                                    });
-                                  },
-                                  items: const [
-                                    DropdownMenuItem<String>(
-                                      value: "Male",
-                                      child: Text("Male"),
-                                    ),
-                                    DropdownMenuItem<String>(
-                                      value: "Female",
-                                      child: Text("Female"),
-                                    ),
-                                  ],
-                                ),
+                        child: Material(
+                          elevation: 8,
+                          shadowColor: Colors.black87,
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(30),
+                          child: Container(
+                            height: 60,
+                            alignment: Alignment.center,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30)),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: DropdownButton<String>(
+                                isExpanded: true,
+                                enableFeedback: true,
+                                value: sexTextController.text,
+                                icon: const Icon(Ionicons.transgender_outline),
+                                underline: Container(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    sexTextController.text = value ?? '';
+                                  });
+                                },
+                                items: const [
+                                  DropdownMenuItem<String>(
+                                    value: "Male",
+                                    child: Text("Male"),
+                                  ),
+                                  DropdownMenuItem<String>(
+                                    value: "Female",
+                                    child: Text("Female"),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

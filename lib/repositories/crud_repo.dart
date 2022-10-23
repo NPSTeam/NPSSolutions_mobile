@@ -1,10 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/route_manager.dart';
 import 'package:nps_social/configs/app_key.dart';
+import 'package:nps_social/controllers/auth_controller.dart';
 
 class CrudRepository {
   final _dio = Dio(BaseOptions(
     baseUrl: AppKey.BACKEND_URL ?? '',
+    headers: {
+      "Authorization": "Bearer ${Get.find<AuthController>().refreshToken}",
+    },
   ));
 
   Future<Response?> get(String path, {Map<String, dynamic>? parameters}) async {

@@ -4,9 +4,9 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:nps_social/configs/app_key.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
-import 'package:nps_social/pages/home_page.dart';
-import 'package:nps_social/pages/landing_page.dart';
+import 'package:nps_social/pages/home_page/home_page.dart';
 import 'package:nps_social/pages/login_page/login_page.dart';
+import 'package:nps_social/pages/nav_page.dart';
 import 'package:nps_social/services/permission.dart';
 import 'package:nps_social/services/spref.dart';
 
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'NPS Social',
       home: GetBuilder<AuthController>(builder: (controller) {
-        if (controller.auth != null) return const HomePage();
+        if (controller.auth != null) return const NavPage();
         return const LoginPage();
       }),
     );

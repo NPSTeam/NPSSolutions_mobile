@@ -1,4 +1,5 @@
 class UserModel {
+  String? id;
   String? firstName;
   String? lastName;
   String? fullName;
@@ -6,9 +7,10 @@ class UserModel {
   String? email;
   String? password;
   String? avatar;
-  String? gender;
+  String? sex;
 
   UserModel({
+    this.id,
     this.firstName,
     this.lastName,
     this.fullName,
@@ -16,10 +18,11 @@ class UserModel {
     this.email,
     this.password,
     this.avatar,
-    this.gender,
+    this.sex,
   });
 
   UserModel.fromJson(dynamic json) {
+    id = json['_id'];
     firstName = json['firstName'];
     lastName = json['lastName'];
     fullName = json['fullName'];
@@ -27,11 +30,12 @@ class UserModel {
     email = json['email'];
     password = json['password'];
     avatar = json['avatar'];
-    gender = json['gender'];
+    sex = json['sex'];
   }
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
+    map['_id'] = id;
     map['firstName'] = firstName;
     map['lastName'] = lastName;
     map['fullName'] = fullName;
@@ -39,7 +43,7 @@ class UserModel {
     map['email'] = email;
     map['password'] = password;
     map['avatar'] = avatar;
-    map['gender'] = gender;
+    map['sex'] = sex;
     return map;
   }
 }

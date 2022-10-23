@@ -7,6 +7,7 @@ class WidgetIconTextfield extends StatefulWidget {
   final bool? obscureText;
   final bool? enableSuggestions;
   final int? maxLines;
+  final TextInputType? keyboardType;
 
   const WidgetIconTextfield({
     super.key,
@@ -16,6 +17,7 @@ class WidgetIconTextfield extends StatefulWidget {
     this.obscureText,
     this.enableSuggestions,
     this.maxLines,
+    this.keyboardType,
   });
 
   @override
@@ -25,29 +27,27 @@ class WidgetIconTextfield extends StatefulWidget {
 class _WidgetIconTextfieldState extends State<WidgetIconTextfield> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      child: Material(
-        elevation: 8,
-        shadowColor: Colors.black87,
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(30),
-        child: TextField(
-          controller: widget.controller,
-          obscureText: widget.obscureText ?? false,
-          enableSuggestions: widget.enableSuggestions ?? true,
-          maxLines: widget.maxLines ?? 1,
-          textAlignVertical: TextAlignVertical.bottom,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide.none,
-            ),
-            filled: true,
-            fillColor: Colors.white,
-            hintText: widget.hintText,
-            prefixIcon: Icon(widget.iconData),
+    return Material(
+      elevation: 8,
+      shadowColor: Colors.black87,
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(30),
+      child: TextField(
+        controller: widget.controller,
+        obscureText: widget.obscureText ?? false,
+        enableSuggestions: widget.enableSuggestions ?? true,
+        maxLines: widget.maxLines ?? 1,
+        keyboardType: widget.keyboardType,
+        textAlignVertical: TextAlignVertical.center,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide.none,
           ),
+          filled: true,
+          fillColor: Colors.white,
+          hintText: widget.hintText,
+          prefixIcon: Icon(widget.iconData),
         ),
       ),
     );

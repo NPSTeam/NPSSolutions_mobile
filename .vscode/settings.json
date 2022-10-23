@@ -1,10 +1,14 @@
 {
     "cSpell.words": [
+        "chatbox",
+        "chatbubbles",
         "cupertino",
         "dotenv",
         "Getx",
         "ionicons",
+        "ondemand",
         "prefs",
-        "Spref"
+        "Spref",
+        "vsync"
     ]
 }

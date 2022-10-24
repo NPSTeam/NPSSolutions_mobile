@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/route_manager.dart';
@@ -16,7 +17,12 @@ class CrudRepository {
   Future<Response?> get(String path, {Map<String, dynamic>? parameters}) async {
     try {
       Response res;
-      res = await _dio.get(path, queryParameters: parameters);
+      res = await _dio.get(
+        path,
+        queryParameters: parameters,
+        options:
+            buildCacheOptions(const Duration(days: 10), forceRefresh: true),
+      );
       return res;
     } on DioError catch (e) {
       if (e.response != null) {

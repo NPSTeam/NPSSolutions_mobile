@@ -22,6 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final AuthController _authController = Get.find();
+  final HomeController _homeController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,9 @@ class _HomePageState extends State<HomePage> {
       body: RefreshIndicator(
         edgeOffset: 50,
         onRefresh: () async {
-          await Future.delayed(const Duration(seconds: 1));
+          _homeController.getPosts().then((value) async {
+            await Future.delayed(const Duration(seconds: 1));
+          });
           debugPrint("Refresh");
         },
         child: CustomScrollView(

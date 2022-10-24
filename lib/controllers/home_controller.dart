@@ -11,6 +11,10 @@ class HomeController extends GetxController {
   }
 
   init() async {
+    await getPosts();
+  }
+
+  Future getPosts() async {
     allPosts = await postRepository.getPosts();
     update();
   }

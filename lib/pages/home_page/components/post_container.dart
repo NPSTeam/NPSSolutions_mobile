@@ -132,14 +132,14 @@ class _PostStats extends StatelessWidget {
             const SizedBox(width: 4.0),
             Expanded(
               child: Text(
-                '${post.likes}',
+                '${post.likes?.length ?? 0}',
                 style: TextStyle(
                   color: Colors.grey[600],
                 ),
               ),
             ),
             Text(
-              '${post.comments} Comments',
+              '${post.comments?.length ?? 0} Comments',
               style: TextStyle(
                 color: Colors.grey[600],
               ),

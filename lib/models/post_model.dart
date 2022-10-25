@@ -1,23 +1,29 @@
+import 'package:flutter/foundation.dart';
 import 'package:nps_social/models/comment_model.dart';
 import 'package:nps_social/models/image_model.dart';
 import 'package:nps_social/models/user_model.dart';
 
 class PostModel {
+  String? id;
   String? content;
   List<ImageModel>? images;
   List<UserModel>? likes;
   List<CommentModel>? comments;
   UserModel? user;
+  bool? isReact;
 
   PostModel({
+    this.id,
     this.content,
     this.images,
     this.likes,
     this.comments,
     this.user,
+    this.isReact,
   });
 
   PostModel.fromJson(dynamic json) {
+    id = json['_id'];
     content = json['content'];
     images = json['images'] != null
         ? List<ImageModel>.from(

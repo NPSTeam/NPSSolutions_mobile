@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/palette.dart';
+import 'package:nps_social/controllers/auth_controller.dart';
+import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/models/post_model.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
 
@@ -160,11 +163,17 @@ class _PostStats extends StatelessWidget {
             _PostButton(
               icon: Icon(
                 Ionicons.thumbs_up_outline,
-                color: Colors.grey[600],
+                color: (post.isReact ?? false)
+                    ? Palette.facebookBlue
+                    : Colors.grey[600],
                 size: 20.0,
               ),
               label: "Like",
-              onTap: () => print("Like"),
+              onTap: () {
+                post.isReact ?? false
+                    ? Get.find<HomeController>().unlikePost(post.id ?? '')
+                    : Get.find<HomeController>().likePost(post.id ?? '');
+              },
             ),
             _PostButton(
               icon: Icon(

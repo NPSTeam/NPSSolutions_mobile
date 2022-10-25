@@ -26,7 +26,7 @@ class CrudRepository {
       return res;
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint(e.response?.data);
+        debugPrint("${e.response?.data}");
       } else {
         debugPrint(e.message);
       }
@@ -35,7 +35,7 @@ class CrudRepository {
     return null;
   }
 
-  Future post(String path,
+  Future<Response?> post(String path,
       {dynamic data, Map<String, dynamic>? queryParameters}) async {
     try {
       Response res;
@@ -43,6 +43,8 @@ class CrudRepository {
         path,
         data: data,
         queryParameters: queryParameters,
+        options:
+            buildCacheOptions(const Duration(days: 10), forceRefresh: true),
       );
       return res;
     } on DioError catch (e) {
@@ -54,5 +56,30 @@ class CrudRepository {
     }
 
     return null;
+  }
+
+  Future<Response?> patch(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      Response res;
+      res = await _dio.patch(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+      );
+
+      return res;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        debugPrint("${e.response?.data}");
+      } else {
+        debugPrint(e.message);
+      }
+
+      return null;
+    }
   }
 }

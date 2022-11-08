@@ -49,7 +49,7 @@ class AuthController extends GetxController {
       await SPref.instance.set(SPrefKey.ACCESS_TOKEN, auth?.accessToken ?? '');
       await SPref.instance
           .set(SPrefKey.REFRESH_TOKEN, auth?.refreshToken ?? '');
-      Get.offAll(const HomePage());
+      Get.offAll(() => const HomePage());
     } else {
       WidgetSnackbar.showSnackbar(
         title: "Alert",
@@ -154,7 +154,7 @@ class AuthController extends GetxController {
   }) async {
     String? message = await authRepository.sendVerificationEmail(user: user);
     if (message != null) {
-      Get.offAll(const LoginPage());
+      Get.offAll(() => const LoginPage());
       WidgetSnackbar.showSnackbar(
         title: "Success",
         message: message,

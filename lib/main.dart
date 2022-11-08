@@ -15,6 +15,7 @@ Future main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await dotenv.load(fileName: '.env');
   await SPref.init();
+  await initPermissions();
   AppKey.init();
   runApp(MyApp());
 }

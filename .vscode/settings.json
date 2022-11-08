@@ -9,6 +9,7 @@
         "ondemand",
         "prefs",
         "Spref",
+        "unfocus",
         "vsync"
     ]
 }

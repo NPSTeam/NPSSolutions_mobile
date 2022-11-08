@@ -49,7 +49,7 @@ class _CreateRoomButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: () => print("Create Room"),
       style: OutlinedButton.styleFrom(
-        foregroundColor: Palette.facebookBlue,
+        foregroundColor: Palette.blue,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
           //side: const BorderSide(width: 3, color: Colors.blueAccent),

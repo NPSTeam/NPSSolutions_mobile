@@ -123,7 +123,7 @@ class _PostStats extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(4.0),
               decoration: const BoxDecoration(
-                color: Palette.facebookBlue,
+                color: Palette.blue,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -163,9 +163,8 @@ class _PostStats extends StatelessWidget {
             _PostButton(
               icon: Icon(
                 Ionicons.thumbs_up_outline,
-                color: (post.isReact ?? false)
-                    ? Palette.facebookBlue
-                    : Colors.grey[600],
+                color:
+                    (post.isReact ?? false) ? Palette.blue : Colors.grey[600],
                 size: 20.0,
               ),
               label: "Like",

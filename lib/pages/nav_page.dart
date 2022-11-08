@@ -37,7 +37,7 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
 
   late TabController _tabController;
-  final HomeController _homeController = Get.put(HomeController());
+  HomeController _homeController = Get.put(HomeController());
 
   @override
   void initState() {

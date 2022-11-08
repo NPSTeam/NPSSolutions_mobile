@@ -23,7 +23,7 @@ class WidgetButtonTabBar extends StatelessWidget {
       indicator: const BoxDecoration(
           border: Border(
               top: BorderSide(
-        color: Palette.facebookBlue,
+        color: Palette.blue,
         width: 3.0,
       ))),
       tabs: icons
@@ -33,9 +33,7 @@ class WidgetButtonTabBar extends StatelessWidget {
                 Tab(
                   icon: Icon(
                     e,
-                    color: i == selectedIndex
-                        ? Palette.facebookBlue
-                        : Colors.black45,
+                    color: i == selectedIndex ? Palette.blue : Colors.black45,
                     size: 30.0,
                   ),
                 ),

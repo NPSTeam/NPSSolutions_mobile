@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // Get.find<AuthController>()
     //     .logOut()
-    //     .then((_) => Get.offAll(const LoginPage()));
+    //     .then((_) => Get.offAll(() => const LoginPage()));
     return Scaffold(
       body: RefreshIndicator(
         edgeOffset: 50,
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
               title: const Text(
                 "NPS Social",
                 style: TextStyle(
-                  color: Palette.facebookBlue,
+                  color: Palette.blue,
                   fontSize: 28.0,
                   fontWeight: FontWeight.bold,
                   letterSpacing: -1.2,

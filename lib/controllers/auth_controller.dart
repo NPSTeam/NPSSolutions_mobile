@@ -9,6 +9,7 @@ import 'package:nps_social/models/auth_model.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/pages/home_page/home_page.dart';
 import 'package:nps_social/pages/login_page/login_page.dart';
+import 'package:nps_social/pages/nav_page.dart';
 import 'package:nps_social/repositories/auth_repo.dart';
 import 'package:nps_social/services/spref.dart';
 import 'package:nps_social/widgets/widget_snackbar.dart';
@@ -49,7 +50,7 @@ class AuthController extends GetxController {
       await SPref.instance.set(SPrefKey.ACCESS_TOKEN, auth?.accessToken ?? '');
       await SPref.instance
           .set(SPrefKey.REFRESH_TOKEN, auth?.refreshToken ?? '');
-      Get.offAll(() => const HomePage());
+      Get.offAll(() => const NavPage());
     } else {
       WidgetSnackbar.showSnackbar(
         title: "Alert",

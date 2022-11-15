@@ -2,13 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_collage/image_collage.dart';
+import 'package:image_collage/image_collage.dart' as image_collage;
 import 'package:image_collapse/image_collapse.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:image_picker_platform_interface/src/types/image_source.dart'
+    as image_source;
 
 import '../../configs/palette.dart';
 import '../../utils/constants.dart';
@@ -23,7 +25,8 @@ class CreatePostPage extends StatefulWidget {
 class _CreatePostPageState extends State<CreatePostPage> {
   final AuthController _authController = Get.find();
   TextEditingController _contentTextEditingController = TextEditingController();
-  List<XFile>? images;
+  List<File> images = [];
+  ImagePicker picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -52,32 +55,34 @@ class _CreatePostPageState extends State<CreatePostPage> {
           Expanded(
             child: Container(
               padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  WidgetProfileAvatar(
-                      imageUrl: _authController.currentUser?.avatar ?? ''),
-                  const TextField(
-                    decoration: InputDecoration.collapsed(
-                      hintText: "What's on your mind? ",
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    WidgetProfileAvatar(
+                        imageUrl: _authController.currentUser?.avatar ?? ''),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: InputDecoration.collapsed(
+                          hintText: "What's on your mind? ",
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    ...List.generate(
+                        images.length,
+                        (index) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.file(images[index]),
+                              ),
+                            )),
+                  ],
+                ),
               ),
             ),
           ),
-          PhotoView(imageProvider: AssetImage(images?.first.path ?? '')),
-          ImageCollage(
-              images: images?.map((e) => Img(image: e.path)).toList() ?? [],
-              onClick: (clickedImg, images) {
-                // Navigator.of(context).push(MaterialPageRoute(
-                //     builder: (context) =>
-                //         ImageViewer(clickedImg: clickedImg, images: images)));
-              }),
-          ImageCollapse(imageUrls: images!.map((e) => e.path).toList() ?? []),
-          // ImageCollapse(imageUrls: [
-          //   "https://firebasestorage.googleapis.com/v0/b/be-beauty-app.appspot.com/o/avatar.jpg?alt=media&token=4cb911b2-3282-4aea-b03a-0ab9b681602a"
-          // ]),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -88,11 +93,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
               TextButton.icon(
                 onPressed: () async {
                   debugPrint("Photo");
-                  images = await ImagePicker().pickMultiImage();
-                  debugPrint("${await getExternalStorageDirectory()}");
-                  images?.forEach((e) => debugPrint(
-                      File("/storage/emulated/0/Android${e.path}").path));
-                  setState(() {});
+                  XFile? image = await picker.pickImage(
+                      source: image_source.ImageSource.gallery);
+                  // images.add(File(await ImagePicker().pickImage(
+                  //         source: image_source.ImageSource.gallery) ??
+                  //     XFile(''));
+                  setState(() {
+                    images.add(File(image?.path ?? ''));
+                  });
                 },
                 icon: const Icon(
                   Icons.photo_library,

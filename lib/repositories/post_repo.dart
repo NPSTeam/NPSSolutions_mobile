@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:nps_social/models/image_model.dart';
 import 'package:nps_social/models/post_model.dart';
 import 'package:nps_social/repositories/crud_repo.dart';
 
@@ -30,6 +32,25 @@ class _PostRepository extends CrudRepository {
 
   Future<bool?> unlikePost({required String postId}) async {
     var result = await patch('/api/post/$postId/unlike');
+    if (result?.statusCode == HttpStatus.ok) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool?> createPost(
+      {required String content, required List<ImageModel>? images}) async {
+    var result = await post(
+      '/api/post/createPost',
+      data: {
+        'content': content,
+        'images': images,
+      },
+    );
+
+    debugPrint("${result?.statusCode}");
+
     if (result?.statusCode == HttpStatus.ok) {
       return true;
     }

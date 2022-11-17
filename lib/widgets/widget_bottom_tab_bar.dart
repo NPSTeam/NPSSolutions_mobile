@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nps_social/configs/palette.dart';
+import 'package:nps_social/configs/theme/color_const.dart';
 
 class WidgetButtonTabBar extends StatelessWidget {
   final List<IconData> icons;
@@ -23,7 +23,7 @@ class WidgetButtonTabBar extends StatelessWidget {
       indicator: const BoxDecoration(
           border: Border(
               top: BorderSide(
-        color: Palette.blue,
+        color: ColorConst.blue,
         width: 3.0,
       ))),
       tabs: icons
@@ -33,7 +33,8 @@ class WidgetButtonTabBar extends StatelessWidget {
                 Tab(
                   icon: Icon(
                     e,
-                    color: i == selectedIndex ? Palette.blue : Colors.black45,
+                    color:
+                        i == selectedIndex ? ColorConst.blue : Colors.black45,
                     size: 30.0,
                   ),
                 ),

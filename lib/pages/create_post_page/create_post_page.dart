@@ -14,7 +14,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:image_picker_platform_interface/src/types/image_source.dart'
     as image_source;
 
-import '../../configs/palette.dart';
+import '../../configs/theme/color_const.dart';
 import '../../utils/constants.dart';
 
 class CreatePostPage extends StatefulWidget {
@@ -36,8 +36,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Palette.scaffold,
-        foregroundColor: Palette.blue,
+        backgroundColor: ColorConst.scaffold,
+        foregroundColor: ColorConst.blue,
         title: const Text("Create Post"),
         actions: [
           Padding(

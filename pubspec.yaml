@@ -36,6 +36,7 @@ dependencies:
   cached_network_image: ^3.2.2
   image_collapse: ^1.0.1                  # https://pub.dev/packages/image_collapse
   image_collage: ^0.0.4                   # https://pub.dev/packages/image_collage
+  flutter_spinkit: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -59,6 +60,7 @@ flutter:
     - .env
 
     - assets/images/
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

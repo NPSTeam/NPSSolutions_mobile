@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nps_social/configs/palette.dart';
+import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
 
@@ -49,7 +49,7 @@ class _CreateRoomButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: () => print("Create Room"),
       style: OutlinedButton.styleFrom(
-        foregroundColor: Palette.blue,
+        foregroundColor: ColorConst.blue,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
           //side: const BorderSide(width: 3, color: Colors.blueAccent),
@@ -60,7 +60,7 @@ class _CreateRoomButton extends StatelessWidget {
         children: [
           ShaderMask(
             shaderCallback: (rect) =>
-                Palette.createRoomGradient.createShader(rect),
+                ColorConst.createRoomGradient.createShader(rect),
             child: const Icon(
               Icons.video_call,
               size: 35.0,

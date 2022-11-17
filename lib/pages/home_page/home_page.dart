@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:nps_social/configs/palette.dart';
+import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/models/post_model.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/pages/home_page/components/stories.dart';
+import 'package:nps_social/pages/home_page/components/suggestions.dart';
 import 'package:nps_social/widgets/widget_circle_button.dart';
 import 'package:nps_social/pages/home_page/components/widget_create_post_container.dart';
 
@@ -36,6 +37,8 @@ class _HomePageState extends State<HomePage> {
           _homeController.getPosts().then((value) async {
             await Future.delayed(const Duration(seconds: 1));
           });
+
+          await _homeController.getSuggestions();
           debugPrint("Refresh");
         },
         child: CustomScrollView(
@@ -46,7 +49,7 @@ class _HomePageState extends State<HomePage> {
               title: const Text(
                 "NPS Social",
                 style: TextStyle(
-                  color: Palette.blue,
+                  color: ColorConst.blue,
                   fontSize: 28.0,
                   fontWeight: FontWeight.bold,
                   letterSpacing: -1.2,
@@ -55,17 +58,33 @@ class _HomePageState extends State<HomePage> {
               centerTitle: false,
               floating: true,
               actions: [
-                WidgetCircleButton(
-                  icon: Icons.search,
-                  iconSize: 30.0,
-                  iconColor: Colors.black,
-                  onPressed: () => debugPrint("search"),
+                // WidgetCircleButton(
+                //   icon: Icons.search,
+                //   iconSize: 30.0,
+                //   iconColor: Colors.black,
+                //   onPressed: () => debugPrint("search"),
+                // ),
+                GestureDetector(
+                  onTap: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      "assets/icons/search.png",
+                      height: 30,
+                      width: 30,
+                    ),
+                  ),
                 ),
-                WidgetCircleButton(
-                  icon: Ionicons.chatbubbles_outline,
-                  iconSize: 30.0,
-                  iconColor: Colors.black,
-                  onPressed: () => debugPrint("messenger"),
+                GestureDetector(
+                  onTap: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      "assets/icons/messages.png",
+                      height: 30,
+                      width: 30,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -79,13 +98,19 @@ class _HomePageState extends State<HomePage> {
                 child: Rooms(onlineUsers: [UserModel(), UserModel()]),
               ),
             ),
+            // SliverPadding(
+            //   padding: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
+            //   sliver: SliverToBoxAdapter(
+            //     child: Stories(
+            //       currentUser: _authController.currentUser,
+            //       stories: [],
+            //     ),
+            //   ),
+            // ),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
               sliver: SliverToBoxAdapter(
-                child: Stories(
-                  currentUser: _authController.currentUser,
-                  stories: [],
-                ),
+                child: Suggestions(),
               ),
             ),
             GetBuilder<HomeController>(

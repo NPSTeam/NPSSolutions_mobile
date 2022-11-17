@@ -2,10 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/models/post_model.dart';
+import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/repositories/post_repo.dart';
+import 'package:nps_social/repositories/user_repo.dart';
 
 class HomeController extends GetxController {
   List<PostModel>? allPosts;
+  List<UserModel>? suggestionUsers;
 
   HomeController() {
     init();
@@ -39,5 +42,15 @@ class HomeController extends GetxController {
     if (success == true) {
       await getPosts();
     }
+  }
+
+  Future getSuggestions() async {
+    suggestionUsers = await userRepository.getSuggestions();
+    update();
+  }
+
+  Future follow({required String userId}) async {
+    await userRepository.follow(userId: userId);
+    return;
   }
 }

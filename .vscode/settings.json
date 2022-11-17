@@ -8,10 +8,13 @@
         "drvvgmc",
         "Getx",
         "ionicons",
+        "LTRB",
         "ondemand",
         "prefs",
+        "spinkit",
         "Spref",
         "unfocus",
+        "Unfollow",
         "vsync"
     ]
 }

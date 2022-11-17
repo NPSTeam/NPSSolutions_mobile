@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/pages/home_page/home_page.dart';
+import 'package:nps_social/pages/profile_page/profile_page.dart';
 import 'package:nps_social/widgets/widget_bottom_tab_bar.dart';
 
 class NavPage extends StatefulWidget {
@@ -18,9 +19,7 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
     Scaffold(
       body: Container(color: Colors.red),
     ),
-    Scaffold(
-      body: Container(color: Colors.yellow),
-    ),
+    ProfilePage(),
     const Scaffold(),
     const Scaffold(),
     const Scaffold(),

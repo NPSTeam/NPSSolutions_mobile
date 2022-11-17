@@ -1,10 +1,7 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:nps_social/controllers/home_controller.dart';
-import 'package:nps_social/models/image_model.dart';
 import 'package:nps_social/repositories/cloudinary_repo.dart';
 import 'package:nps_social/repositories/post_repo.dart';
 import 'package:nps_social/widgets/widget_snackbar.dart';
@@ -15,9 +12,7 @@ class CreatePostController extends GetxController {
   Future createPost({
     required String content,
   }) async {
-    List<ImageModel>? uploadedImages = await cloudinaryRepository
-        .uploadImages(imageFiles: selectedImages)
-        .then(
+    await cloudinaryRepository.uploadImages(imageFiles: selectedImages).then(
       (value) async {
         if (value == null) {
           WidgetSnackbar.showSnackbar(

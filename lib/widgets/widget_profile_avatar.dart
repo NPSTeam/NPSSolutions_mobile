@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:nps_social/configs/palette.dart';
+import 'package:nps_social/configs/theme/color_const.dart';
 
 class WidgetProfileAvatar extends StatelessWidget {
   final String imageUrl;
@@ -21,7 +21,7 @@ class WidgetProfileAvatar extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 20.0,
-          backgroundColor: Palette.blue,
+          backgroundColor: ColorConst.blue,
           child: CircleAvatar(
             radius: hasBorder ? 17.0 : 20.0,
             backgroundColor: Colors.grey[200],
@@ -36,7 +36,7 @@ class WidgetProfileAvatar extends StatelessWidget {
                   height: 15.0,
                   width: 15.0,
                   decoration: BoxDecoration(
-                      color: Palette.online,
+                      color: ColorConst.online,
                       shape: BoxShape.circle,
                       border: Border.all(
                         width: 2.0,

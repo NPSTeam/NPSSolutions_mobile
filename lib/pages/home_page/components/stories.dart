@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:nps_social/configs/palette.dart';
+import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
 
@@ -76,7 +76,7 @@ class _StoryCard extends StatelessWidget {
           height: double.infinity,
           width: 110,
           decoration: BoxDecoration(
-            gradient: Palette.storyGradient,
+            gradient: ColorConst.storyGradient,
             borderRadius: BorderRadius.circular(12.0),
           ),
         ),
@@ -95,7 +95,7 @@ class _StoryCard extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     icon: const Icon(Icons.add),
                     iconSize: 30.0,
-                    color: Palette.blue,
+                    color: ColorConst.blue,
                     onPressed: () => print("Add to Story"),
                   ),
                 )

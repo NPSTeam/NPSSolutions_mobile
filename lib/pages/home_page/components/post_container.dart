@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_collage/image_collage.dart';
+import 'package:image_viewer/image_viewer.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
@@ -41,8 +43,33 @@ class PostContainer extends StatelessWidget {
           post.images != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: CachedNetworkImage(
-                      imageUrl: post.images?.first.url ?? ''),
+                  // child: GalleryImage(
+                  //   numOfShowImages: post.images?.length ?? 0,
+                  //   imageUrls:
+                  //       post.images?.map((e) => e.url ?? '').toList() ?? [],
+                  // ),
+                  // child: ImageCollapse(
+                  //     imageUrls:
+                  //         post.images?.map((e) => e.url ?? '').toList() ?? []))
+                  child: ImageCollage(
+                      images: post.images
+                              ?.map((e) => Img(image: e.url ?? ''))
+                              .toList() ??
+                          [],
+                      onClick: (clickedImg, images) {
+                        // inspect(clickedImg)
+                        //you can create a screen to expand the view and give clickedImg to show it
+                        // because its the user selected image
+                        //and the other images for the ability to swipe between them all.
+                        // Navigator.of(context).push(MaterialPageRoute(builder: (context) => ImageViewer(clickedImg: clickedImg, images: images )));
+
+                        ImageViewer.showImageSlider(
+                          images: images.map((e) => e.image).toList(),
+                          startingPosition: post.images?.indexWhere(
+                                  (e) => e.url == clickedImg.image) ??
+                              0,
+                        );
+                      }),
                 )
               : const SizedBox.shrink(),
           Padding(
@@ -123,11 +150,11 @@ class _PostStats extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(4.0),
               decoration: const BoxDecoration(
-                color: ColorConst.blue,
+                color: ColorConst.red,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
-                Icons.thumb_up,
+                Ionicons.heart,
                 size: 10.0,
                 color: Colors.white,
               ),
@@ -162,10 +189,11 @@ class _PostStats extends StatelessWidget {
           children: [
             _PostButton(
               icon: Icon(
-                Ionicons.thumbs_up_outline,
-                color: (post.isReact ?? false)
-                    ? ColorConst.blue
-                    : Colors.grey[600],
+                (post.isReact ?? false)
+                    ? Ionicons.heart
+                    : Ionicons.heart_outline,
+                color:
+                    (post.isReact ?? false) ? ColorConst.red : Colors.grey[600],
                 size: 20.0,
               ),
               label: "Like",

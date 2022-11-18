@@ -12,7 +12,7 @@ class StyleConst {
           TextDecoration? textDecoration,
           String? package}) =>
       TextStyle(
-          color: color ?? ColorConst.blue,
+          color: color ?? ColorConst.black,
           package: package,
           height: height ?? 1.3,
           fontWeight: fontWeight ?? FontWeight.bold,

@@ -2,15 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_collage/image_collage.dart' as image_collage;
-import 'package:image_collapse/image_collapse.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/pages/create_post_page/create_post_controller.dart';
 import 'package:nps_social/widgets/widget_appbar_button.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:image_picker_platform_interface/src/types/image_source.dart'
     as image_source;
 
@@ -59,13 +57,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
               child: Container(
                 padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                 child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      WidgetProfileAvatar(
-                          imageUrl: _authController.currentUser?.avatar ?? ''),
+                      Row(
+                        children: [
+                          WidgetProfileAvatar(
+                              imageUrl:
+                                  _authController.currentUser?.avatar ?? ''),
+                          const SizedBox(width: 10),
+                          Text(
+                            _authController.currentUser?.fullName ?? '',
+                            style: StyleConst.boldStyle(),
+                          ),
+                        ],
+                      ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: TextField(
                           controller: _contentTextEditingController,
                           decoration: const InputDecoration.collapsed(

@@ -19,18 +19,18 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
     Scaffold(
       body: Container(color: Colors.red),
     ),
+    const Scaffold(),
+    const Scaffold(),
     ProfilePage(),
-    const Scaffold(),
-    const Scaffold(),
-    const Scaffold(),
+    // const Scaffold(),
   ];
   final List<IconData> _icons = [
     Ionicons.home_outline,
     Icons.ondemand_video,
-    Ionicons.person_outline,
     Ionicons.people_outline,
     Ionicons.notifications_outline,
-    Ionicons.menu_outline,
+    Ionicons.person_outline,
+    // Ionicons.menu_outline,
   ];
 
   int _selectedIndex = 0;

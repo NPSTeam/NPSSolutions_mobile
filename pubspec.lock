@@ -237,13 +237,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.2"
-  flutter_launcher_icons:
-    dependency: "direct main"
-    description:
-      name: flutter_launcher_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.9.3"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -293,13 +286,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.1.0"
-  flutter_staggered_grid_view:
-    dependency: transitive
-    description:
-      name: flutter_staggered_grid_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -330,7 +316,7 @@ packages:
       name: glob
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   html:
     dependency: transitive
     description:
@@ -366,13 +352,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.4"
-  image_collapse:
-    dependency: "direct main"
-    description:
-      name: image_collapse
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   image_picker:
     dependency: "direct main"
     description:
@@ -408,6 +387,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.6.2"
+  image_viewer:
+    dependency: "direct main"
+    description:
+      name: image_viewer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.0"
   ionicons:
     dependency: "direct main"
     description:
@@ -590,13 +576,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.0"
-  photo_view:
-    dependency: transitive
-    description:
-      name: photo_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.13.0"
   platform:
     dependency: transitive
     description:
@@ -624,7 +603,7 @@ packages:
       name: pub_semver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   pubspec_parse:
     dependency: transitive
     description:
@@ -791,6 +770,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.1"
+  unicons:
+    dependency: "direct main"
+    description:
+      name: unicons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   universal_io:
     dependency: transitive
     description:

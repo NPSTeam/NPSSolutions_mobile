@@ -21,20 +21,26 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin<HomePage> {
   final AuthController _authController = Get.find();
   final HomeController _homeController = Get.find();
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
     // Get.find<AuthController>()
     //     .logOut()
     //     .then((_) => Get.offAll(() => const LoginPage()));
+    super.build(context);
+
     return Scaffold(
       body: RefreshIndicator(
         edgeOffset: 50,
         onRefresh: () async {
-          _homeController.getPosts().then((value) async {
+          await _homeController.getPosts().then((value) async {
             await Future.delayed(const Duration(seconds: 1));
           });
 
@@ -57,6 +63,14 @@ class _HomePageState extends State<HomePage> {
               ),
               centerTitle: false,
               floating: true,
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  "assets/images/logo.png",
+                  height: 30,
+                  width: 30,
+                ),
+              ),
               actions: [
                 // WidgetCircleButton(
                 //   icon: Icons.search,
@@ -117,14 +131,21 @@ class _HomePageState extends State<HomePage> {
               builder: (controller) => SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    final PostModel post =
-                        controller.allPosts?[index] ?? PostModel();
-                    return PostContainer(post: post);
+                    return PostContainer(
+                        post: controller.allPosts?[index] ?? PostModel());
                   },
                   childCount: controller.allPosts?.length ?? 0,
                 ),
               ),
             ),
+            // GetBuilder<HomeController>(
+            //   builder: (controller) {
+            //     return ListView.builder(itemBuilder: (context, index) {
+            //       return PostContainer(
+            //           post: controller.allPosts?[index] ?? PostModel());
+            //     });
+            //   },
+            // ),
           ],
         ),
       ),

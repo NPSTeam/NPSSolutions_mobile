@@ -8,6 +8,7 @@ class ColorConst {
   static const Color white = Colors.white;
   static const Color black = Colors.black;
   static const Color red = Colors.red;
+  static const Color grey = Colors.grey;
 
   static const LinearGradient createRoomGradient = LinearGradient(
     colors: [Color(0xFF496AE1), Color(0xFFCE48B1)],

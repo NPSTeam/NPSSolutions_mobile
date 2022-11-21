@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:nps_social/controllers/conversation_controller.dart';
 import 'package:nps_social/controllers/home_controller.dart';
+import 'package:nps_social/controllers/notification_controller.dart';
+import 'package:nps_social/pages/conversation_page/conversation_page.dart';
 import 'package:nps_social/pages/home_page/home_page.dart';
+import 'package:nps_social/pages/notification_page/notification_page.dart';
 import 'package:nps_social/pages/profile_page/profile_page.dart';
+import 'package:nps_social/services/socket_client.dart';
 import 'package:nps_social/widgets/widget_bottom_tab_bar.dart';
 
 class NavPage extends StatefulWidget {
@@ -16,17 +21,15 @@ class NavPage extends StatefulWidget {
 class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
   final List<Widget> _screens = [
     const HomePage(),
-    Scaffold(
-      body: Container(color: Colors.red),
-    ),
+    const ConversationPage(),
     const Scaffold(),
-    const Scaffold(),
+    const NotificationPage(),
     ProfilePage(),
     // const Scaffold(),
   ];
   final List<IconData> _icons = [
     Ionicons.home_outline,
-    Icons.ondemand_video,
+    Ionicons.chatbubbles_outline,
     Ionicons.people_outline,
     Ionicons.notifications_outline,
     Ionicons.person_outline,
@@ -36,7 +39,11 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
 
   late TabController _tabController;
-  HomeController _homeController = Get.put(HomeController());
+  final HomeController _homeController = Get.put(HomeController());
+  final ConversationController _conversationController =
+      Get.put(ConversationController());
+  final NotificationController _notificationController =
+      Get.put(NotificationController());
 
   @override
   void initState() {
@@ -47,6 +54,8 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
         _selectedIndex = _tabController.index;
       });
     });
+
+    // await SocketClient.init();
   }
 
   @override

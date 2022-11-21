@@ -8,6 +8,7 @@ import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/models/post_model.dart';
+import 'package:nps_social/widgets/widget_photo_viewer.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
 
 class PostContainer extends StatelessWidget {
@@ -57,18 +58,21 @@ class PostContainer extends StatelessWidget {
                               .toList() ??
                           [],
                       onClick: (clickedImg, images) {
-                        // inspect(clickedImg)
-                        //you can create a screen to expand the view and give clickedImg to show it
-                        // because its the user selected image
-                        //and the other images for the ability to swipe between them all.
-                        // Navigator.of(context).push(MaterialPageRoute(builder: (context) => ImageViewer(clickedImg: clickedImg, images: images )));
-
-                        ImageViewer.showImageSlider(
-                          images: images.map((e) => e.image).toList(),
+                        Get.to(WidgetPhotoViewer(
+                          imageUrls: images.map((e) => e.image).toList(),
                           startingPosition: post.images?.indexWhere(
                                   (e) => e.url == clickedImg.image) ??
                               0,
-                        );
+                        ));
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        //     builder: (context) => const WidgetPhotoViewer()));
+
+                        // ImageViewer.showImageSlider(
+                        //   images: images.map((e) => e.image).toList(),
+                        //   startingPosition: post.images?.indexWhere(
+                        //           (e) => e.url == clickedImg.image) ??
+                        //       0,
+                        // );
                       }),
                 )
               : const SizedBox.shrink(),

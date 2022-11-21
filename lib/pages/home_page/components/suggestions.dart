@@ -11,21 +11,23 @@ import 'package:nps_social/widgets/widget_outlined_button.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
 
 class Suggestions extends StatefulWidget {
+  const Suggestions({super.key});
+
   @override
   State<Suggestions> createState() => _SuggestionsState();
 }
 
 class _SuggestionsState extends State<Suggestions> {
   final HomeController _homeController = Get.find();
-  bool isLoadingSuggestions = true;
+  // bool isLoadingSuggestions = true;
 
   @override
   void initState() {
-    _homeController.getSuggestions().then((value) {
-      setState(() {
-        isLoadingSuggestions = false;
-      });
-    });
+    // _homeController.getSuggestions().then((value) {
+    //   setState(() {
+    //     isLoadingSuggestions = false;
+    //   });
+    // });
 
     super.initState();
   }
@@ -33,16 +35,16 @@ class _SuggestionsState extends State<Suggestions> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(builder: (controller) {
-      if (isLoadingSuggestions) {
-        return Container(
-          color: Colors.white,
-          height: 200,
-          child: const SpinKitThreeBounce(
-            color: ColorConst.blue,
-            size: 30,
-          ),
-        );
-      }
+      // if (isLoadingSuggestions) {
+      //   return Container(
+      //     color: Colors.white,
+      //     height: 200,
+      //     child: const SpinKitThreeBounce(
+      //       color: ColorConst.blue,
+      //       size: 30,
+      //     ),
+      //   );
+      // }
 
       if ((controller.suggestionUsers?.length ?? 0) == 0) {
         return const SizedBox.shrink();

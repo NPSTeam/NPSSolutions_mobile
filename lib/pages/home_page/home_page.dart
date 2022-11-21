@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/models/post_model.dart';
 import 'package:nps_social/models/user_model.dart';
-import 'package:nps_social/pages/home_page/components/stories.dart';
 import 'package:nps_social/pages/home_page/components/suggestions.dart';
-import 'package:nps_social/widgets/widget_circle_button.dart';
 import 'package:nps_social/pages/home_page/components/widget_create_post_container.dart';
 
 import 'components/post_container.dart';
@@ -26,8 +24,28 @@ class _HomePageState extends State<HomePage>
   final AuthController _authController = Get.find();
   final HomeController _homeController = Get.find();
 
+  bool isLoadingSuggestions = true;
+  bool isLoadingPosts = true;
+
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    _homeController.getPosts().then(((value) {
+      setState(() {
+        isLoadingPosts = false;
+      });
+    }));
+
+    _homeController.getSuggestions().then((value) {
+      setState(() {
+        isLoadingSuggestions = false;
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +58,24 @@ class _HomePageState extends State<HomePage>
       body: RefreshIndicator(
         edgeOffset: 50,
         onRefresh: () async {
-          await _homeController.getPosts().then((value) async {
+          setState(() {
+            isLoadingPosts = true;
+          });
+          _homeController.getPosts().then((value) async {
             await Future.delayed(const Duration(seconds: 1));
+            setState(() {
+              isLoadingPosts = false;
+            });
           });
 
-          await _homeController.getSuggestions();
+          setState(() {
+            isLoadingSuggestions = true;
+          });
+          _homeController.getSuggestions().then((_) {
+            setState(() {
+              isLoadingSuggestions = false;
+            });
+          });
           debugPrint("Refresh");
         },
         child: CustomScrollView(
@@ -63,12 +94,37 @@ class _HomePageState extends State<HomePage>
               ),
               centerTitle: false,
               floating: true,
-              leading: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  "assets/images/logo.png",
-                  height: 30,
-                  width: 30,
+              leading: GestureDetector(
+                onTap: () async {
+                  setState(() {
+                    isLoadingPosts = true;
+                  });
+                  _homeController.getPosts().then((value) async {
+                    await Future.delayed(const Duration(seconds: 1))
+                        .then((value) {
+                      setState(() {
+                        isLoadingPosts = false;
+                      });
+                    });
+                  });
+
+                  setState(() {
+                    isLoadingSuggestions = true;
+                  });
+                  _homeController.getSuggestions().then((_) {
+                    setState(() {
+                      isLoadingSuggestions = false;
+                    });
+                  });
+                  debugPrint("Refresh");
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    height: 30,
+                    width: 30,
+                  ),
                 ),
               ),
               actions: [
@@ -124,20 +180,39 @@ class _HomePageState extends State<HomePage>
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
               sliver: SliverToBoxAdapter(
-                child: Suggestions(),
+                child: isLoadingSuggestions
+                    ? Container(
+                        color: ColorConst.white,
+                        height: 200,
+                        child: const SpinKitThreeBounce(
+                          color: ColorConst.blue,
+                          size: 30,
+                        ),
+                      )
+                    : const Suggestions(),
               ),
             ),
-            GetBuilder<HomeController>(
-              builder: (controller) => SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return PostContainer(
-                        post: controller.allPosts?[index] ?? PostModel());
-                  },
-                  childCount: controller.allPosts?.length ?? 0,
-                ),
-              ),
-            ),
+            isLoadingPosts
+                ? const SliverPadding(
+                    padding: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
+                    sliver: SliverToBoxAdapter(
+                      child: SpinKitThreeBounce(
+                        color: ColorConst.blue,
+                        size: 30,
+                      ),
+                    ),
+                  )
+                : GetBuilder<HomeController>(
+                    builder: (controller) => SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return PostContainer(
+                              post: controller.allPosts?[index] ?? PostModel());
+                        },
+                        childCount: controller.allPosts?.length ?? 0,
+                      ),
+                    ),
+                  ),
             // GetBuilder<HomeController>(
             //   builder: (controller) {
             //     return ListView.builder(itemBuilder: (context, index) {

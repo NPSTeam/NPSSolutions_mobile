@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/models/post_model.dart';
@@ -15,7 +14,7 @@ class HomeController extends GetxController {
   }
 
   init() async {
-    await getPosts();
+    // await getPosts();
   }
 
   Future getPosts() async {

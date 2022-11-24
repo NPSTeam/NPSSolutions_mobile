@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:nps_social/models/user_model.dart';
 
 class AuthModel {
@@ -21,7 +22,7 @@ class AuthModel {
     var map = <String, dynamic>{};
     map['refreshToken'] = refreshToken;
     map['accessToken'] = accessToken;
-    if (user != null) map['user'] = user?.toJson();
+    // if (user != null) map['user'] = user?.toJson();
     return map;
   }
 }

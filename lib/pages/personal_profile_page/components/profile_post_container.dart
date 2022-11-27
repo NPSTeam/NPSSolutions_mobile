@@ -3,17 +3,19 @@ import 'package:get/get.dart';
 import 'package:image_collage/image_collage.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/theme/color_const.dart';
+import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/models/post_model.dart';
-import 'package:nps_social/utils/datetime_convert.dart';
+import 'package:nps_social/models/user_model.dart';
+import 'package:nps_social/pages/personal_profile_page/controllers/personal_profile_controller.dart';
 import 'package:nps_social/widgets/widget_photo_viewer.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
-class PostContainer extends StatelessWidget {
+class ProfilePostContainer extends StatelessWidget {
+  final UserModel? currentUser = Get.find<AuthController>().currentUser;
   final PostModel post;
 
-  const PostContainer({
+  ProfilePostContainer({
     Key? key,
     required this.post,
   }) : super(key: key);
@@ -31,7 +33,44 @@ class PostContainer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _PostHeader(post: post),
+                Row(
+                  children: [
+                    WidgetProfileAvatar(imageUrl: currentUser?.avatar ?? ''),
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            currentUser?.fullName ?? 'Name',
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                // '${post.timeAgo} · ',
+                                'Temp · ',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                              Icon(
+                                Icons.public,
+                                color: Colors.grey[600],
+                                size: 12.0,
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => print('More'),
+                      icon: const Icon(Icons.more_horiz),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 4.0),
                 Text(post.content!),
                 post.images != null
@@ -81,60 +120,6 @@ class PostContainer extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _PostHeader extends StatelessWidget {
-  final PostModel post;
-
-  const _PostHeader({
-    Key? key,
-    required this.post,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        WidgetProfileAvatar(imageUrl: post.user?.avatar ?? ''),
-        const SizedBox(width: 8.0),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                post.user?.fullName ?? 'Name',
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              Row(
-                children: [
-                  Text(
-                    DateTime.now()
-                            .subtract(const Duration(days: 7))
-                            .isBefore(post.createdAt ?? DateTime.now())
-                        ? timeago.format(post.createdAt ?? DateTime.now())
-                        : dateTimeToString(post.createdAt ?? DateTime.now()),
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 12.0,
-                    ),
-                  ),
-                  Icon(
-                    Icons.public,
-                    color: Colors.grey[600],
-                    size: 12.0,
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
-        IconButton(
-          onPressed: () => print('More'),
-          icon: const Icon(Icons.more_horiz),
-        ),
-      ],
     );
   }
 }
@@ -205,8 +190,10 @@ class _PostStats extends StatelessWidget {
               label: "Like",
               onTap: () {
                 post.isReact ?? false
-                    ? Get.find<HomeController>().unlikePost(post.id ?? '')
-                    : Get.find<HomeController>().likePost(post.id ?? '');
+                    ? Get.find<PersonalProfileController>()
+                        .unlikePost(post.id ?? '')
+                    : Get.find<PersonalProfileController>()
+                        .likePost(post.id ?? '');
                 post.isReact = !(post.isReact ?? false);
               },
             ),
@@ -217,45 +204,7 @@ class _PostStats extends StatelessWidget {
                 size: 20.0,
               ),
               label: "Comment",
-              onTap: () {
-                showGeneralDialog(
-                  barrierLabel: "Label",
-                  barrierDismissible: true,
-                  barrierColor: Colors.black.withOpacity(0.5),
-                  transitionDuration: const Duration(milliseconds: 500),
-                  context: context,
-                  pageBuilder: (context, anim1, anim2) {
-                    return Center(
-                      child: Container(
-                        height: 300,
-                        margin: const EdgeInsets.only(
-                            bottom: 50, left: 12, right: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const SizedBox.expand(child: FlutterLogo()),
-                      ),
-                    );
-                  },
-                  transitionBuilder: (context, anim1, anim2, child) {
-                    return SlideTransition(
-                      position: Tween(
-                              begin: const Offset(0, 1),
-                              end: const Offset(0, 0))
-                          .chain(CurveTween(curve: Curves.easeOutCirc))
-                          .animate(anim1),
-                      child: child,
-                    );
-                  },
-                );
-
-                // Get.dialog(Container(
-                //   height: 100,
-                //   width: 200,
-                //   color: Colors.red,
-                // ));
-              },
+              onTap: () => print("Comment"),
             ),
             _PostButton(
               icon: Icon(

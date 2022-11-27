@@ -42,6 +42,7 @@ dependencies:
   image_viewer: ^1.5.0
   unicons: ^2.1.0
   carousel_slider: ^4.1.1
+  timeago: ^3.3.0
 
 dev_dependencies:
   flutter_test:

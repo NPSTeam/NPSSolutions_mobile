@@ -1,15 +1,19 @@
 import 'dart:io';
 
 import 'package:cloudinary_public/cloudinary_public.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:nps_social/configs/app_key.dart';
 import 'package:nps_social/models/image_model.dart';
 
 final cloudinaryRepository = _CloudinaryRepository();
 
 class _CloudinaryRepository {
   // final _dio = Dio();
-  final cloudinary = CloudinaryPublic('drvvgmc2p', 'sql40th0', cache: false);
+  final cloudinary = CloudinaryPublic(
+    AppKey.CLOUDINARY_NAME,
+    AppKey.CLOUDINARY_UPDATE_PRESET,
+    cache: false,
+  );
 
   Future<List<ImageModel>?> uploadImages(
       {required List<File> imageFiles}) async {

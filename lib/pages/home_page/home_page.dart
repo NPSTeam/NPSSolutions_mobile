@@ -6,6 +6,7 @@ import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/models/post_model.dart';
 import 'package:nps_social/models/user_model.dart';
+import 'package:nps_social/pages/home_page/components/home_search_delegate.dart';
 import 'package:nps_social/pages/home_page/components/suggestions.dart';
 import 'package:nps_social/pages/home_page/components/widget_create_post_container.dart';
 
@@ -49,9 +50,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    // Get.find<AuthController>()
-    //     .logOut()
-    //     .then((_) => Get.offAll(() => const LoginPage()));
     super.build(context);
 
     return Scaffold(
@@ -135,7 +133,12 @@ class _HomePageState extends State<HomePage>
                 //   onPressed: () => debugPrint("search"),
                 // ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    showSearch(
+                      context: context,
+                      delegate: HomeSearchDelegate(),
+                    );
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Image.asset(

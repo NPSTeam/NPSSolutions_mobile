@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/models/user_model.dart';
-import 'package:nps_social/pages/profile_page/components/profile_widget.dart';
+import 'package:nps_social/pages/login_page/login_page.dart';
+import 'package:nps_social/pages/personal_profile_page/components/profile_post_list_widget.dart';
+import 'package:nps_social/pages/personal_profile_page/components/profile_saved_list_widget.dart';
+import 'package:nps_social/pages/personal_profile_page/components/profile_widget.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+import 'controllers/personal_profile_controller.dart';
+
+class PersonalProfilePage extends StatefulWidget {
+  const PersonalProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<PersonalProfilePage> createState() => _PersonalProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage>
+class _PersonalProfilePageState extends State<PersonalProfilePage>
     with SingleTickerProviderStateMixin {
-  final UserModel? user = Get.find<AuthController>().currentUser;
+  final PersonalProfileController _profileController = Get.find();
+
+  final UserModel? currentUser = Get.find<AuthController>().currentUser;
   late TabController _tabController;
 
   @override
@@ -34,19 +42,53 @@ class _ProfilePageState extends State<ProfilePage>
       body: ListView(
         physics: const BouncingScrollPhysics(),
         children: [
-          const SizedBox(height: 24),
+          SizedBox(
+            height: 24,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                PopupMenuButton<String>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    position: PopupMenuPosition.under,
+                    onSelected: (value) {
+                      switch (value) {
+                        case 'LOGOUT':
+                          Get.find<AuthController>()
+                              .logOut()
+                              .then((_) => Get.offAll(() => const LoginPage()));
+                      }
+                    },
+                    itemBuilder: (_) => [
+                          PopupMenuItem(
+                            value: 'LOGOUT',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                Text("Logout"),
+                                Icon(Ionicons.log_out_outline),
+                              ],
+                            ),
+                          ),
+                        ]),
+              ],
+            ),
+          ),
           ProfileWidget(
-            imagePath: user?.avatar ?? '',
+            imagePath: currentUser?.avatar ?? '',
             onClicked: () {},
           ),
           const SizedBox(height: 24),
-          buildAbout(user),
+          buildAbout(currentUser),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 6),
             child: Divider(),
           ),
-          const SizedBox(height: 48),
-          ...buildPost(user),
+          const SizedBox(height: 15),
+          ..._profileController.selectedUser?.id == currentUser?.id
+              ? buildPost(currentUser)
+              : [const ProfilePostListWidget()],
         ],
       ),
     );
@@ -93,6 +135,9 @@ class _ProfilePageState extends State<ProfilePage>
   List<Widget> buildPost(UserModel? user) => [
         TabBar(
           controller: _tabController,
+          onTap: (value) {
+            setState(() {});
+          },
           tabs: const [
             Tab(
               child: Text("Posts", style: TextStyle(color: Colors.black)),
@@ -102,23 +147,8 @@ class _ProfilePageState extends State<ProfilePage>
             ),
           ],
         ),
-        SizedBox(
-          height: 500,
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              Column(
-                children: [
-                  Container(height: 100, color: Colors.red),
-                ],
-              ),
-              Column(
-                children: [
-                  Container(height: 100, color: Colors.yellow),
-                ],
-              ),
-            ],
-          ),
-        ),
+        _tabController.index == 0
+            ? const ProfilePostListWidget()
+            : const ProfileSavedListWidget(),
       ];
 }

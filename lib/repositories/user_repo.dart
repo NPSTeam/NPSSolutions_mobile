@@ -27,4 +27,22 @@ class _UserRepository extends CrudRepository {
 
     return false;
   }
+
+  Future<List<UserModel>?> searchUser({required String query}) async {
+    List<UserModel>? users;
+
+    var result = await post(
+      '/api/user/search',
+      data: {
+        'fullName': query,
+      },
+    );
+    if (result?.data['users'] != null) {
+      users = List<UserModel>.from(
+          result?.data['users'].map((e) => UserModel.fromJson(e)));
+      return users;
+    }
+
+    return null;
+  }
 }

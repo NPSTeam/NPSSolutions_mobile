@@ -10,8 +10,8 @@ class UserModel {
   String? password;
   String? avatar;
   String? sex;
-  List<UserModel>? followers;
-  List<UserModel>? following;
+  List<dynamic>? followers;
+  List<dynamic>? following;
 
   UserModel({
     this.id,
@@ -38,18 +38,18 @@ class UserModel {
     password = json['password'];
     avatar = json['avatar'];
     sex = json['sex'];
-    followers = (json['followers'] != null && json['followers']?.length != 0)
-        ? ((json['followers']?[0] ?? '') is! String
-            ? List<UserModel>.from(
-                json['followers'].map((e) => UserModel.fromJson(e)))
-            : null)
-        : null;
-    following = (json['following'] != null && json['following']?.length != 0)
-        ? ((json['following']?[0] ?? '') is! String
-            ? List<UserModel>.from(
-                json['following'].map((e) => UserModel.fromJson(e)))
-            : null)
-        : null;
+    if (json['followers'] != null && json['followers']?.length != 0) {
+      followers = (json['followers']?[0] ?? '') is String
+          ? List<String>.from(json['followers'].map((e) => e))
+          : List<UserModel>.from(
+              json['followers'].map((e) => UserModel.fromJson(e)));
+    }
+    if (json['following'] != null && json['following']?.length != 0) {
+      following = (json['following']?[0] ?? '') is String
+          ? List<String>.from(json['following'].map((e) => e))
+          : List<UserModel>.from(
+              json['following'].map((e) => UserModel.fromJson(e)));
+    }
   }
 
   Map<String, dynamic> toJson() {

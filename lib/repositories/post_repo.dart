@@ -57,4 +57,28 @@ class _PostRepository extends CrudRepository {
 
     return false;
   }
+
+  Future<List<PostModel>?> getUserPosts({required String userId}) async {
+    List<PostModel>? posts;
+
+    var result = await get('/api/post/user_posts/$userId');
+    if (result?.data['posts'] != null) {
+      posts = List<PostModel>.from(
+          result?.data['posts'].map((e) => PostModel.fromJson(e)));
+      return posts;
+    }
+    return null;
+  }
+
+  Future<List<PostModel>?> getSavedPosts({required String userId}) async {
+    List<PostModel>? posts;
+
+    var result = await get('/api/post/getSavePosts');
+    if (result?.data['savePosts'] != null) {
+      posts = List<PostModel>.from(
+          result?.data['savePosts'].map((e) => PostModel.fromJson(e)));
+      return posts;
+    }
+    return null;
+  }
 }

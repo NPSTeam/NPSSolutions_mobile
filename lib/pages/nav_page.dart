@@ -7,8 +7,8 @@ import 'package:nps_social/controllers/notification_controller.dart';
 import 'package:nps_social/pages/conversation_page/conversation_page.dart';
 import 'package:nps_social/pages/home_page/home_page.dart';
 import 'package:nps_social/pages/notification_page/notification_page.dart';
-import 'package:nps_social/pages/profile_page/profile_page.dart';
-import 'package:nps_social/services/socket_client.dart';
+import 'package:nps_social/pages/personal_profile_page/controllers/personal_profile_controller.dart';
+import 'package:nps_social/pages/personal_profile_page/personal_profile_page.dart';
 import 'package:nps_social/widgets/widget_bottom_tab_bar.dart';
 
 class NavPage extends StatefulWidget {
@@ -19,13 +19,21 @@ class NavPage extends StatefulWidget {
 }
 
 class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final HomeController _homeController = Get.put(HomeController());
+  final ConversationController _conversationController =
+      Get.put(ConversationController());
+  final NotificationController _notificationController =
+      Get.put(NotificationController());
+  final PersonalProfileController _profileController =
+      Get.put(PersonalProfileController());
+
   final List<Widget> _screens = [
     const HomePage(),
     const ConversationPage(),
     const Scaffold(),
     const NotificationPage(),
-    ProfilePage(),
-    // const Scaffold(),
+    const PersonalProfilePage(),
   ];
   final List<IconData> _icons = [
     Ionicons.home_outline,
@@ -33,17 +41,9 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
     Ionicons.people_outline,
     Ionicons.notifications_outline,
     Ionicons.person_outline,
-    // Ionicons.menu_outline,
   ];
 
   int _selectedIndex = 0;
-
-  late TabController _tabController;
-  final HomeController _homeController = Get.put(HomeController());
-  final ConversationController _conversationController =
-      Get.put(ConversationController());
-  final NotificationController _notificationController =
-      Get.put(NotificationController());
 
   @override
   void initState() {
@@ -54,8 +54,6 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
         _selectedIndex = _tabController.index;
       });
     });
-
-    // await SocketClient.init();
   }
 
   @override
@@ -73,10 +71,6 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
           controller: _tabController,
           children: _screens,
         ),
-        // IndexedStack(
-        //   index: _selectedIndex,
-        //   children: _screens,
-        // ),
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.only(bottom: 4.0),
           child: WidgetButtonTabBar(

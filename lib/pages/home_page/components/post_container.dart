@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:image_collage/image_collage.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/theme/color_const.dart';
+import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/home_controller.dart';
+import 'package:nps_social/models/comment_model.dart';
 import 'package:nps_social/models/post_model.dart';
 import 'package:nps_social/utils/datetime_convert.dart';
 import 'package:nps_social/widgets/widget_photo_viewer.dart';
@@ -219,7 +221,7 @@ class _PostStats extends StatelessWidget {
               label: "Comment",
               onTap: () {
                 showGeneralDialog(
-                  barrierLabel: "Label",
+                  barrierLabel: "Comments",
                   barrierDismissible: true,
                   barrierColor: Colors.black.withOpacity(0.5),
                   transitionDuration: const Duration(milliseconds: 500),
@@ -234,7 +236,54 @@ class _PostStats extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const SizedBox.expand(child: FlutterLogo()),
+                        child: SizedBox.expand(
+                          child: Column(
+                            children: List.generate(
+                              post.comments?.length ?? 0,
+                              (index) => Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 20.0,
+                                    backgroundColor: ColorConst.blue,
+                                    child: CircleAvatar(
+                                      radius: 20.0,
+                                      backgroundColor: Colors.grey[200],
+                                      backgroundImage: (post.comments?[index]
+                                                      as CommentModel)
+                                                  .user
+                                                  ?.avatar !=
+                                              ''
+                                          ? NetworkImage((post.comments?[index]
+                                                      as CommentModel)
+                                                  .user
+                                                  ?.avatar ??
+                                              '')
+                                          : null,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[100],
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                            (post.comments?[index]
+                                                        as CommentModel)
+                                                    .user
+                                                    ?.fullName ??
+                                                '',
+                                            style: StyleConst.boldStyle()),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     );
                   },

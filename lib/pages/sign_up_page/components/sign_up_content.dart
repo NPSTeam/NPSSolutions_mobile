@@ -5,6 +5,7 @@ import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/widgets/widget_dialog.dart';
 import 'package:nps_social/widgets/widget_icon_textfield.dart';
+import 'package:nps_social/widgets/widget_snackbar.dart';
 
 import '../../../utils/constants.dart';
 
@@ -19,12 +20,13 @@ class _SignUpContentState extends State<SignUpContent>
     with TickerProviderStateMixin {
   late final List<Widget> createAccountContent;
   late final List<Widget> loginContent;
-  late TextEditingController firstNameTextController;
-  late TextEditingController lastNameTextController;
-  late TextEditingController emailTextController;
-  late TextEditingController passwordTextController;
-  late TextEditingController mobileTextController;
-  late TextEditingController sexTextController;
+  TextEditingController firstNameTextController = TextEditingController();
+  TextEditingController lastNameTextController = TextEditingController();
+  TextEditingController emailTextController = TextEditingController();
+  TextEditingController passwordTextController = TextEditingController();
+  TextEditingController reEnterPasswordTextController = TextEditingController();
+  TextEditingController mobileTextController = TextEditingController();
+  TextEditingController sexTextController = TextEditingController(text: 'Male');
 
   final AuthController _authController = Get.find();
 
@@ -61,6 +63,16 @@ class _SignUpContentState extends State<SignUpContent>
       padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 16),
       child: ElevatedButton(
         onPressed: () async {
+          if (passwordTextController.text.trim() !=
+              reEnterPasswordTextController.text.trim()) {
+            WidgetSnackbar.showSnackbar(
+              title: "Invalid",
+              message: "Password and re-enter password aren't matching.",
+              icon: const Icon(Ionicons.alert_circle_outline),
+            );
+            return;
+          }
+
           UserModel? user = await _authController.register(
             firstName: firstNameTextController.text.trim(),
             lastName: lastNameTextController.text.trim(),
@@ -149,12 +161,6 @@ class _SignUpContentState extends State<SignUpContent>
 
   @override
   void initState() {
-    firstNameTextController = TextEditingController();
-    lastNameTextController = TextEditingController();
-    emailTextController = TextEditingController();
-    passwordTextController = TextEditingController();
-    mobileTextController = TextEditingController();
-    sexTextController = TextEditingController(text: 'Male');
     super.initState();
   }
 
@@ -235,6 +241,15 @@ class _SignUpContentState extends State<SignUpContent>
                     controller: passwordTextController,
                     iconData: Ionicons.lock_closed_outline,
                     hintText: 'Password',
+                    obscureText: true,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: WidgetIconTextfield(
+                    controller: reEnterPasswordTextController,
+                    iconData: Ionicons.lock_closed_outline,
+                    hintText: 'Re-enter password',
                     obscureText: true,
                   ),
                 ),

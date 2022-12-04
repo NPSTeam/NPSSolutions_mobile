@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:nps_social/controllers/auth_controller.dart';
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nps_social/pages/sign_up_page/components/cener_widget/center_widget.dart';
 import 'package:nps_social/pages/sign_up_page/components/sign_up_content.dart';
 

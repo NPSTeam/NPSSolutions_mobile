@@ -5,6 +5,7 @@ import 'package:nps_social/controllers/conversation_controller.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/controllers/notification_controller.dart';
 import 'package:nps_social/pages/conversation_page/conversation_page.dart';
+import 'package:nps_social/pages/dating_page/dating_page.dart';
 import 'package:nps_social/pages/home_page/home_page.dart';
 import 'package:nps_social/pages/notification_page/notification_page.dart';
 import 'package:nps_social/pages/personal_profile_page/controllers/personal_profile_controller.dart';
@@ -31,14 +32,14 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
   final List<Widget> _screens = [
     const HomePage(),
     const ConversationPage(),
-    const Scaffold(),
+    const DatingPage(),
     const NotificationPage(),
     const PersonalProfilePage(),
   ];
   final List<IconData> _icons = [
     Ionicons.home_outline,
     Ionicons.chatbubbles_outline,
-    Ionicons.people_outline,
+    Ionicons.heart_outline,
     Ionicons.notifications_outline,
     Ionicons.person_outline,
   ];
@@ -69,6 +70,7 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
       child: Scaffold(
         body: TabBarView(
           controller: _tabController,
+          physics: const NeverScrollableScrollPhysics(),
           children: _screens,
         ),
         bottomNavigationBar: Padding(

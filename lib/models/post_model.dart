@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:nps_social/models/comment_model.dart';
 import 'package:nps_social/models/image_model.dart';
 import 'package:nps_social/models/user_model.dart';

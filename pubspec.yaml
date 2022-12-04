@@ -26,6 +26,7 @@ dependencies:
   cloudinary_public: ^0.13.0
   intl: ^0.17.0
   socket_io_client: ^2.0.0
+  geolocator: ^9.0.2
 
   # UI packages
   cupertino_icons: ^1.0.2
@@ -43,6 +44,9 @@ dependencies:
   unicons: ^2.1.0
   carousel_slider: ^4.1.1
   timeago: ^3.3.0
+  flutter_map: ^3.0.0
+  latlong2: ^0.8.1
+  syncfusion_flutter_maps: ^20.3.59
 
 dev_dependencies:
   flutter_test:

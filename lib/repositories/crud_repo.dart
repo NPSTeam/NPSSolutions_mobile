@@ -8,7 +8,7 @@ import 'package:nps_social/controllers/auth_controller.dart';
 
 class CrudRepository {
   final _dio = Dio(BaseOptions(
-    baseUrl: AppKey.BACKEND_URL ?? '',
+    baseUrl: AppKey.BACKEND_URL,
     headers: {
       "Authorization": "Bearer ${Get.find<AuthController>().refreshToken}",
     },

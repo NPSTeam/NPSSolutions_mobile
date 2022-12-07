@@ -121,7 +121,7 @@ class _LoginContentState extends State<LoginContent>
                   child: WidgetIconTextfield(
                     controller: emailTextController,
                     iconData: Ionicons.mail_outline,
-                    hintText: 'Email',
+                    hintText: 'Emaill',
                     enableSuggestions: false,
                   ),
                 ),

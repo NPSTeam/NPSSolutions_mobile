@@ -1,6 +1,7 @@
 import 'package:nps_social/models/user_model.dart';
 
 class CommentModel {
+  String? id;
   String? postId;
   String? content;
   String? reply;
@@ -9,6 +10,7 @@ class CommentModel {
   UserModel? tag;
 
   CommentModel({
+    this.id,
     this.postId,
     this.content,
     this.reply,
@@ -18,6 +20,7 @@ class CommentModel {
   });
 
   CommentModel.fromJson(dynamic json) {
+    id = json['_id'];
     postId = json['postId'];
     content = json['content'];
     reply = json['reply'];

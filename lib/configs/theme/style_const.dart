@@ -19,4 +19,21 @@ class StyleConst {
           fontStyle: fontStyle ?? FontStyle.normal,
           fontSize: fontSize ?? defaultSize,
           decoration: textDecoration ?? TextDecoration.none);
+
+  static TextStyle regularStyle(
+          {Color? color,
+          double? fontSize,
+          double? height,
+          FontWeight? fontWeight,
+          FontStyle? fontStyle,
+          TextDecoration? textDecoration,
+          String? package}) =>
+      TextStyle(
+          color: color ?? ColorConst.black,
+          fontWeight: fontWeight ?? FontWeight.normal,
+          fontSize: fontSize ?? defaultSize,
+          fontStyle: fontStyle ?? FontStyle.normal,
+          package: package,
+          height: height ?? 1.1,
+          decoration: textDecoration ?? TextDecoration.none);
 }

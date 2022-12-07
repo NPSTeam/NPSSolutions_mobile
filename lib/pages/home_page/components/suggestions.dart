@@ -1,14 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/models/user_model.dart';
-import 'package:nps_social/widgets/widget_appbar_button.dart';
 import 'package:nps_social/widgets/widget_outlined_button.dart';
-import 'package:nps_social/widgets/widget_profile_avatar.dart';
 
 class Suggestions extends StatefulWidget {
   const Suggestions({super.key});
@@ -117,6 +114,8 @@ class _UserCardState extends State<_UserCard> {
           child: Text(
             "${widget.user.fullName}",
             style: StyleConst.boldStyle(color: ColorConst.white),
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         Positioned(

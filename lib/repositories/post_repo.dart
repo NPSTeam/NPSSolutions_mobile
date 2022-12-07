@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nps_social/models/image_model.dart';
 import 'package:nps_social/models/post_model.dart';

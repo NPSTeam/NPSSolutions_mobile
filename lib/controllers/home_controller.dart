@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/models/post_model.dart';
 import 'package:nps_social/models/user_model.dart';
+import 'package:nps_social/repositories/comment_repo.dart';
 import 'package:nps_social/repositories/post_repo.dart';
 import 'package:nps_social/repositories/user_repo.dart';
 
@@ -51,5 +52,31 @@ class HomeController extends GetxController {
   Future follow({required String userId}) async {
     await userRepository.follow(userId: userId);
     return;
+  }
+
+  Future likeComment(String commentId) async {
+    var success = await commentRepository.likeComment(commentId: commentId);
+    if (success == true) {
+      await getPosts();
+    }
+  }
+
+  Future unlikeComment(String commentId) async {
+    var success = await commentRepository.unlikeComment(commentId: commentId);
+    if (success == true) {
+      await getPosts();
+    }
+  }
+
+  Future createComment({
+    required String postId,
+    required String content,
+    required String postUserId,
+  }) async {
+    await commentRepository
+        .createComment(postId: postId, content: content, postUserId: postUserId)
+        .then((value) async {
+      await getPosts();
+    });
   }
 }

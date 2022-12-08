@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/models/conversation_model.dart';
@@ -47,7 +48,11 @@ class _ConversationItemState extends State<ConversationItem> {
               user.fullName ?? '',
               style: StyleConst.boldStyle(),
             ),
-            Text(widget.conversation.text ?? ''),
+            (widget.conversation.text != null && widget.conversation.text != '')
+                ? Text(widget.conversation.text ?? '')
+                : (widget.conversation.call?.video == true)
+                    ? const Icon(Ionicons.videocam_off_outline)
+                    : const Icon(Ionicons.call_outline),
           ],
         ),
       ],

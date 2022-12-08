@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:nps_social/controllers/conversation_controller.dart';
 import 'package:nps_social/models/conversation_model.dart';
+import 'package:nps_social/pages/conversation_page/chat_page.dart';
 import 'package:nps_social/pages/conversation_page/components/conversation_item.dart';
 
 import '../../configs/theme/color_const.dart';
@@ -140,12 +141,25 @@ class _ConversationPageState extends State<ConversationPage>
                             elevation: 5,
                             child: SizedBox(
                               height: 100,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ConversationItem(
-                                    conversation:
-                                        controller.allConversations?[index] ??
-                                            ConversationModel()),
+                              child: InkWell(
+                                onTap: () {
+                                  controller.selectedConversation =
+                                      controller.allConversations?[index];
+
+                                  Get.to(
+                                    () => const ChatPage(),
+                                    transition: Transition.cupertino,
+                                  )?.then((_) {
+                                    controller.selectedConversation = null;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ConversationItem(
+                                      conversation:
+                                          controller.allConversations?[index] ??
+                                              ConversationModel()),
+                                ),
                               ),
                             ),
                           );

@@ -3,10 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:nps_social/pages/dating_page/controllers/dating_controller.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 

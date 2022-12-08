@@ -1,3 +1,4 @@
+import 'package:nps_social/models/call_model.dart';
 import 'package:nps_social/models/image_model.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/utils/datetime_convert.dart';
@@ -8,6 +9,7 @@ class ConversationModel {
   List<UserModel>? recipients;
   String? text;
   DateTime? updatedAt;
+  CallModel? call;
 
   ConversationModel({
     this.id,
@@ -30,5 +32,6 @@ class ConversationModel {
     text = json['text'];
     updatedAt =
         json['updatedAt'] != null ? stringToDateTime(json['updatedAt']) : null;
+    call = json['call'] != null ? CallModel.fromJson(json['call']) : null;
   }
 }

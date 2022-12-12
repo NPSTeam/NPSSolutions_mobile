@@ -47,6 +47,7 @@ dependencies:
   flutter_map: ^3.0.0
   latlong2: ^0.8.1
   syncfusion_flutter_maps: ^20.3.59
+  fluttertoast: ^8.1.2
 
 dev_dependencies:
   flutter_test:

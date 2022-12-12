@@ -9,6 +9,7 @@ import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/pages/dating_page/controllers/dating_controller.dart';
 import 'package:nps_social/pages/personal_profile_page/controllers/personal_profile_controller.dart';
 import 'package:nps_social/pages/personal_profile_page/personal_profile_page.dart';
+import 'package:nps_social/widgets/widget_toast.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
 import '../../configs/theme/color_const.dart';
@@ -238,8 +239,10 @@ class _DatingPageState extends State<DatingPage> {
                           bottom: 0,
                           right: 5,
                           child: ElevatedButton(
-                            onPressed: () {
-                              controller.shareLocation();
+                            onPressed: () async {
+                              await controller.shareLocation();
+                              WidgetToast.showToast(
+                                  message: "Share location successfully");
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,

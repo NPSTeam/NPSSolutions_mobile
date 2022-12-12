@@ -8,6 +8,8 @@ import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/models/comment_model.dart';
 import 'package:nps_social/models/post_model.dart';
+import 'package:nps_social/pages/personal_profile_page/controllers/personal_profile_controller.dart';
+import 'package:nps_social/pages/personal_profile_page/personal_profile_page.dart';
 import 'package:nps_social/utils/datetime_convert.dart';
 import 'package:nps_social/widgets/widget_photo_viewer.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
@@ -105,7 +107,17 @@ class _PostHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        WidgetProfileAvatar(imageUrl: post.user?.avatar ?? ''),
+        GestureDetector(
+            onTap: () {
+              Get.find<PersonalProfileController>().selectedUser = post.user;
+              Get.to(
+                () => const PersonalProfilePage(),
+                transition: Transition.cupertino,
+              )?.then((_) {
+                Get.find<PersonalProfileController>().selectedUser = null;
+              });
+            },
+            child: WidgetProfileAvatar(imageUrl: post.user?.avatar ?? '')),
         const SizedBox(width: 8.0),
         Expanded(
           child: Column(

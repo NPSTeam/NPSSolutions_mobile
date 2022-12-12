@@ -17,44 +17,48 @@ class NotificationItem extends StatelessWidget {
       children: [
         WidgetProfileAvatar(imageUrl: notification.user?.avatar ?? ''),
         const SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: RichText(
-                text: TextSpan(
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: notification.user?.fullName ?? '',
-                      style: StyleConst.boldStyle(),
-                    ),
-                    TextSpan(
-                      text: " ${notification.text}",
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            if (notification.content != null && notification.content != '')
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Padding(
                 padding: const EdgeInsets.all(3.0),
-                child: Text(
-                  notification.content ?? '',
-                  maxLines: 1,
+                child: RichText(
                   overflow: TextOverflow.ellipsis,
+                  maxLines: 5,
+                  text: TextSpan(
+                    style: DefaultTextStyle.of(context).style,
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: notification.user?.fullName ?? '',
+                        style: StyleConst.boldStyle(),
+                      ),
+                      TextSpan(
+                        text: " ${notification.text}",
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: CircleAvatar(
-                radius: 15.0,
-                backgroundColor: Colors.grey[200],
-                backgroundImage: NetworkImage(notification.image ?? ''),
+              if (notification.content != null && notification.content != '')
+                Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(
+                    notification.content ?? '',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: CircleAvatar(
+                  radius: 15.0,
+                  backgroundColor: Colors.grey[200],
+                  backgroundImage: NetworkImage(notification.image ?? ''),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

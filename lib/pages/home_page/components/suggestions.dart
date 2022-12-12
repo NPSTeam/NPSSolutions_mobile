@@ -5,6 +5,8 @@ import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/models/user_model.dart';
+import 'package:nps_social/pages/personal_profile_page/controllers/personal_profile_controller.dart';
+import 'package:nps_social/pages/personal_profile_page/personal_profile_page.dart';
 import 'package:nps_social/widgets/widget_outlined_button.dart';
 
 class Suggestions extends StatefulWidget {
@@ -16,6 +18,7 @@ class Suggestions extends StatefulWidget {
 
 class _SuggestionsState extends State<Suggestions> {
   final HomeController _homeController = Get.find();
+  final PersonalProfileController _profileController = Get.find();
   // bool isLoadingSuggestions = true;
 
   @override
@@ -58,8 +61,16 @@ class _SuggestionsState extends State<Suggestions> {
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: _UserCard(
-                  user: controller.suggestionUsers?[index] ?? UserModel(),
+                child: InkWell(
+                  onTap: () {
+                    _profileController.selectedUser =
+                        controller.suggestionUsers?[index];
+                    Get.to(() => const PersonalProfilePage())
+                        ?.then((_) => _profileController.selectedUser = null);
+                  },
+                  child: _UserCard(
+                    user: controller.suggestionUsers?[index] ?? UserModel(),
+                  ),
                 ),
               );
             }),

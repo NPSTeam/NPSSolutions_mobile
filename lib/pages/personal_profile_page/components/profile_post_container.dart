@@ -4,15 +4,18 @@ import 'package:image_collage/image_collage.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
-import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/models/post_model.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/pages/personal_profile_page/controllers/personal_profile_controller.dart';
+import 'package:nps_social/utils/datetime_convert.dart';
 import 'package:nps_social/widgets/widget_photo_viewer.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class ProfilePostContainer extends StatelessWidget {
   final UserModel? currentUser = Get.find<AuthController>().currentUser;
+  final UserModel? selectedUser =
+      Get.find<PersonalProfileController>().selectedUser;
   final PostModel post;
 
   ProfilePostContainer({
@@ -35,26 +38,37 @@ class ProfilePostContainer extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    WidgetProfileAvatar(imageUrl: currentUser?.avatar ?? ''),
+                    WidgetProfileAvatar(
+                        imageUrl:
+                            selectedUser?.avatar ?? currentUser?.avatar ?? ''),
                     const SizedBox(width: 8.0),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            currentUser?.fullName ?? 'Name',
+                            selectedUser?.fullName ??
+                                currentUser?.fullName ??
+                                'Name',
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
                           Row(
                             children: [
                               Text(
-                                // '${post.timeAgo} · ',
-                                'Temp · ',
+                                DateTime.now()
+                                        .subtract(const Duration(days: 7))
+                                        .isBefore(
+                                            post.createdAt ?? DateTime.now())
+                                    ? timeago.format(
+                                        post.createdAt ?? DateTime.now())
+                                    : dateTimeToString(
+                                        post.createdAt ?? DateTime.now()),
                                 style: TextStyle(
                                   color: Colors.grey[600],
                                   fontSize: 12.0,
                                 ),
                               ),
+                              const SizedBox(width: 5),
                               Icon(
                                 Icons.public,
                                 color: Colors.grey[600],

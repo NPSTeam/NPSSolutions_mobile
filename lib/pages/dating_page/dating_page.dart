@@ -5,7 +5,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/pages/dating_page/controllers/dating_controller.dart';
+import 'package:nps_social/pages/personal_profile_page/controllers/personal_profile_controller.dart';
+import 'package:nps_social/pages/personal_profile_page/personal_profile_page.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
 import '../../configs/theme/color_const.dart';
@@ -18,11 +21,11 @@ class DatingPage extends StatefulWidget {
 }
 
 class _DatingPageState extends State<DatingPage> {
-  DatingController _datingController = Get.put(DatingController());
+  final DatingController _datingController = Get.put(DatingController());
 
-  MapController _mapController = MapController();
+  final MapController _mapController = MapController();
   late MapZoomPanBehavior _mapZoomPanBehavior;
-  MapTileLayerController _controller = MapTileLayerController();
+  final MapTileLayerController _controller = MapTileLayerController();
   Future<String?> getMapFuture = Future.value(null);
   Future getCurrentPointFuture = new Future.value(null);
 
@@ -52,6 +55,8 @@ class _DatingPageState extends State<DatingPage> {
 
     getMapFuture = getBingUrlTemplate(
         'https://dev.virtualearth.net/REST/V1/Imagery/Metadata/Aerial?output=json&uriScheme=https&include=ImageryProviders&key=AiUuAy0tRXlR8a80LacebMXSWJL-4eIwYk_mgZtH3hpk-InvuNqickrKh6-vrYHE');
+
+    _datingController.getLocations();
     super.initState();
   }
 
@@ -96,7 +101,7 @@ class _DatingPageState extends State<DatingPage> {
             ),
           ),
         ),
-        actions: [
+        actions: const [
           // GestureDetector(
           //   onTap: () {},
           //   child: Padding(
@@ -117,39 +122,156 @@ class _DatingPageState extends State<DatingPage> {
               future: getMapFuture,
               builder: (context, snapshot) {
                 if (snapshot.hasData && isGetCurrentPosition == false) {
-                  return SfMaps(
-                    layers: [
-                      MapTileLayer(
-                        urlTemplate: snapshot.data as String,
-                        controller: _controller,
-                        zoomPanBehavior: _mapZoomPanBehavior,
-                        initialMarkersCount: 5,
-                        markerBuilder: (context, index) => MapMarker(
-                          latitude:
-                              _datingController.currentPoint?.latitude ?? 0,
-                          longitude:
-                              _datingController.currentPoint?.longitude ?? 0,
-                          child: Icon(
-                            Ionicons.location_sharp,
-                            color: ColorConst.blue,
-                            size: 30,
+                  return GetBuilder<DatingController>(builder: (controller) {
+                    return Stack(
+                      children: [
+                        SfMaps(
+                          layers: [
+                            MapTileLayer(
+                              urlTemplate: snapshot.data as String,
+                              controller: _controller,
+                              zoomPanBehavior: _mapZoomPanBehavior,
+                              initialMarkersCount:
+                                  (controller.locations?.length ?? 0) + 1,
+                              markerBuilder: (context, index) => index ==
+                                      (controller.locations?.length ?? 0)
+                                  ? MapMarker(
+                                      latitude: _datingController
+                                              .currentPoint?.latitude ??
+                                          0,
+                                      longitude: _datingController
+                                              .currentPoint?.longitude ??
+                                          0,
+                                      child: Icon(
+                                        Ionicons.location,
+                                        color: ColorConst.blue,
+                                      ),
+                                    )
+                                  : MapMarker(
+                                      latitude:
+                                          controller.locations?[index].lat ?? 0,
+                                      longitude:
+                                          controller.locations?[index].lng ?? 0,
+                                      child: InkWell(
+                                        onLongPress: () async {
+                                          Get.find<PersonalProfileController>()
+                                                  .selectedUser =
+                                              await controller
+                                                  .getProfileByUserId(controller
+                                                          .locations?[index]
+                                                          .userId ??
+                                                      '');
+                                          Get.to(() => PersonalProfilePage())
+                                              ?.then((_) => Get.find<
+                                                      PersonalProfileController>()
+                                                  .selectedUser = null);
+                                        },
+                                        child: CircleAvatar(
+                                          radius: 18.0,
+                                          backgroundColor: Colors.grey[200],
+                                          backgroundImage: controller
+                                                      .locations?[index]
+                                                      .avatar !=
+                                                  ''
+                                              ? NetworkImage(controller
+                                                      .locations?[index]
+                                                      .avatar ??
+                                                  '')
+                                              : null,
+                                        ),
+                                      ),
+                                    ),
+                              markerTooltipBuilder: (context, index) => index ==
+                                      (controller.locations?.length ?? 0)
+                                  ? SizedBox.shrink()
+                                  : InkWell(
+                                      onTapDown: (details) async {
+                                        Get.find<PersonalProfileController>()
+                                                .selectedUser =
+                                            await controller.getProfileByUserId(
+                                                controller.locations?[index]
+                                                        .userId ??
+                                                    '');
+                                        Get.to(() => PersonalProfilePage())
+                                            ?.then((_) => Get.find<
+                                                    PersonalProfileController>()
+                                                .selectedUser = null);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 18.0,
+                                              backgroundColor: Colors.grey[200],
+                                              backgroundImage: controller
+                                                          .locations?[index]
+                                                          .avatar !=
+                                                      ''
+                                                  ? NetworkImage(controller
+                                                          .locations?[index]
+                                                          .avatar ??
+                                                      '')
+                                                  : null,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              controller.locations?[index]
+                                                      .fullName ??
+                                                  '',
+                                              style: StyleConst.boldStyle(),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                              tooltipSettings: const MapTooltipSettings(
+                                color: ColorConst.white,
+                                strokeColor: ColorConst.blue,
+                                strokeWidth: 1.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 5,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              controller.shareLocation();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              // side: BorderSide(color: Colors.yellow, width: 5),
+                              textStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontStyle: FontStyle.normal),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              shadowColor: Colors.lightBlue,
+                            ),
+                            child: Row(
+                              children: const [
+                                Icon(Ionicons.navigate_outline),
+                                SizedBox(width: 10),
+                                Text("Share My Location"),
+                              ],
+                            ),
                           ),
-                        ),
-                        markerTooltipBuilder: (context, index) =>
-                            Container(height: 50, width: 100),
-                        tooltipSettings: const MapTooltipSettings(
-                          color: ColorConst.white,
-                          strokeColor: ColorConst.red,
-                          strokeWidth: 1.5,
-                        ),
-                      ),
-                    ],
-                  );
+                        )
+                      ],
+                    );
+                  });
                 }
 
-                return SpinKitThreeBounce(
-                  color: ColorConst.blue,
-                  size: 30,
+                return Center(
+                  child: SpinKitPumpingHeart(
+                    color: ColorConst.red,
+                    size: 70,
+                  ),
                 );
               },
             ),

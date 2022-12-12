@@ -1,4 +1,5 @@
 class LocationModel {
+  String? id;
   String? userId;
   String? fullName;
   String? avatar;
@@ -6,6 +7,7 @@ class LocationModel {
   double? lng;
 
   LocationModel({
+    this.id,
     this.userId,
     this.fullName,
     this.avatar,
@@ -14,7 +16,8 @@ class LocationModel {
   });
 
   LocationModel.fromJson(dynamic json) {
-    userId = json['userId'];
+    id = json['_id'];
+    userId = json['user_id'];
     fullName = json['fullname'];
     avatar = json['avatar'];
     lat = double.tryParse(json['lat'].toString()) ?? 0;

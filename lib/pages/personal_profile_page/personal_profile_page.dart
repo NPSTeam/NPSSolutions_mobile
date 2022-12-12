@@ -39,58 +39,61 @@ class _PersonalProfilePageState extends State<PersonalProfilePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        physics: const BouncingScrollPhysics(),
-        children: [
-          SizedBox(
-            height: 24,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                PopupMenuButton<String>(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    position: PopupMenuPosition.under,
-                    onSelected: (value) {
-                      switch (value) {
-                        case 'LOGOUT':
-                          Get.find<AuthController>()
-                              .logOut()
-                              .then((_) => Get.offAll(() => const LoginPage()));
-                      }
-                    },
-                    itemBuilder: (_) => [
-                          PopupMenuItem(
-                            value: 'LOGOUT',
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Text("Logout"),
-                                Icon(Ionicons.log_out_outline),
-                              ],
+      body: GetBuilder<PersonalProfileController>(builder: (controller) {
+        return ListView(
+          physics: const BouncingScrollPhysics(),
+          children: [
+            SizedBox(
+              height: 24,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  PopupMenuButton<String>(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      position: PopupMenuPosition.under,
+                      onSelected: (value) {
+                        switch (value) {
+                          case 'LOGOUT':
+                            Get.find<AuthController>().logOut().then(
+                                (_) => Get.offAll(() => const LoginPage()));
+                        }
+                      },
+                      itemBuilder: (_) => [
+                            PopupMenuItem(
+                              value: 'LOGOUT',
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Text("Logout"),
+                                  Icon(Ionicons.log_out_outline),
+                                ],
+                              ),
                             ),
-                          ),
-                        ]),
-              ],
+                          ]),
+                ],
+              ),
             ),
-          ),
-          ProfileWidget(
-            imagePath: currentUser?.avatar ?? '',
-            onClicked: () {},
-          ),
-          const SizedBox(height: 24),
-          buildAbout(currentUser),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 6),
-            child: Divider(),
-          ),
-          const SizedBox(height: 15),
-          ..._profileController.selectedUser?.id == currentUser?.id
-              ? buildPost(currentUser)
-              : [const ProfilePostListWidget()],
-        ],
-      ),
+            ProfileWidget(
+              imagePath:
+                  controller.selectedUser?.avatar ?? currentUser?.avatar ?? '',
+              onClicked: () {},
+            ),
+            const SizedBox(height: 24),
+            buildAbout(controller.selectedUser ?? currentUser),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6),
+              child: Divider(),
+            ),
+            const SizedBox(height: 15),
+            ..._profileController.selectedUser?.id == currentUser?.id
+                ? buildPost(currentUser)
+                : [const ProfilePostListWidget()],
+          ],
+        );
+      }),
     );
   }
 
@@ -99,21 +102,26 @@ class _PersonalProfilePageState extends State<PersonalProfilePage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: Text(
+                user?.fullName ?? '',
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              ),
+            ),
+            const SizedBox(height: 4),
             const Text(
               'About',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
-            if (user?.mobile != null && user?.mobile?.trim() != '')
+            const SizedBox(height: 10),
+            if (user?.mobile != null && user?.mobile?.trim() != '') ...[
               Text(
                 user?.mobile ?? '',
                 style: const TextStyle(fontSize: 16, height: 1.4),
               ),
-            Text(
-              user?.fullName ?? '',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-            ),
-            const SizedBox(height: 4),
+              const SizedBox(height: 10),
+            ],
             Row(
               children: [
                 Text("${user?.followers?.length ?? 0} followers"),

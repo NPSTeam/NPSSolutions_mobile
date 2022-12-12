@@ -151,6 +151,7 @@ class _ConversationPageState extends State<ConversationPage>
                                     transition: Transition.cupertino,
                                   )?.then((_) {
                                     controller.selectedConversation = null;
+                                    controller.page = 2;
                                   });
                                 },
                                 child: Padding(

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/models/post_model.dart';
@@ -5,6 +6,7 @@ import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/repositories/comment_repo.dart';
 import 'package:nps_social/repositories/post_repo.dart';
 import 'package:nps_social/repositories/user_repo.dart';
+import 'package:nps_social/services/socket_client.dart';
 
 class HomeController extends GetxController {
   List<PostModel>? allPosts;
@@ -16,6 +18,8 @@ class HomeController extends GetxController {
 
   init() async {
     // await getPosts();
+    SocketClient.socket.on('likeToClient', (data) => getPosts());
+    SocketClient.socket.on('unLikeToClient', (data) => getPosts());
   }
 
   Future getPosts() async {

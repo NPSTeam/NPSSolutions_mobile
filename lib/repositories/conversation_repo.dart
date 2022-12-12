@@ -21,10 +21,12 @@ class _ConversationRepository extends CrudRepository {
     return null;
   }
 
-  Future<List<MessageModel>?> getMessages(String recipientId) async {
+  Future<List<MessageModel>?> getMessages(
+      {required String recipientId, int? page}) async {
     List<MessageModel>? messages;
 
-    var result = await get('/api/message/$recipientId');
+    var result =
+        await get('/api/message/$recipientId?limit=${(page ?? 0) * 9}');
     if (result?.data['messages'] != null) {
       messages = List<MessageModel>.from(
           result?.data['messages'].map((e) => MessageModel.fromJson(e)));

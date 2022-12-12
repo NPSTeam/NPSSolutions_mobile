@@ -63,6 +63,14 @@ class UserModel {
     map['password'] = password;
     map['avatar'] = avatar;
     map['sex'] = sex;
+    map['followers'] = List.from(followers?.map((e) => (e is String)
+            ? UserModel(id: e).toJson()
+            : (e as UserModel).toJson()) ??
+        []);
+    map['following'] = List.from(following?.map((e) => (e is String)
+            ? UserModel(id: e).toJson()
+            : (e as UserModel).toJson()) ??
+        []);
     return map;
   }
 }

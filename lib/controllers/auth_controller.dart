@@ -30,7 +30,6 @@ class AuthController extends GetxController {
     refreshToken = SPref.instance.get(SPrefKey.REFRESH_TOKEN);
     debugPrint("access token - $accessToken");
     debugPrint("refresh token - $refreshToken");
-    await SocketClient.init(refreshToken: refreshToken ?? '');
   }
 
   bool isLoggedIn() {
@@ -60,6 +59,8 @@ class AuthController extends GetxController {
         icon: const Icon(Ionicons.alert_circle_outline),
       );
     }
+
+    await SocketClient.init(refreshToken: refreshToken ?? '');
     update();
   }
 
@@ -71,6 +72,9 @@ class AuthController extends GetxController {
     );
     currentUser = auth?.user;
     debugPrint(currentUser?.email);
+
+    await SocketClient.init(refreshToken: refreshToken ?? '');
+
     update();
     FlutterNativeSplash.remove();
   }

@@ -3,10 +3,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/theme/color_const.dart';
+import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/controllers/conversation_controller.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/pages/conversation_page/components/message_item.dart';
+import 'package:nps_social/services/socket_client.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -22,6 +24,7 @@ class _ChatPageState extends State<ChatPage> {
   UserModel? recipient;
 
   bool isLoadingMessages = true;
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -36,10 +39,19 @@ class _ChatPageState extends State<ChatPage> {
       }
     } catch (e) {}
 
-    _conversationController.getMessages(recipient?.id ?? '').then((_) {
+    _conversationController.recipient = recipient;
+    _conversationController.getMessages().then((_) {
       setState(() {
         isLoadingMessages = false;
       });
+    });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _conversationController.page++;
+        _conversationController.getMessages();
+      }
     });
 
     super.initState();
@@ -71,7 +83,73 @@ class _ChatPageState extends State<ChatPage> {
         ),
         actions: [
           InkWell(
-            onTap: () {},
+            onTap: () {
+              SocketClient.socket.emit(
+                'callUser',
+                {
+                  'sender': _authController.currentUser?.id ?? '',
+                  'recipient': recipient?.id ?? '',
+                  'avatar': _authController.currentUser?.avatar ?? '',
+                  'fullName': _authController.currentUser?.fullName ?? '',
+                  'video': false,
+                },
+              );
+
+              Get.dialog(
+                barrierDismissible: false,
+                AlertDialog(
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        recipient?.fullName ?? '',
+                        style: StyleConst.boldStyle(fontSize: 25),
+                      ),
+                      const SizedBox(height: 20),
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.grey[200],
+                        backgroundImage: NetworkImage(recipient?.avatar ?? ''),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        "Calling Audio...",
+                        style: StyleConst.regularStyle(fontSize: 15),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          SocketClient.socket.emit('endCall', {
+                            {
+                              'sender': _authController.currentUser?.id ?? '',
+                              'recipient': recipient?.id ?? '',
+                              'avatar':
+                                  _authController.currentUser?.avatar ?? '',
+                              'fullName':
+                                  _authController.currentUser?.fullName ?? '',
+                              'video': false,
+                            },
+                          });
+                          Get.back();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(20),
+                          backgroundColor: Colors.red, // <-- Button color
+                          foregroundColor: ColorConst.blue, // <-- Splash color
+                        ),
+                        child: const Icon(
+                          Icons.call_end,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
             borderRadius: BorderRadius.circular(10),
             child: const Padding(
               padding: EdgeInsets.all(8.0),
@@ -82,7 +160,73 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              SocketClient.socket.emit(
+                'callUser',
+                {
+                  'sender': _authController.currentUser?.id ?? '',
+                  'recipient': recipient?.id ?? '',
+                  'avatar': _authController.currentUser?.avatar ?? '',
+                  'fullName': _authController.currentUser?.fullName ?? '',
+                  'video': true,
+                },
+              );
+
+              Get.dialog(
+                barrierDismissible: false,
+                AlertDialog(
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        recipient?.fullName ?? '',
+                        style: StyleConst.boldStyle(fontSize: 25),
+                      ),
+                      const SizedBox(height: 20),
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.grey[200],
+                        backgroundImage: NetworkImage(recipient?.avatar ?? ''),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        "Calling Video...",
+                        style: StyleConst.regularStyle(fontSize: 15),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          SocketClient.socket.emit('endCall', {
+                            {
+                              'sender': _authController.currentUser?.id ?? '',
+                              'recipient': recipient?.id ?? '',
+                              'avatar':
+                                  _authController.currentUser?.avatar ?? '',
+                              'fullName':
+                                  _authController.currentUser?.fullName ?? '',
+                              'video': true,
+                            },
+                          });
+                          Get.back();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(20),
+                          backgroundColor: Colors.red, // <-- Button color
+                          foregroundColor: ColorConst.blue, // <-- Splash color
+                        ),
+                        child: const Icon(
+                          Icons.call_end,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
             borderRadius: BorderRadius.circular(10),
             child: const Padding(
               padding: EdgeInsets.all(8.0),
@@ -115,6 +259,8 @@ class _ChatPageState extends State<ChatPage> {
                       size: 30,
                     )
                   : ListView.builder(
+                      controller: _scrollController,
+                      reverse: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: controller.messages.length,
                       itemBuilder: (context, index) => Padding(

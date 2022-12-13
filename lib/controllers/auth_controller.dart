@@ -53,6 +53,7 @@ class AuthController extends GetxController {
       await init();
       Get.offAll(() => const NavPage());
     } else {
+      Get.back();
       WidgetSnackbar.showSnackbar(
         title: "Alert",
         message: "The email or password is incorrect.",

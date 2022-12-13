@@ -4,6 +4,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/pages/sign_up_page/sign_up_page.dart';
 import 'package:nps_social/widgets/widget_icon_textfield.dart';
+import 'package:nps_social/widgets/widget_loading_dialog.dart';
 import 'package:nps_social/widgets/widget_snackbar.dart';
 import '../../../utils/constants.dart';
 
@@ -37,10 +38,13 @@ class _LoginContentState extends State<LoginContent>
             );
             return;
           }
+
+          WidgetLoadingDialog.showDialog();
           await _authController.logIn(
             email: emailTextController.text.trim(),
             password: passwordTextController.text.trim(),
           );
+          // Get.back();
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14),

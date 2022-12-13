@@ -3,17 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_platform_interface/src/types/image_source.dart'
+    as image_source;
 import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/pages/create_post_page/create_post_controller.dart';
 import 'package:nps_social/widgets/widget_appbar_button.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:image_picker_platform_interface/src/types/image_source.dart'
-    as image_source;
 
 import '../../configs/theme/color_const.dart';
-import '../../utils/constants.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({super.key});

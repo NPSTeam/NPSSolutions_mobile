@@ -9,6 +9,7 @@ import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/pages/home_page/components/home_search_delegate.dart';
 import 'package:nps_social/pages/home_page/components/suggestions.dart';
 import 'package:nps_social/pages/home_page/components/widget_create_post_container.dart';
+import 'package:nps_social/widgets/widget_loading_dialog.dart';
 
 import 'components/post_container.dart';
 import 'components/rooms.dart';
@@ -149,7 +150,9 @@ class _HomePageState extends State<HomePage>
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    // WidgetLoadingDialog.showDialog();
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Image.asset(

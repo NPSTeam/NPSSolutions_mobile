@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nps_social/configs/app_key.dart';
@@ -6,6 +5,7 @@ import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:socket_io_client/socket_io_client.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart' as webrtc;
 
 class SocketClient {
   static late Socket socket;
@@ -58,20 +58,44 @@ class SocketClient {
                 style: StyleConst.regularStyle(fontSize: 15),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Get.back();
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(20),
-                  backgroundColor: Colors.red, // <-- Button color
-                  foregroundColor: ColorConst.blue, // <-- Splash color
-                ),
-                child: const Icon(
-                  Icons.call_end,
-                  color: Colors.white,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                      socket.emit('endCall', {
+                        'sender': senderId,
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(20),
+                      backgroundColor: Colors.red, // <-- Button color
+                      foregroundColor: ColorConst.blue, // <-- Splash color
+                    ),
+                    child: const Icon(
+                      Icons.call_end,
+                      color: Colors.white,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // openStream(video ?? false);
+                      // Get.back();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(20),
+                      backgroundColor: Colors.green, // <-- Button color
+                      foregroundColor: ColorConst.blue, // <-- Splash color
+                    ),
+                    child: const Icon(
+                      Icons.call_end,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               )
             ],
           ),
@@ -83,4 +107,12 @@ class SocketClient {
       Navigator.of(Get.overlayContext!).pop();
     });
   }
+
+  //
+  static Future openStream(bool video) async {
+    return webrtc.navigator.mediaDevices
+        .getUserMedia({"audio": true, "video": video});
+  }
+
+  static Future playStream() async {}
 }

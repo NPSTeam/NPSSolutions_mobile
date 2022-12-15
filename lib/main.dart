@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -6,18 +8,19 @@ import 'package:nps_social/configs/app_key.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/pages/login_page/login_page.dart';
 import 'package:nps_social/pages/nav_page.dart';
+import 'package:nps_social/services/peer_client.dart';
 import 'package:nps_social/services/permission.dart';
 import 'package:nps_social/services/spref.dart';
 
 Future main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  // HttpOverrides.global = MyHttpOverrides();
+  HttpOverrides.global = MyHttpOverrides();
   await dotenv.load(fileName: '.env');
   await SPref.init();
   await initPermissions();
   AppKey.init();
-  // await SocketClient.init();
+  await PeerClient.init();
   runApp(MyApp());
 }
 
@@ -53,11 +56,11 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// class MyHttpOverrides extends HttpOverrides {
-//   @override
-//   HttpClient createHttpClient(SecurityContext? context) {
-//     return super.createHttpClient(context)
-//       ..badCertificateCallback =
-//           (X509Certificate cert, String host, int port) => true;
-//   }
-// }
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}

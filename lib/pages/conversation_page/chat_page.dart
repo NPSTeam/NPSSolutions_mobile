@@ -11,6 +11,7 @@ import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/controllers/conversation_controller.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/pages/conversation_page/components/message_item.dart';
+import 'package:nps_social/services/peer_client.dart';
 import 'package:nps_social/services/socket_client.dart';
 import 'package:image_picker_platform_interface/src/types/image_source.dart'
     as image_source;
@@ -129,16 +130,21 @@ class _ChatPageState extends State<ChatPage> {
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
+                          dynamic data = {
+                            'sender': _authController.currentUser?.id ?? '',
+                            'recipient': recipient?.id ?? '',
+                            'avatar': _authController.currentUser?.avatar ?? '',
+                            'fullName':
+                                _authController.currentUser?.fullName ?? '',
+                            'video': false,
+                          };
+
+                          if (PeerClient.peer.open) {
+                            data["peerId"] = PeerClient.peer.id;
+                          }
+
                           SocketClient.socket.emit('endCall', {
-                            {
-                              'sender': _authController.currentUser?.id ?? '',
-                              'recipient': recipient?.id ?? '',
-                              'avatar':
-                                  _authController.currentUser?.avatar ?? '',
-                              'fullName':
-                                  _authController.currentUser?.fullName ?? '',
-                              'video': false,
-                            },
+                            data,
                           });
                           Get.back();
                         },

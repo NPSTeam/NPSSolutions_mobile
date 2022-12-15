@@ -4,5 +4,7 @@ initPermissions() async {
   Map<Permission, PermissionStatus> statuses = await [
     Permission.storage,
     Permission.location,
+    Permission.camera,
+    Permission.audio,
   ].request();
 }

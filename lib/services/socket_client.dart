@@ -4,6 +4,10 @@ import 'package:nps_social/configs/app_key.dart';
 import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
+import 'package:nps_social/pages/call_page/call_page.dart';
+import 'package:nps_social/pages/call_page/controllers/call_controller.dart';
+import 'package:nps_social/services/peer_client.dart';
+import 'package:peerdart/peerdart.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart' as webrtc;
 
@@ -33,6 +37,7 @@ class SocketClient {
       String? username = data['username'];
       String? fullName = data['fullName'];
       bool? video = data['video'];
+      String? peerId = data['peerId'];
 
       Get.dialog(
         barrierDismissible: false,
@@ -80,9 +85,28 @@ class SocketClient {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      // openStream(video ?? false);
-                      // Get.back();
+                    onPressed: () async {
+                      Get.back();
+                      await PeerClient.openStream().then((stream) async {
+                        debugPrint("openStream");
+                        debugPrint("peerId: $peerId");
+
+                        // Get.find<CallController>().setMediaStream(
+                        //     myMedia: stream, remoteMedia: stream);
+                        // Get.to(() => const CallPage());
+
+                        MediaConnection newCall =
+                            PeerClient.peer.call(peerId ?? '', stream);
+
+                        newCall
+                            .on<webrtc.MediaStream>("stream")
+                            .listen((event) {
+                          debugPrint("on Stream");
+                          Get.find<CallController>().setMediaStream(
+                              myMedia: stream, remoteMedia: event);
+                          Get.to(() => const CallPage());
+                        });
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),
@@ -104,7 +128,7 @@ class SocketClient {
     });
 
     socket.on('endCallToClient', (data) {
-      Navigator.of(Get.overlayContext!).pop();
+      if (Get.isOverlaysOpen) Navigator.of(Get.overlayContext!).pop();
     });
   }
 

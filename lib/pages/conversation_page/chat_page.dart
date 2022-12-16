@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/theme/color_const.dart';
@@ -10,11 +11,15 @@ import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/controllers/conversation_controller.dart';
 import 'package:nps_social/models/user_model.dart';
+import 'package:nps_social/pages/call_page/call_page.dart';
+import 'package:nps_social/pages/call_page/controllers/call_controller.dart';
 import 'package:nps_social/pages/conversation_page/components/message_item.dart';
 import 'package:nps_social/services/peer_client.dart';
 import 'package:nps_social/services/socket_client.dart';
 import 'package:image_picker_platform_interface/src/types/image_source.dart'
     as image_source;
+import 'package:flutter_webrtc/flutter_webrtc.dart' as webrtc;
+import 'package:peerdart/peerdart.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -140,6 +145,7 @@ class _ChatPageState extends State<ChatPage> {
                           };
 
                           if (PeerClient.peer.open) {
+                            debugPrint("Peer iddd: ${PeerClient.peer.id}");
                             data["peerId"] = PeerClient.peer.id;
                           }
 
@@ -183,8 +189,22 @@ class _ChatPageState extends State<ChatPage> {
                   'avatar': _authController.currentUser?.avatar ?? '',
                   'fullName': _authController.currentUser?.fullName ?? '',
                   'video': true,
+                  'peerId': PeerClient.peer.id,
                 },
               );
+
+              PeerClient.peer
+                  .on<MediaConnection>("call")
+                  .listen((newCall) async {
+                PeerClient.openStream().then((stream) {
+                  newCall.answer(stream);
+                  newCall.on<webrtc.MediaStream>("stream").listen((event) {
+                    Get.find<CallController>()
+                        .setMediaStream(myMedia: stream, remoteMedia: event);
+                    Get.to(() => const CallPage());
+                  });
+                });
+              });
 
               Get.dialog(
                 barrierDismissible: false,

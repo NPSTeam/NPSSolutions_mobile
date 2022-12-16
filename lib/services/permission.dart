@@ -6,5 +6,6 @@ initPermissions() async {
     Permission.location,
     Permission.camera,
     Permission.audio,
+    Permission.microphone,
   ].request();
 }

@@ -4,6 +4,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/controllers/conversation_controller.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/controllers/notification_controller.dart';
+import 'package:nps_social/pages/call_page/controllers/call_controller.dart';
 import 'package:nps_social/pages/conversation_page/conversation_page.dart';
 import 'package:nps_social/pages/dating_page/dating_page.dart';
 import 'package:nps_social/pages/home_page/home_page.dart';
@@ -28,6 +29,7 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
       Get.put(NotificationController());
   final PersonalProfileController _profileController =
       Get.put(PersonalProfileController());
+  final CallController _callController = Get.put(CallController());
 
   final List<Widget> _screens = [
     const HomePage(),

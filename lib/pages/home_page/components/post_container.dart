@@ -184,37 +184,26 @@ class _PostStatsState extends State<_PostStats> {
             Container(
               padding: const EdgeInsets.all(4.0),
               decoration: const BoxDecoration(
-                color: ColorConst.red,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Ionicons.heart,
-                size: 10.0,
-                color: Colors.white,
-              ),
+                  color: ColorConst.red, shape: BoxShape.circle),
+              child:
+                  const Icon(Ionicons.heart, size: 10.0, color: Colors.white),
             ),
             const SizedBox(width: 4.0),
             Expanded(
               child: Text(
                 '${widget.post.likes?.length ?? 0}',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(color: Colors.grey[600]),
               ),
             ),
             Text(
               '${widget.post.comments?.length ?? 0} Comments',
-              style: TextStyle(
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(color: Colors.grey[600]),
             ),
             const SizedBox(width: 8.0),
             Text(
               // '${post.shares} Shares',
               '- Shares',
-              style: TextStyle(
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(color: Colors.grey[600]),
             ),
           ],
         ),
@@ -248,93 +237,59 @@ class _PostStatsState extends State<_PostStats> {
               ),
               label: "Comment",
               onTap: () {
-                showGeneralDialog(
-                  barrierLabel: "Comments",
-                  barrierDismissible: true,
-                  barrierColor: Colors.black.withOpacity(0.5),
-                  transitionDuration: const Duration(milliseconds: 500),
-                  context: context,
-                  pageBuilder: (context, anim1, anim2) {
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 100),
-                          Container(
-                            height: 400,
-                            padding: const EdgeInsets.all(5),
-                            margin: const EdgeInsets.only(left: 12, right: 12),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: SizedBox.expand(
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      physics: const BouncingScrollPhysics(),
-                                      child: Column(
-                                        children: List.generate(
-                                          widget.post.comments?.length ?? 0,
-                                          (index) => CommentListItem(
-                                              comment:
-                                                  widget.post.comments?[index]),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Material(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                              child: TextField(
-                                                  controller:
-                                                      _commentContentController)),
-                                          GestureDetector(
-                                              onTap: () async {
-                                                await Get.find<HomeController>()
-                                                    .createComment(
-                                                  postId: widget.post.id ?? '',
-                                                  content:
-                                                      _commentContentController
-                                                          .text,
-                                                  postUserId:
-                                                      widget.post.user.id,
-                                                );
-                                              },
-                                              child: const Icon(Ionicons.send)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                Get.defaultDialog(
+                  title: "Comments",
+                  contentPadding: const EdgeInsets.all(0),
+                  content: Container(
+                    height: Get.height * 0.4,
+                    width: Get.width * 0.8,
+                    padding: const EdgeInsets.all(5),
+                    margin: const EdgeInsets.only(left: 12, right: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            child: Column(
+                              children: List.generate(
+                                widget.post.comments?.length ?? 0,
+                                (index) => CommentListItem(
+                                    comment: widget.post.comments?[index]),
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                  transitionBuilder: (context, anim1, anim2, child) {
-                    return SlideTransition(
-                      position: Tween(
-                              begin: const Offset(0, 1),
-                              end: const Offset(0, 0))
-                          .chain(CurveTween(curve: Curves.easeOutCirc))
-                          .animate(anim1),
-                      child: child,
-                    );
-                  },
+                        ),
+                        Material(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    child: TextField(
+                                        controller: _commentContentController)),
+                                GestureDetector(
+                                    onTap: () async {
+                                      await Get.find<HomeController>()
+                                          .createComment(
+                                        postId: widget.post.id ?? '',
+                                        content: _commentContentController.text,
+                                        postUserId: widget.post.user.id,
+                                      );
+                                    },
+                                    child: const Icon(Ionicons.send)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 );
-
-                // Get.dialog(Container(
-                //   height: 100,
-                //   width: 200,
-                //   color: Colors.red,
-                // ));
               },
             ),
             _PostButton(

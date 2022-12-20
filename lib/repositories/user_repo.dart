@@ -28,6 +28,15 @@ class _UserRepository extends CrudRepository {
     return false;
   }
 
+  Future<bool?> unfollow({required String userId}) async {
+    var result = await patch('/api/user/$userId/unfollow');
+    if (result?.statusCode == HttpStatus.ok) {
+      return true;
+    }
+
+    return false;
+  }
+
   Future<List<UserModel>?> searchUser({required String query}) async {
     List<UserModel>? users;
 

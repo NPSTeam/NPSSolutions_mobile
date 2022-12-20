@@ -3,6 +3,7 @@ import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/models/post_model.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/repositories/post_repo.dart';
+import 'package:nps_social/repositories/user_repo.dart';
 
 class PersonalProfileController extends GetxController {
   UserModel? selectedUser;
@@ -10,6 +11,11 @@ class PersonalProfileController extends GetxController {
   List<PostModel>? savedPostList = [];
 
   PersonalProfileController();
+
+  Future fetchUserInfo({required String userId}) async {
+    selectedUser = await userRepository.getProfileByUserId(userId: userId);
+    update();
+  }
 
   Future fetchUserPosts() async {
     userPostList = await postRepository.getUserPosts(

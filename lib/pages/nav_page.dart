@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/controllers/conversation_controller.dart';
 import 'package:nps_social/controllers/home_controller.dart';
 import 'package:nps_social/controllers/notification_controller.dart';
@@ -36,7 +37,8 @@ class _NavPageState extends State<NavPage> with SingleTickerProviderStateMixin {
     const ConversationPage(),
     const DatingPage(),
     const NotificationPage(),
-    const PersonalProfilePage(),
+    PersonalProfilePage(
+        userId: Get.find<AuthController>().currentUser?.id ?? ''),
   ];
   final List<IconData> _icons = [
     Ionicons.home_outline,

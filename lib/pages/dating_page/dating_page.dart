@@ -155,17 +155,13 @@ class _DatingPageState extends State<DatingPage> {
                                           controller.locations?[index].lng ?? 0,
                                       child: InkWell(
                                         onLongPress: () async {
-                                          Get.find<PersonalProfileController>()
-                                                  .selectedUser =
-                                              await controller
-                                                  .getProfileByUserId(controller
-                                                          .locations?[index]
+                                          Get.to(() => PersonalProfilePage(
+                                              userId:
+                                                  controller.locations?[index]
                                                           .userId ??
-                                                      '');
-                                          Get.to(() => PersonalProfilePage())
-                                              ?.then((_) => Get.find<
-                                                      PersonalProfileController>()
-                                                  .selectedUser = null);
+                                                      ''))?.then((_) => Get.find<
+                                                  PersonalProfileController>()
+                                              .selectedUser = null);
                                         },
                                         child: CircleAvatar(
                                           radius: 18.0,
@@ -187,14 +183,11 @@ class _DatingPageState extends State<DatingPage> {
                                   ? SizedBox.shrink()
                                   : InkWell(
                                       onTapDown: (details) async {
-                                        Get.find<PersonalProfileController>()
-                                                .selectedUser =
-                                            await controller.getProfileByUserId(
-                                                controller.locations?[index]
-                                                        .userId ??
-                                                    '');
-                                        Get.to(() => PersonalProfilePage())
-                                            ?.then((_) => Get.find<
+                                        Get.to(() => PersonalProfilePage(
+                                            userId: controller
+                                                    .locations?[index].userId ??
+                                                ''))?.then((_) =>
+                                            Get.find<
                                                     PersonalProfileController>()
                                                 .selectedUser = null);
                                       },

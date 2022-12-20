@@ -34,12 +34,15 @@ class _CommentRepository extends CrudRepository {
     var result = await post(
       '/api/comment/createComment',
       data: {
-        'postId': postId,
-        'content': content,
-        'postUserId': postUserId,
+        'data': {
+          'postId': postId,
+          'content': content,
+          'postUserId': postUserId,
+        },
       },
     );
 
+    debugPrint("${result?.statusMessage}");
     debugPrint("${result?.statusCode}");
 
     if (result?.statusCode == HttpStatus.ok) {

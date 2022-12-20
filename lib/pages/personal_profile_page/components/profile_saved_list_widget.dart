@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/models/post_model.dart';
 import 'package:nps_social/pages/personal_profile_page/components/profile_post_container.dart';
@@ -40,13 +41,23 @@ class _ProfileSavedListWidgetState extends State<ProfileSavedListWidget> {
           )
         : GetBuilder<PersonalProfileController>(
             builder: (controller) {
-              return Column(
-                children: List.generate(
-                    controller.savedPostList?.length ?? 0,
-                    (index) => ProfilePostContainer(
-                          post: controller.savedPostList?[index] ?? PostModel(),
-                        )),
-              );
+              return (controller.savedPostList?.isEmpty ?? false)
+                  ? const Center(
+                      child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        "No content",
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ))
+                  : Column(
+                      children: List.generate(
+                          controller.savedPostList?.length ?? 0,
+                          (index) => ProfilePostContainer(
+                                post: controller.savedPostList?[index] ??
+                                    PostModel(),
+                              )),
+                    );
             },
           );
   }

@@ -12,6 +12,7 @@
         "fullname",
         "geolocator",
         "Getx",
+        "horiz",
         "ionicons",
         "latlong",
         "LTRB",
@@ -24,6 +25,7 @@
         "unfocus",
         "Unfollow",
         "unicons",
+        "unsave",
         "videocam",
         "vsync",
         "webrtc"

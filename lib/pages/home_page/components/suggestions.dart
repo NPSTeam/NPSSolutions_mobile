@@ -63,9 +63,9 @@ class _SuggestionsState extends State<Suggestions> {
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: InkWell(
                   onTap: () {
-                    _profileController.selectedUser =
-                        controller.suggestionUsers?[index];
-                    Get.to(() => const PersonalProfilePage())
+                    Get.to(() => PersonalProfilePage(
+                            userId:
+                                controller.suggestionUsers?[index].id ?? ''))
                         ?.then((_) => _profileController.selectedUser = null);
                   },
                   child: _UserCard(
@@ -136,13 +136,13 @@ class _UserCardState extends State<_UserCard> {
           child: WidgetOutlinedButton(
             text: widget.isFollowed ? "Unfollow" : "Follow",
             onPressed: () async {
-              await Get.find<HomeController>()
-                  .follow(userId: widget.user.id ?? '')
-                  .then((_) {
-                setState(() {
-                  widget.isFollowed = true;
-                });
+              setState(() {
+                widget.isFollowed = true;
               });
+
+              Get.find<HomeController>()
+                  .follow(userId: widget.user.id ?? '')
+                  .then((_) {});
             },
           ),
         ),

@@ -19,9 +19,8 @@ class WidgetProfileSearchItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        _profileController.selectedUser = user;
         Get.to(
-          () => const PersonalProfilePage(),
+          () => PersonalProfilePage(userId: user.id ?? ''),
           transition: Transition.cupertino,
         )?.then((_) {
           _profileController.selectedUser = null;

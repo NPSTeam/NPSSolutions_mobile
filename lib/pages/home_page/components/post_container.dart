@@ -13,6 +13,7 @@ import 'package:nps_social/pages/personal_profile_page/personal_profile_page.dar
 import 'package:nps_social/utils/datetime_convert.dart';
 import 'package:nps_social/widgets/widget_photo_viewer.dart';
 import 'package:nps_social/widgets/widget_profile_avatar.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostContainer extends StatefulWidget {
@@ -61,28 +62,50 @@ class _PostContainerState extends State<PostContainer> {
                   // child: ImageCollapse(
                   //     imageUrls:
                   //         post.images?.map((e) => e.url ?? '').toList() ?? []))
-                  child: ImageCollage(
-                      images: widget.post.images
-                              ?.map((e) => Img(image: e.url ?? ''))
-                              .toList() ??
-                          [],
-                      onClick: (clickedImg, images) {
-                        Get.to(WidgetPhotoViewer(
-                          imageUrls: images.map((e) => e.image).toList(),
-                          startingPosition: widget.post.images?.indexWhere(
-                                  (e) => e.url == clickedImg.image) ??
-                              0,
-                        ));
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (context) => const WidgetPhotoViewer()));
+                  child: Stack(
+                    children: [
+                      ImageCollage(
+                          images: widget.post.images
+                                  ?.map((e) => Img(image: e.url ?? ''))
+                                  .toList() ??
+                              [],
+                          onClick: (clickedImg, images) {
+                            Get.to(WidgetPhotoViewer(
+                              imageUrls: images.map((e) => e.image).toList(),
+                              startingPosition: widget.post.images?.indexWhere(
+                                      (e) => e.url == clickedImg.image) ??
+                                  0,
+                            ));
+                            // Navigator.of(context).push(MaterialPageRoute(
+                            //     builder: (context) => const WidgetPhotoViewer()));
 
-                        // ImageViewer.showImageSlider(
-                        //   images: images.map((e) => e.image).toList(),
-                        //   startingPosition: post.images?.indexWhere(
-                        //           (e) => e.url == clickedImg.image) ??
-                        //       0,
-                        // );
-                      }),
+                            // ImageViewer.showImageSlider(
+                            //   images: images.map((e) => e.image).toList(),
+                            //   startingPosition: post.images?.indexWhere(
+                            //           (e) => e.url == clickedImg.image) ??
+                            //       0,
+                            // );
+                          }),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: IconButton(
+                          onPressed: () async {
+                            Get.find<HomeController>()
+                                .savePost(widget.post.id ?? '');
+                          },
+                          icon: const Icon(
+                            Ionicons.bookmark,
+                            shadows: [
+                              Shadow(blurRadius: 15, offset: Offset(2, 2)),
+                            ],
+                          ),
+                          iconSize: 35,
+                          color: ColorConst.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               : const SizedBox.shrink(),
           Padding(
@@ -109,9 +132,8 @@ class _PostHeader extends StatelessWidget {
       children: [
         GestureDetector(
             onTap: () {
-              Get.find<PersonalProfileController>().selectedUser = post.user;
               Get.to(
-                () => const PersonalProfilePage(),
+                () => PersonalProfilePage(userId: post.user.id),
                 transition: Transition.cupertino,
               )?.then((_) {
                 Get.find<PersonalProfileController>().selectedUser = null;
@@ -151,9 +173,18 @@ class _PostHeader extends StatelessWidget {
             ],
           ),
         ),
-        IconButton(
-          onPressed: () => print('More'),
-          icon: const Icon(Icons.more_horiz),
+        PopupMenuButton<String>(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          itemBuilder: (context) => [
+            const PopupMenuItem(
+              value: "SAVE_POST",
+              child: Text("Save"),
+            ),
+          ],
+          onSelected: (value) {},
+          child: const Icon(Icons.more_horiz),
         ),
       ],
     );
@@ -240,55 +271,71 @@ class _PostStatsState extends State<_PostStats> {
                 Get.defaultDialog(
                   title: "Comments",
                   contentPadding: const EdgeInsets.all(0),
-                  content: Container(
-                    height: Get.height * 0.4,
-                    width: Get.width * 0.8,
-                    padding: const EdgeInsets.all(5),
-                    margin: const EdgeInsets.only(left: 12, right: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: SingleChildScrollView(
-                            physics: const BouncingScrollPhysics(),
-                            child: Column(
-                              children: List.generate(
-                                widget.post.comments?.length ?? 0,
-                                (index) => CommentListItem(
-                                    comment: widget.post.comments?[index]),
+                  content: StatefulBuilder(builder: (context, setState) {
+                    return Container(
+                      height: Get.height * 0.4,
+                      width: Get.width * 0.8,
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.only(left: 12, right: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: Column(
+                                children: List.generate(
+                                  widget.post.comments?.length ?? 0,
+                                  (index) => CommentListItem(
+                                      comment: widget.post.comments?[index]),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Material(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                    child: TextField(
-                                        controller: _commentContentController)),
-                                GestureDetector(
-                                    onTap: () async {
-                                      await Get.find<HomeController>()
-                                          .createComment(
-                                        postId: widget.post.id ?? '',
-                                        content: _commentContentController.text,
-                                        postUserId: widget.post.user.id,
-                                      );
-                                    },
-                                    child: const Icon(Ionicons.send)),
-                              ],
+                          Material(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: TextField(
+                                          controller:
+                                              _commentContentController)),
+                                  GestureDetector(
+                                      onTap: () async {
+                                        var content =
+                                            _commentContentController.text;
+                                        setState(() {
+                                          widget.post.comments
+                                              ?.add(CommentModel(
+                                            user: Get.find<AuthController>()
+                                                .currentUser,
+                                            content: content,
+                                          ));
+
+                                          _commentContentController.text = '';
+                                        });
+
+                                        Get.find<HomeController>()
+                                            .createComment(
+                                          postId: widget.post.id ?? '',
+                                          content: content,
+                                          postUserId: widget.post.user.id,
+                                        );
+                                      },
+                                      child: const Icon(Ionicons.send)),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
+                        ],
+                      ),
+                    );
+                  }),
                 );
               },
             ),
@@ -299,7 +346,11 @@ class _PostStatsState extends State<_PostStats> {
                 size: 25.0,
               ),
               label: "Share",
-              onTap: () => debugPrint("Share"),
+              onTap: () {
+                Share.share(
+                    "https://npssocial.site/home/post/${widget.post.id}",
+                    subject: widget.post.content ?? "NPS Social");
+              },
             ),
           ],
         )

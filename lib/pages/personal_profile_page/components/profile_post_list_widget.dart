@@ -40,13 +40,23 @@ class _ProfilePostListWidgetState extends State<ProfilePostListWidget> {
           )
         : GetBuilder<PersonalProfileController>(
             builder: (controller) {
-              return Column(
-                children: List.generate(
-                    controller.userPostList?.length ?? 0,
-                    (index) => ProfilePostContainer(
-                          post: controller.userPostList?[index] ?? PostModel(),
-                        )),
-              );
+              return (controller.userPostList?.isEmpty ?? false)
+                  ? const Center(
+                      child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        "No content",
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ))
+                  : Column(
+                      children: List.generate(
+                          controller.userPostList?.length ?? 0,
+                          (index) => ProfilePostContainer(
+                                post: controller.userPostList?[index] ??
+                                    PostModel(),
+                              )),
+                    );
             },
           );
   }

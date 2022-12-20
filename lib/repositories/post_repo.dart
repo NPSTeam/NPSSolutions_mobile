@@ -80,4 +80,22 @@ class _PostRepository extends CrudRepository {
     }
     return null;
   }
+
+  Future<bool?> savePost({required String postId}) async {
+    var result = await patch('/api/post/savePost/$postId');
+    if (result?.statusCode == HttpStatus.ok) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool?> unSavePost({required String postId}) async {
+    var result = await patch('/api/post/unSavePost/$postId');
+    if (result?.statusCode == HttpStatus.ok) {
+      return true;
+    }
+
+    return false;
+  }
 }

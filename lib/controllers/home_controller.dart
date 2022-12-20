@@ -58,6 +58,11 @@ class HomeController extends GetxController {
     return;
   }
 
+  Future unfollow({required String userId}) async {
+    await userRepository.unfollow(userId: userId);
+    return;
+  }
+
   Future likeComment(String commentId) async {
     var success = await commentRepository.likeComment(commentId: commentId);
     if (success == true) {
@@ -77,10 +82,17 @@ class HomeController extends GetxController {
     required String content,
     required String postUserId,
   }) async {
-    await commentRepository
-        .createComment(postId: postId, content: content, postUserId: postUserId)
-        .then((value) async {
+    var success = await commentRepository.createComment(
+        postId: postId, content: content, postUserId: postUserId);
+    if (success == true) {
       await getPosts();
-    });
+    }
+  }
+
+  Future savePost(String postId) async {
+    var success = await postRepository.savePost(postId: postId);
+    if (success == true) {
+      await getPosts();
+    }
   }
 }

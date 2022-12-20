@@ -12,6 +12,7 @@ class UserModel {
   String? sex;
   List<dynamic>? followers;
   List<dynamic>? following;
+  List<String>? saved;
 
   UserModel({
     this.id,
@@ -25,6 +26,7 @@ class UserModel {
     this.sex,
     this.followers,
     this.following,
+    this.saved,
   });
 
   UserModel.fromJson(dynamic json) {
@@ -50,6 +52,9 @@ class UserModel {
           : List<UserModel>.from(
               json['following'].map((e) => UserModel.fromJson(e)));
     }
+    saved = (json['saved'] != null && json['saved']?.length != 0)
+        ? List<String>.from(json['saved'].map((e) => e))
+        : null;
   }
 
   Map<String, dynamic> toJson() {

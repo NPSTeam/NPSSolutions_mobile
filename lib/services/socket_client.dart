@@ -76,8 +76,8 @@ class SocketClient {
                     style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(20),
-                      backgroundColor: Colors.red, // <-- Button color
-                      foregroundColor: ColorConst.blue, // <-- Splash color
+                      backgroundColor: Colors.red,
+                      foregroundColor: ColorConst.blue,
                     ),
                     child: const Icon(
                       Icons.call_end,
@@ -91,20 +91,22 @@ class SocketClient {
                         debugPrint("openStream");
                         debugPrint("peerId: $peerId");
 
-                        // Get.find<CallController>().setMediaStream(
-                        //     myMedia: stream, remoteMedia: stream);
-                        // Get.to(() => const CallPage());
-
-                        MediaConnection newCall =
+                        PeerClient.newCall =
                             PeerClient.peer.call(peerId ?? '', stream);
 
-                        newCall
+                        PeerClient.newCall
                             .on<webrtc.MediaStream>("stream")
                             .listen((event) {
                           debugPrint("on Stream");
                           Get.find<CallController>().setMediaStream(
                               myMedia: stream, remoteMedia: event);
-                          Get.to(() => const CallPage());
+                          Get.to(() => CallPage(endCall: () {
+                                Get.back();
+                                PeerClient.newCall.close();
+                                socket.emit('endCall', {
+                                  'sender': senderId,
+                                });
+                              }));
                         });
                       });
                     },
@@ -114,8 +116,8 @@ class SocketClient {
                       backgroundColor: Colors.green, // <-- Button color
                       foregroundColor: ColorConst.blue, // <-- Splash color
                     ),
-                    child: const Icon(
-                      Icons.call_end,
+                    child: Icon(
+                      (video ?? false) ? Icons.call_end : Icons.video_call,
                       color: Colors.white,
                     ),
                   ),
@@ -129,6 +131,8 @@ class SocketClient {
 
     socket.on('endCallToClient', (data) {
       if (Get.isOverlaysOpen) Navigator.of(Get.overlayContext!).pop();
+      Get.back();
+      PeerClient.newCall.close();
     });
   }
 

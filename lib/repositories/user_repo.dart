@@ -69,4 +69,19 @@ class _UserRepository extends CrudRepository {
 
     return null;
   }
+
+  Future<UserModel?> updateUser({required String userId}) async {
+    var result = await post(
+      '/api/user/updateUser',
+      data: {
+        'id': userId,
+      },
+    );
+
+    if (result?.data['user'] != null) {
+      return UserModel.fromJson(result?.data['user']);
+    }
+
+    return null;
+  }
 }

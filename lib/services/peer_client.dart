@@ -4,6 +4,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart' as webrtc;
 
 class PeerClient {
   static late Peer peer;
+  static late MediaConnection newCall;
 
   static init() async {
     peer = Peer(options: PeerOptions(path: '/', secure: true));

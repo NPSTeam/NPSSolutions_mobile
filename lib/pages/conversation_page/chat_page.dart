@@ -10,10 +10,12 @@ import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/configs/theme/style_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
 import 'package:nps_social/controllers/conversation_controller.dart';
+import 'package:nps_social/models/image_model.dart';
 import 'package:nps_social/models/user_model.dart';
 import 'package:nps_social/pages/call_page/call_page.dart';
 import 'package:nps_social/pages/call_page/controllers/call_controller.dart';
 import 'package:nps_social/pages/conversation_page/components/message_item.dart';
+import 'package:nps_social/repositories/cloudinary_repo.dart';
 import 'package:nps_social/services/peer_client.dart';
 import 'package:nps_social/services/socket_client.dart';
 import 'package:image_picker_platform_interface/src/types/image_source.dart'
@@ -197,11 +199,25 @@ class _ChatPageState extends State<ChatPage> {
                   .on<MediaConnection>("call")
                   .listen((newCall) async {
                 PeerClient.openStream().then((stream) {
-                  newCall.answer(stream);
-                  newCall.on<webrtc.MediaStream>("stream").listen((event) {
+                  PeerClient.newCall = newCall;
+                  PeerClient.newCall.answer(stream);
+                  PeerClient.newCall
+                      .on<webrtc.MediaStream>("stream")
+                      .listen((event) {
                     Get.find<CallController>()
                         .setMediaStream(myMedia: stream, remoteMedia: event);
-                    Get.to(() => const CallPage());
+                    if (Get.isDialogOpen ?? false) Get.back();
+                    Get.to(() => CallPage(endCall: () {
+                          Get.back();
+                          PeerClient.newCall.close();
+                          SocketClient.socket.emit('endCall', {
+                            'sender': recipient?.id,
+                          });
+                        }));
+                  });
+
+                  PeerClient.newCall.on("close").listen((event) {
+                    PeerClient.newCall.close();
                   });
                 });
               });
@@ -375,13 +391,26 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                   InkWell(
                     onTap: () async {
-                      if (_chatEditingController.text.trim() == '') return;
+                      if (_chatEditingController.text.trim() == '' &&
+                          selectedImages.isEmpty) return;
+
+                      List<ImageModel> uploadedImageUrls = [];
+                      if (selectedImages.isNotEmpty) {
+                        await cloudinaryRepository
+                            .uploadImages(imageFiles: selectedImages)
+                            .then((value) {
+                          uploadedImageUrls = value ?? [];
+                          setState(() {
+                            selectedImages = [];
+                          });
+                        });
+                      }
 
                       controller.createMessage(
                         senderId: _authController.currentUser?.id ?? '',
                         recipientId: recipient?.id ?? '',
                         text: _chatEditingController.text.trim(),
-                        media: [],
+                        media: uploadedImageUrls,
                       );
 
                       setState(() {

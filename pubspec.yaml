@@ -42,7 +42,7 @@ dependencies:
   # image_collapse: ^1.0.0                  # https://pub.dev/packages/image_collapse
   image_collage: ^0.0.4                   # https://pub.dev/packages/image_collage
   flutter_spinkit: ^5.1.0
-  image_viewer: ^1.5.0
+  # image_viewer: ^1.5.0
   unicons: ^2.1.0
   carousel_slider: ^4.1.1
   timeago: ^3.3.0

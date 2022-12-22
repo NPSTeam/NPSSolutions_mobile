@@ -98,4 +98,13 @@ class _PostRepository extends CrudRepository {
 
     return false;
   }
+
+  Future<bool?> deletePost({required String postId}) async {
+    var result = await patch('/api/post/deletePost/$postId');
+    if (result?.statusCode == HttpStatus.ok) {
+      return true;
+    }
+
+    return false;
+  }
 }

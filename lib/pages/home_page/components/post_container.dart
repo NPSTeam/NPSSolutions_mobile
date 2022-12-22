@@ -29,6 +29,21 @@ class PostContainer extends StatefulWidget {
 }
 
 class _PostContainerState extends State<PostContainer> {
+  AuthController _authController = Get.find();
+  bool isSaved = false;
+
+  @override
+  void initState() {
+    setState(() {
+      isSaved = _authController.currentUser?.saved
+              ?.where((e) => e == widget.post.id)
+              .isNotEmpty ??
+          false;
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -54,14 +69,6 @@ class _PostContainerState extends State<PostContainer> {
           widget.post.images != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  // child: GalleryImage(
-                  //   numOfShowImages: post.images?.length ?? 0,
-                  //   imageUrls:
-                  //       post.images?.map((e) => e.url ?? '').toList() ?? [],
-                  // ),
-                  // child: ImageCollapse(
-                  //     imageUrls:
-                  //         post.images?.map((e) => e.url ?? '').toList() ?? []))
                   child: Stack(
                     children: [
                       ImageCollage(
@@ -70,29 +77,33 @@ class _PostContainerState extends State<PostContainer> {
                                   .toList() ??
                               [],
                           onClick: (clickedImg, images) {
-                            Get.to(WidgetPhotoViewer(
-                              imageUrls: images.map((e) => e.image).toList(),
-                              startingPosition: widget.post.images?.indexWhere(
-                                      (e) => e.url == clickedImg.image) ??
-                                  0,
-                            ));
-                            // Navigator.of(context).push(MaterialPageRoute(
-                            //     builder: (context) => const WidgetPhotoViewer()));
-
-                            // ImageViewer.showImageSlider(
-                            //   images: images.map((e) => e.image).toList(),
-                            //   startingPosition: post.images?.indexWhere(
-                            //           (e) => e.url == clickedImg.image) ??
-                            //       0,
-                            // );
+                            Get.to(() => WidgetPhotoViewer(
+                                  imageUrls:
+                                      images.map((e) => e.image).toList(),
+                                  startingPosition: widget.post.images
+                                          ?.indexWhere((e) =>
+                                              e.url == clickedImg.image) ??
+                                      0,
+                                ));
                           }),
                       Positioned(
                         right: 0,
                         bottom: 0,
                         child: IconButton(
                           onPressed: () async {
-                            Get.find<HomeController>()
-                                .savePost(widget.post.id ?? '');
+                            if (isSaved) {
+                              setState(() {
+                                isSaved = false;
+                              });
+                              Get.find<HomeController>()
+                                  .unSavePost(widget.post.id ?? '');
+                            } else {
+                              setState(() {
+                                isSaved = true;
+                              });
+                              Get.find<HomeController>()
+                                  .savePost(widget.post.id ?? '');
+                            }
                           },
                           icon: const Icon(
                             Ionicons.bookmark,
@@ -101,7 +112,7 @@ class _PostContainerState extends State<PostContainer> {
                             ],
                           ),
                           iconSize: 35,
-                          color: ColorConst.white,
+                          color: isSaved ? ColorConst.red : ColorConst.white,
                         ),
                       ),
                     ],
@@ -204,7 +215,8 @@ class _PostStats extends StatefulWidget {
 }
 
 class _PostStatsState extends State<_PostStats> {
-  TextEditingController _commentContentController = TextEditingController();
+  final TextEditingController _commentContentController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {

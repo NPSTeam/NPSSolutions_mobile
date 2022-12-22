@@ -20,8 +20,10 @@ class ConversationController extends GetxController {
 
   init() async {
     SocketClient.socket.on('addMessageToClient', (data) {
-      getMessages();
-      getConversations();
+      getMessages().then((_) {
+        getConversations();
+        update();
+      });
     });
   }
 

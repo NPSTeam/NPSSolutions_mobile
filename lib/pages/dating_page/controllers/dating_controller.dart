@@ -33,4 +33,8 @@ class DatingController extends GetxController {
     return await locationRepository.createLocation(
         lat: currentPoint?.latitude ?? 0, lng: currentPoint?.longitude ?? 0);
   }
+
+  Future<bool?> stopShareLocation() async {
+    return await locationRepository.deleteLocation();
+  }
 }

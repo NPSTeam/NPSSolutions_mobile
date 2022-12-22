@@ -319,7 +319,7 @@ class _SignUpContentState extends State<SignUpContent>
                 ),
                 loginButton('Sign Up'),
                 orDivider(),
-                logos(),
+                // logos(),
               ],
             ),
           ),

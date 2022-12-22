@@ -64,4 +64,13 @@ class PersonalProfileController extends GetxController {
       update();
     }
   }
+
+  Future deletePost(String postId) async {
+    var success = await postRepository.deletePost(postId: postId);
+    if (success == true) {
+      await fetchUserPosts();
+      await fetchSavedPosts();
+      update();
+    }
+  }
 }

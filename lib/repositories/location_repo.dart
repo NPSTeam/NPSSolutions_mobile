@@ -38,4 +38,16 @@ class _LocationRepository extends CrudRepository {
 
     return false;
   }
+
+  Future<bool?> deleteLocation() async {
+    var result = await delete(
+      '/api/location/delete',
+    );
+
+    if (result?.statusCode == HttpStatus.ok) {
+      return true;
+    }
+
+    return false;
+  }
 }

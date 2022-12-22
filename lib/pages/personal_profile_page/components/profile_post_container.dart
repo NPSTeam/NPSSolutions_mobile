@@ -4,8 +4,11 @@ import 'package:image_collage/image_collage.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nps_social/configs/theme/color_const.dart';
 import 'package:nps_social/controllers/auth_controller.dart';
+import 'package:nps_social/controllers/home_controller.dart';
+import 'package:nps_social/models/comment_model.dart';
 import 'package:nps_social/models/post_model.dart';
 import 'package:nps_social/models/user_model.dart';
+import 'package:nps_social/pages/home_page/components/post_container.dart';
 import 'package:nps_social/pages/personal_profile_page/controllers/personal_profile_controller.dart';
 import 'package:nps_social/utils/datetime_convert.dart';
 import 'package:nps_social/widgets/widget_photo_viewer.dart';
@@ -13,6 +16,7 @@ import 'package:nps_social/widgets/widget_profile_avatar.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ProfilePostContainer extends StatelessWidget {
+  final PersonalProfileController _personalProfileController = Get.find();
   final UserModel? currentUser = Get.find<AuthController>().currentUser;
   final UserModel? selectedUser =
       Get.find<PersonalProfileController>().selectedUser;
@@ -79,10 +83,35 @@ class ProfilePostContainer extends StatelessWidget {
                         ],
                       ),
                     ),
-                    IconButton(
-                      onPressed: () => print('More'),
-                      icon: const Icon(Icons.more_horiz),
-                    ),
+                    if (selectedUser == null ||
+                        (selectedUser?.id == currentUser?.id))
+                      PopupMenuButton<String>(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: "DELETE_POST",
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                Icon(Ionicons.trash_outline),
+                                Text("Delete"),
+                              ],
+                            ),
+                          ),
+                        ],
+                        onSelected: (value) {
+                          switch (value) {
+                            case "DELETE_POST":
+                              _personalProfileController
+                                  .deletePost(post.id ?? '');
+                              break;
+                            default:
+                          }
+                        },
+                        child: const Icon(Icons.more_horiz),
+                      ),
                   ],
                 ),
                 const SizedBox(height: 4.0),
@@ -96,14 +125,6 @@ class ProfilePostContainer extends StatelessWidget {
           post.images != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  // child: GalleryImage(
-                  //   numOfShowImages: post.images?.length ?? 0,
-                  //   imageUrls:
-                  //       post.images?.map((e) => e.url ?? '').toList() ?? [],
-                  // ),
-                  // child: ImageCollapse(
-                  //     imageUrls:
-                  //         post.images?.map((e) => e.url ?? '').toList() ?? []))
                   child: ImageCollage(
                       images: post.images
                               ?.map((e) => Img(image: e.url ?? ''))
@@ -116,15 +137,6 @@ class ProfilePostContainer extends StatelessWidget {
                                   (e) => e.url == clickedImg.image) ??
                               0,
                         ));
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (context) => const WidgetPhotoViewer()));
-
-                        // ImageViewer.showImageSlider(
-                        //   images: images.map((e) => e.image).toList(),
-                        //   startingPosition: post.images?.indexWhere(
-                        //           (e) => e.url == clickedImg.image) ??
-                        //       0,
-                        // );
                       }),
                 )
               : const SizedBox.shrink(),
@@ -138,13 +150,20 @@ class ProfilePostContainer extends StatelessWidget {
   }
 }
 
-class _PostStats extends StatelessWidget {
+class _PostStats extends StatefulWidget {
   final PostModel post;
 
   const _PostStats({
     Key? key,
     required this.post,
   }) : super(key: key);
+
+  @override
+  State<_PostStats> createState() => _PostStatsState();
+}
+
+class _PostStatsState extends State<_PostStats> {
+  TextEditingController _commentContentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -167,14 +186,14 @@ class _PostStats extends StatelessWidget {
             const SizedBox(width: 4.0),
             Expanded(
               child: Text(
-                '${post.likes?.length ?? 0}',
+                '${widget.post.likes?.length ?? 0}',
                 style: TextStyle(
                   color: Colors.grey[600],
                 ),
               ),
             ),
             Text(
-              '${post.comments?.length ?? 0} Comments',
+              '${widget.post.comments?.length ?? 0} Comments',
               style: TextStyle(
                 color: Colors.grey[600],
               ),
@@ -194,21 +213,22 @@ class _PostStats extends StatelessWidget {
           children: [
             _PostButton(
               icon: Icon(
-                (post.isReact ?? false)
+                (widget.post.isReact ?? false)
                     ? Ionicons.heart
                     : Ionicons.heart_outline,
-                color:
-                    (post.isReact ?? false) ? ColorConst.red : Colors.grey[600],
+                color: (widget.post.isReact ?? false)
+                    ? ColorConst.red
+                    : Colors.grey[600],
                 size: 20.0,
               ),
               label: "Like",
               onTap: () {
-                post.isReact ?? false
+                widget.post.isReact ?? false
                     ? Get.find<PersonalProfileController>()
-                        .unlikePost(post.id ?? '')
+                        .unlikePost(widget.post.id ?? '')
                     : Get.find<PersonalProfileController>()
-                        .likePost(post.id ?? '');
-                post.isReact = !(post.isReact ?? false);
+                        .likePost(widget.post.id ?? '');
+                widget.post.isReact = !(widget.post.isReact ?? false);
               },
             ),
             _PostButton(
@@ -218,7 +238,77 @@ class _PostStats extends StatelessWidget {
                 size: 20.0,
               ),
               label: "Comment",
-              onTap: () => print("Comment"),
+              onTap: () {
+                Get.defaultDialog(
+                  title: "Comments",
+                  contentPadding: const EdgeInsets.all(0),
+                  content: StatefulBuilder(builder: (context, setState) {
+                    return Container(
+                      height: Get.height * 0.4,
+                      width: Get.width * 0.8,
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.only(left: 12, right: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: Column(
+                                children: List.generate(
+                                  widget.post.comments?.length ?? 0,
+                                  (index) => CommentListItem(
+                                      comment: widget.post.comments?[index]),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Material(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: TextField(
+                                          controller:
+                                              _commentContentController)),
+                                  GestureDetector(
+                                      onTap: () async {
+                                        var content =
+                                            _commentContentController.text;
+                                        setState(() {
+                                          widget.post.comments
+                                              ?.add(CommentModel(
+                                            user: Get.find<AuthController>()
+                                                .currentUser,
+                                            content: content,
+                                          ));
+
+                                          _commentContentController.text = '';
+                                        });
+
+                                        Get.find<HomeController>()
+                                            .createComment(
+                                          postId: widget.post.id ?? '',
+                                          content: content,
+                                          postUserId: widget.post.user.id,
+                                        );
+                                      },
+                                      child: const Icon(Ionicons.send)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                );
+              },
             ),
             _PostButton(
               icon: Icon(

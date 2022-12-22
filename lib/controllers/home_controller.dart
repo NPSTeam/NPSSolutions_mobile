@@ -95,4 +95,11 @@ class HomeController extends GetxController {
       await getPosts();
     }
   }
+
+  Future unSavePost(String postId) async {
+    var success = await postRepository.unSavePost(postId: postId);
+    if (success == true) {
+      await getPosts();
+    }
+  }
 }

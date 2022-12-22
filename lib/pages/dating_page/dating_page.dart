@@ -231,31 +231,61 @@ class _DatingPageState extends State<DatingPage> {
                         Positioned(
                           bottom: 0,
                           right: 5,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await controller.shareLocation();
-                              WidgetToast.showToast(
-                                  message: "Share location successfully");
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              // side: BorderSide(color: Colors.yellow, width: 5),
-                              textStyle: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontStyle: FontStyle.normal),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              shadowColor: Colors.lightBlue,
-                            ),
-                            child: Row(
-                              children: const [
-                                Icon(Ionicons.navigate_outline),
-                                SizedBox(width: 10),
-                                Text("Share My Location"),
-                              ],
-                            ),
+                          child: Column(
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  await controller.shareLocation();
+                                  WidgetToast.showToast(
+                                      message: "Share location successfully");
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  // side: BorderSide(color: Colors.yellow, width: 5),
+                                  textStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontStyle: FontStyle.normal),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20))),
+                                  shadowColor: Colors.lightBlue,
+                                ),
+                                child: Row(
+                                  children: const [
+                                    Icon(Ionicons.navigate_outline),
+                                    SizedBox(width: 10),
+                                    Text("Share My Location"),
+                                  ],
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  await controller.stopShareLocation();
+                                  WidgetToast.showToast(
+                                      message: "Stop share successfully");
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  // side: BorderSide(color: Colors.yellow, width: 5),
+                                  textStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontStyle: FontStyle.normal),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20))),
+                                  shadowColor: Colors.lightBlue,
+                                ),
+                                child: Row(
+                                  children: const [
+                                    Icon(Ionicons.stop_circle_outline),
+                                    SizedBox(width: 10),
+                                    Text("Stop Share Location"),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         )
                       ],

@@ -82,4 +82,29 @@ class CrudRepository {
       return null;
     }
   }
+
+  Future<Response?> delete(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      Response res;
+      res = await _dio.delete(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+      );
+
+      return res;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        debugPrint("${e.response?.data}");
+      } else {
+        debugPrint(e.message);
+      }
+
+      return null;
+    }
+  }
 }

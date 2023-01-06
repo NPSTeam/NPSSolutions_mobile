@@ -15,6 +15,6 @@ A Flutter project from NPS Team.
 2. Install [Android Studio](https://developer.android.com/studio) (including Android SDK Platform Tools).
 3. Install the specific Flutter SDK [here](https://docs.flutter.dev/development/tools/sdk/releases).
 4. Flutter SDK check: ```flutter doctor -v```
-5. Open the project
+5. Open the project.
 6. Retrieve the packages: ```flutter pub get```
 7. Run the project (without debugging): ```flutter run --release```

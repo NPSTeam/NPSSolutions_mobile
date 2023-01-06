@@ -1,33 +1,5 @@
 {
     "cSpell.words": [
-        "chatbox",
-        "chatbubbles",
-        "Cloudinary",
-        "cupertino",
-        "datas",
-        "datetime",
-        "dotenv",
-        "drvvgmc",
-        "fluttertoast",
-        "fullname",
-        "geolocator",
-        "Getx",
-        "horiz",
-        "ionicons",
-        "latlong",
-        "LTRB",
-        "ondemand",
-        "prefs",
-        "spinkit",
-        "Spref",
-        "syncfusion",
-        "timeago",
-        "unfocus",
-        "Unfollow",
-        "unicons",
-        "unsave",
-        "videocam",
-        "vsync",
-        "webrtc"
+        "cupertino"
     ]
 }

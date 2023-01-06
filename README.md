@@ -1,4 +1,4 @@
-# NPS Social
+# NPS Solutions
 
 A Flutter project from NPS Team.
 
@@ -8,4 +8,4 @@ A Flutter project from NPS Team.
 - [Phan Thanh Sang](https://www.facebook.com/sangphan.45)
 
 ## Specs
-- Flutter 3.3.2; Dart 2.18.1
+- Flutter 3.3.10; Dart 2.18.6

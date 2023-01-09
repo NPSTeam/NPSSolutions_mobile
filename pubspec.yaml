@@ -54,6 +54,11 @@ flutter_intl:
 flutter:
   uses-material-design: true
 
+  assets:
+    - assets/Backgrounds/
+    - assets/RiveAssets/
+    - assets/icons/
+
   fonts:
     - family: Poppins
       fonts:

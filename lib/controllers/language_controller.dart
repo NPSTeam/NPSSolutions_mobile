@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:npssolutions_mobile/configs/spref_key.dart';
+import 'package:npssolutions_mobile/services/spref.dart';
 
 class LanguageValue {
   final Locale locale;
@@ -18,13 +20,16 @@ class LanguageController extends ChangeNotifier {
   LanguageValue? currentLocale;
 
   LanguageController() {
-    currentLocale = languages['en'];
+    currentLocale =
+        languages[SPref.instance.get(SPrefKey.languageCode) ?? 'en'];
   }
 
-  setCurrentLocale(String locale) {
-    if (!languages.containsKey(locale)) return;
+  Future setCurrentLocale(String languageCode) async {
+    if (!languages.containsKey(languageCode)) return;
 
-    currentLocale = languages[locale];
+    currentLocale = languages[languageCode];
+    await SPref.instance.set(SPrefKey.languageCode, languageCode);
+
     notifyListeners();
   }
 }

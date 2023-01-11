@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:npssolutions_mobile/controllers/language_controller.dart';
 import 'package:npssolutions_mobile/generated/l10n.dart';
-import 'package:npssolutions_mobile/pages/onboarding_page/onboarding_page.dart';
+import 'package:npssolutions_mobile/router/my_router_config.dart';
+import 'package:npssolutions_mobile/services/spref.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SPref.init();
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => LanguageController()),
@@ -23,11 +27,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     LanguageController languageController = Provider.of(context);
 
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'NPS Solutions',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        fontFamily: 'Poppins',
+        fontFamily: 'Roboto',
       ),
       localizationsDelegates: const [
         S.delegate,
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: S.delegate.supportedLocales,
       locale: languageController.currentLocale?.locale,
-      home: const OnboardingPage(),
+      routerConfig: MyRouterConfig.router,
     );
   }
 }

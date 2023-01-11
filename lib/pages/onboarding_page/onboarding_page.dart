@@ -1,6 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:npssolutions_mobile/generated/l10n.dart';
+import 'package:npssolutions_mobile/widgets/widget_language_toggle.dart';
 import 'package:rive/rive.dart';
 
 import 'components/animated_btn.dart';
@@ -63,59 +66,70 @@ class _OnboardingPageState extends State<OnboardingPage> {
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
                   children: [
-                    const Spacer(),
-                    SizedBox(
-                      width: 260,
-                      child: Column(
-                        children: const [
-                          Text(
-                            "Learn design & code",
-                            style: TextStyle(
-                              fontSize: 60,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: "Poppins",
-                              height: 1.2,
-                            ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Spacer(),
+                        SizedBox(
+                          width: 260,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                S.of(context).NPSTeam,
+                                style: const TextStyle(
+                                  fontSize: 60,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: "Roboto",
+                                  height: 1.2,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              const Text(
+                                "Don't skip design. Learn design and code, by building real apps with Flutter and Swift. Complete courses about the best tools.",
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 16),
-                          Text(
-                            "Don’t skip design. Learn design and code, by building real apps with Flutter and Swift. Complete courses about the best tools.",
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Spacer(flex: 2),
-                    AnimatedBtn(
-                      btnAnimationController: _btnAnimationController,
-                      press: () {
-                        _btnAnimationController.isActive = true;
+                        ),
+                        const Spacer(flex: 2),
+                        AnimatedBtn(
+                          btnAnimationController: _btnAnimationController,
+                          press: () {
+                            _btnAnimationController.isActive = true;
 
-                        Future.delayed(
-                          const Duration(milliseconds: 800),
-                          () {
-                            setState(() {
-                              isShowSignInDialog = true;
-                            });
-                            showCustomDialog(
-                              context,
-                              onValue: (_) {
-                                setState(() {
-                                  isShowSignInDialog = false;
-                                });
+                            Future.delayed(
+                              const Duration(milliseconds: 800),
+                              () {
+                                context.go('/home');
+                                // setState(() {
+                                //   isShowSignInDialog = true;
+                                // });
+                                // showCustomDialog(
+                                //   context,
+                                //   onValue: (_) {
+                                //     setState(() {
+                                //       isShowSignInDialog = false;
+                                //     });
+                                //   },
+                                // );
                               },
                             );
                           },
-                        );
-                      },
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24),
+                          child: Text(
+                              "Purchase includes access to 30+ courses, 240+ premium tutorials, 120+ hours of videos, source files and certificates."),
+                        )
+                      ],
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24),
-                      child: Text(
-                          "Purchase includes access to 30+ courses, 240+ premium tutorials, 120+ hours of videos, source files and certificates."),
-                    )
+                    const Positioned(
+                      top: 20,
+                      right: 0,
+                      child: WidgetLanguageToggle(),
+                    ),
                   ],
                 ),
               ),

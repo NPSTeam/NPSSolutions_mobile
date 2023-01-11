@@ -1,11 +1,14 @@
 name: npssolutions_mobile
-description: A new Flutter project.
+description: A Flutter project from NPS Team.
+
 
 version: 1.0.0+1
+
 
 environment:
   sdk: '>=2.18.6 <3.0.0'
   flutter: ^3.3.10
+
 
 dependencies:
   flutter:
@@ -16,17 +19,24 @@ dependencies:
   flutter_localizations: 
     sdk: flutter
   provider: ^6.0.5
+  go_router: ^6.0.1
+  shared_preferences: ^2.0.15
 
   # UI packages
   cupertino_icons: ^1.0.2
   rive: ^0.10.0
   flutter_svg: ^1.1.6
+  animated_toggle_switch: ^0.6.1
+  font_awesome_flutter: ^10.3.0
+  curved_navigation_bar: ^1.0.3
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
     
   flutter_lints: ^2.0.0
+
 
 flutter_intl:
   enabled: true # Required. Must be set to true to activate the plugin. Default: false
@@ -58,12 +68,13 @@ flutter:
     - assets/Backgrounds/
     - assets/RiveAssets/
     - assets/icons/
+    - assets/icons/png/
 
   fonts:
-    - family: Poppins
+    - family: Roboto
       fonts:
-        - asset: assets/fonts/Poppins-Regular.ttf
-        - asset: assets/fonts/Poppins-Italic.ttf
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Italic.ttf
           style: italic
-        - asset: assets/fonts/Poppins-Bold.ttf
+        - asset: assets/fonts/Roboto-Bold.ttf
           weight: 700

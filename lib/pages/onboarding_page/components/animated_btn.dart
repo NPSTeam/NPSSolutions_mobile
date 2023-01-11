@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:npssolutions_mobile/generated/l10n.dart';
 import 'package:rive/rive.dart';
 
 class AnimatedBtn extends StatelessWidget {
@@ -35,7 +36,7 @@ class AnimatedBtn extends StatelessWidget {
                   const Icon(CupertinoIcons.arrow_right),
                   const SizedBox(width: 8),
                   Text(
-                    "Start the course",
+                    S.of(context).getStarted,
                     style: Theme.of(context).textTheme.button,
                   )
                 ],

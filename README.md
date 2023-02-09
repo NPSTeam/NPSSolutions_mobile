@@ -8,7 +8,7 @@ A Flutter project from NPS Team.
 - [Phan Thanh Sang - 19110276](https://www.facebook.com/sangphan.45)
 
 ## Specs
-- Flutter 3.3.10; Dart 2.18.6
+- Flutter 3.7.0; Dart 2.19.0
 
 ## Setup for Windows
 1. Clone this project.

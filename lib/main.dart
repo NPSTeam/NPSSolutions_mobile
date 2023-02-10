@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/controllers/language_controller.dart';
 import 'package:npssolutions_mobile/generated/l10n.dart';
 import 'package:npssolutions_mobile/router/my_router_config.dart';
@@ -14,6 +15,7 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => LanguageController()),
+      ChangeNotifierProvider(create: (context) => AuthController()),
       // ChangeNotifierProvider(create: (context) => MyRouterDelegate()),
     ],
     child: const MyApp(),

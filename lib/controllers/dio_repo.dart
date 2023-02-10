@@ -8,7 +8,7 @@ import 'auth_controller.dart';
 
 class DioRepo {
   BuildContext context;
-  late Dio _dio;
+  static late Dio _dio;
 
   DioRepo(this.context) {
     _dio = Dio(BaseOptions(
@@ -20,13 +20,34 @@ class DioRepo {
     ));
   }
 
-  Future<ResponseModel?> get(String path,
+  static Future<ResponseModel?> get(String path,
       {Map<String, dynamic>? parameters}) async {
     try {
       Response res;
       res = await _dio.get(
         path,
         queryParameters: parameters,
+      );
+      return ResponseModel.fromJson(res.data);
+    } on DioError catch (e) {
+      if (e.response != null) {
+        debugPrint("${e.response?.data}");
+      } else {
+        debugPrint(e.message);
+      }
+    }
+
+    return null;
+  }
+
+  static Future<ResponseModel?> post(String path,
+      {dynamic data, Map<String, dynamic>? queryParameters}) async {
+    try {
+      Response res;
+      res = await _dio.post(
+        path,
+        data: data,
+        queryParameters: queryParameters,
       );
       return ResponseModel.fromJson(res.data);
     } on DioError catch (e) {

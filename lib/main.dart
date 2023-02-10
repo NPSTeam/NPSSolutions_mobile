@@ -15,7 +15,7 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => LanguageController()),
-      ChangeNotifierProvider(create: (context) => AuthController()),
+      ChangeNotifierProvider(create: (context) => AuthController(context)),
       // ChangeNotifierProvider(create: (context) => MyRouterDelegate()),
     ],
     child: const MyApp(),

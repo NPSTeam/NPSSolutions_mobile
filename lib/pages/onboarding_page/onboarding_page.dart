@@ -102,18 +102,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             Future.delayed(
                               const Duration(milliseconds: 800),
                               () {
-                                context.go('/home');
-                                // setState(() {
-                                //   isShowSignInDialog = true;
-                                // });
-                                // showCustomDialog(
-                                //   context,
-                                //   onValue: (_) {
-                                //     setState(() {
-                                //       isShowSignInDialog = false;
-                                //     });
-                                //   },
-                                // );
+                                // context.go('/home');
+                                setState(() {
+                                  isShowSignInDialog = true;
+                                });
+                                showCustomDialog(
+                                  context,
+                                  onValue: (_) {
+                                    setState(() {
+                                      isShowSignInDialog = false;
+                                    });
+                                  },
+                                );
                               },
                             );
                           },

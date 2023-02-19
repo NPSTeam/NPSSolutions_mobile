@@ -2,32 +2,50 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:npssolutions_mobile/configs/app_key.dart';
 import 'package:npssolutions_mobile/models/response_model.dart';
-import 'package:provider/provider.dart';
+import 'package:npssolutions_mobile/services/spref.dart';
 
-import 'auth_controller.dart';
+import '../configs/spref_key.dart';
 
 class DioRepo {
-  BuildContext context;
   static late Dio _dio;
+  static late Dio _unAuthDio;
 
-  DioRepo(this.context) {
+  DioRepo() {
+    loadDio();
+  }
+
+  static loadDio() {
     _dio = Dio(BaseOptions(
       baseUrl: AppKey.BACKEND_URL,
       headers: {
-        "Authorization":
-            "Bearer ${Provider.of<AuthController>(context, listen: true)}",
+        "Authorization": "Bearer ${SPref.instance.get(SPrefKey.accessToken)}",
       },
+    ));
+
+    _unAuthDio = Dio(BaseOptions(
+      baseUrl: AppKey.BACKEND_URL,
     ));
   }
 
-  static Future<ResponseModel?> get(String path,
-      {Map<String, dynamic>? parameters}) async {
+  static Future<ResponseModel?> get(
+    String path, {
+    Map<String, dynamic>? parameters,
+    bool unAuth = false,
+  }) async {
     try {
       Response res;
-      res = await _dio.get(
-        path,
-        queryParameters: parameters,
-      );
+
+      res = unAuth
+          ? await _unAuthDio.get(
+              path,
+              queryParameters: parameters,
+            )
+          : await _dio.get(
+              path,
+              queryParameters: parameters,
+            );
+
+      debugPrint("${res.data}");
       return ResponseModel.fromJson(res.data);
     } on DioError catch (e) {
       if (e.response != null) {
@@ -40,15 +58,27 @@ class DioRepo {
     return null;
   }
 
-  static Future<ResponseModel?> post(String path,
-      {dynamic data, Map<String, dynamic>? queryParameters}) async {
+  static Future<ResponseModel?> post(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    bool unAuth = false,
+  }) async {
     try {
       Response res;
-      res = await _dio.post(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-      );
+      res = unAuth
+          ? await _unAuthDio.post(
+              path,
+              data: data,
+              queryParameters: queryParameters,
+            )
+          : await _dio.post(
+              path,
+              data: data,
+              queryParameters: queryParameters,
+            );
+
+      debugPrint("${res.data}");
       return ResponseModel.fromJson(res.data);
     } on DioError catch (e) {
       if (e.response != null) {

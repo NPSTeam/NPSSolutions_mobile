@@ -9,6 +9,7 @@ import '../configs/spref_key.dart';
 class DioRepo {
   static late Dio _dio;
   static late Dio _unAuthDio;
+  static late BuildContext context;
 
   DioRepo() {
     loadDio();

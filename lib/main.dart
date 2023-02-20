@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     LanguageController languageController = Provider.of(context);
+    DioRepo.context = context;
 
     return MaterialApp.router(
       title: 'NPS Solutions',

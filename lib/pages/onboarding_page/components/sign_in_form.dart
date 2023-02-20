@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
+import 'package:npssolutions_mobile/generated/l10n.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 
@@ -43,50 +44,50 @@ class _SignInFormState extends State<SignInForm> {
   }
 
   void singIn(BuildContext context) {
-    Provider.of<AuthController>(context, listen: false).login();
+    // Provider.of<AuthController>(context, listen: false).login();
     //// confetti.fire();
-    // setState(() {
-    //   isShowConfetti = true;
-    //   isShowLoading = true;
-    // });
-    // Future.delayed(
-    //   const Duration(seconds: 1),
-    //   () {
-    //     if (_formKey.currentState!.validate()) {
-    //       success.fire();
-    //       Future.delayed(
-    //         const Duration(seconds: 2),
-    //         () {
-    //           setState(() {
-    //             isShowLoading = false;
-    //           });
-    //           confetti.fire();
-    //           // Navigate & hide confetti
-    //           Future.delayed(const Duration(seconds: 1), () {
-    //             // Navigator.pop(context);
-    //             // Navigator.push(
-    //             //   context,
-    //             //   MaterialPageRoute(
-    //             //     builder: (context) => const EntryPoint(),
-    //             //   ),
-    //             // );
-    //           });
-    //         },
-    //       );
-    //     } else {
-    //       error.fire();
-    //       Future.delayed(
-    //         const Duration(seconds: 2),
-    //         () {
-    //           setState(() {
-    //             isShowLoading = false;
-    //           });
-    //           reset.fire();
-    //         },
-    //       );
-    //     }
-    //   },
-    // );
+    setState(() {
+      isShowConfetti = true;
+      isShowLoading = true;
+    });
+    Future.delayed(
+      const Duration(seconds: 1),
+      () {
+        if (_formKey.currentState!.validate()) {
+          success.fire();
+          Future.delayed(
+            const Duration(seconds: 2),
+            () {
+              setState(() {
+                isShowLoading = false;
+              });
+              confetti.fire();
+              // Navigate & hide confetti
+              Future.delayed(const Duration(seconds: 1), () {
+                // Navigator.pop(context);
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => const EntryPoint(),
+                //   ),
+                // );
+              });
+            },
+          );
+        } else {
+          error.fire();
+          Future.delayed(
+            const Duration(seconds: 2),
+            () {
+              setState(() {
+                isShowLoading = false;
+              });
+              reset.fire();
+            },
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -99,7 +100,7 @@ class _SignInFormState extends State<SignInForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Email",
+                "Username",
                 style: TextStyle(
                   color: Colors.black54,
                 ),
@@ -167,7 +168,7 @@ class _SignInFormState extends State<SignInForm> {
                     CupertinoIcons.arrow_right,
                     color: Color(0xFFFE0037),
                   ),
-                  label: const Text("Sign In"),
+                  label: Text(S.of(context).signInDialogSignInButton),
                 ),
               ),
             ],

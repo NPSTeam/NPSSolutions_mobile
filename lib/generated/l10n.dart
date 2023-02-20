@@ -69,6 +69,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Sign in`
+  String get signInDialogTitle {
+    return Intl.message(
+      'Sign in',
+      name: 'signInDialogTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign In`
+  String get signInDialogSignInButton {
+    return Intl.message(
+      'Sign In',
+      name: 'signInDialogSignInButton',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

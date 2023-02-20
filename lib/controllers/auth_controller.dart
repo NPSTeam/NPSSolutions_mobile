@@ -22,7 +22,7 @@ class AuthController extends ChangeNotifier {
 
   Future refreshAuthentication() async {}
 
-  Future login() async {
+  Future<bool> login() async {
     ResponseModel? response = await DioRepo.post(
       '/api/v1/auth/login',
       data: {
@@ -33,6 +33,9 @@ class AuthController extends ChangeNotifier {
       unAuth: true,
     );
 
-    debugPrint("${response?.data}");
+    auth = AuthModel.fromJson(response?.data);
+    notifyListeners();
+
+    return true;
   }
 }

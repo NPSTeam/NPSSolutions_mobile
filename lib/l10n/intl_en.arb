@@ -1,4 +1,7 @@
 {
     "NPSTeam": "NPS Team",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+
+    "signInDialogTitle": "Sign in",
+    "signInDialogSignInButton": "Sign In"
 }

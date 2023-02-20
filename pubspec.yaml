@@ -32,6 +32,8 @@ dependencies:
   animated_toggle_switch: ^0.6.1
   font_awesome_flutter: ^10.3.0
   curved_navigation_bar: ^1.0.3
+  hexcolor: ^3.0.1
+  google_fonts: ^4.0.3
 
 
 dev_dependencies:
@@ -75,6 +77,7 @@ flutter:
     - assets/RiveAssets/
     - assets/icons/
     - assets/icons/png/
+    - assets/images/
 
   fonts:
     - family: Roboto

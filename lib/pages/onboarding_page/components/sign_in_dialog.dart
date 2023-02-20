@@ -1,5 +1,8 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:npssolutions_mobile/generated/l10n.dart';
 
 import 'sign_in_form.dart';
 
@@ -33,91 +36,93 @@ void showCustomDialog(BuildContext context, {required ValueChanged onValue}) {
             ],
           ),
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.transparent,
             body: Stack(
               clipBehavior: Clip.none,
               children: [
-                Column(
-                  children: [
-                    const Text(
-                      "Sign in",
-                      style: TextStyle(
-                        fontSize: 34,
-                        fontFamily: "Poppins",
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Text(
-                        "Access to 240+ hours of content. Learn design and code, by building real apps with Flutter and Swift.",
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    const SignInForm(),
-                    Row(
-                      children: const [
-                        Expanded(
-                          child: Divider(),
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text(
+                        S.of(context).signInDialogTitle,
+                        style: TextStyle(
+                          fontSize: 34,
+                          fontFamily: "Roboto",
+                          fontWeight: FontWeight.w600,
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            "OR",
-                            style: TextStyle(
-                              color: Colors.black26,
-                              fontWeight: FontWeight.w500,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          "Access to 240+ hours of content. Learn design and code, by building real apps with Flutter and Swift.",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const SignInForm(),
+                      Row(
+                        children: const [
+                          Expanded(
+                            child: Divider(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Text(
+                              "OR",
+                              style: TextStyle(
+                                color: Colors.black26,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(child: Divider()),
-                      ],
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24),
-                      child: Text(
-                        "Sign up with Email, Apple or Google",
-                        style: TextStyle(color: Colors.black54),
+                          Expanded(child: Divider()),
+                        ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          padding: EdgeInsets.zero,
-                          icon: SvgPicture.asset(
-                            "assets/icons/email_box.svg",
-                            height: 64,
-                            width: 64,
-                          ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: Text(
+                          "Sign up with Email, Apple or Google",
+                          style: TextStyle(color: Colors.black54),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          padding: EdgeInsets.zero,
-                          icon: SvgPicture.asset(
-                            "assets/icons/apple_box.svg",
-                            height: 64,
-                            width: 64,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            padding: EdgeInsets.zero,
+                            icon: SvgPicture.asset(
+                              "assets/icons/email_box.svg",
+                              height: 64,
+                              width: 64,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          padding: EdgeInsets.zero,
-                          icon: SvgPicture.asset(
-                            "assets/icons/google_box.svg",
-                            height: 64,
-                            width: 64,
+                          IconButton(
+                            onPressed: () {},
+                            padding: EdgeInsets.zero,
+                            icon: SvgPicture.asset(
+                              "assets/icons/apple_box.svg",
+                              height: 64,
+                              width: 64,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          IconButton(
+                            onPressed: () {},
+                            padding: EdgeInsets.zero,
+                            icon: SvgPicture.asset(
+                              "assets/icons/google_box.svg",
+                              height: 64,
+                              width: 64,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 const Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: -48,
+                  top: -48,
+                  right: -24,
                   child: CircleAvatar(
                     radius: 16,
                     backgroundColor: Colors.white,

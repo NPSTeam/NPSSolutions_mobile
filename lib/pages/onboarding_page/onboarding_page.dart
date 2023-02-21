@@ -1,13 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
 import 'package:npssolutions_mobile/generated/l10n.dart';
+import 'package:npssolutions_mobile/pages/login_page/login_page.dart';
 import 'package:npssolutions_mobile/widgets/widget_language_toggle.dart';
 import 'package:rive/rive.dart';
 
 import 'components/animated_btn.dart';
-import 'components/sign_in_dialog.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -27,6 +27,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       "active",
       autoplay: false,
     );
+
     super.initState();
   }
 
@@ -102,7 +103,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             Future.delayed(
                               const Duration(milliseconds: 800),
                               () {
-                                context.go('/login');
+                                Get.to(const LoginPage());
                                 // setState(() {
                                 //   isShowSignInDialog = true;
                                 // });

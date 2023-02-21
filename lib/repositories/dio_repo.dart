@@ -1,34 +1,23 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart' as getx;
 import 'package:npssolutions_mobile/configs/app_key.dart';
 import 'package:npssolutions_mobile/models/response_model.dart';
-import 'package:npssolutions_mobile/services/spref.dart';
 
-import '../configs/spref_key.dart';
+import '../controllers/auth_controller.dart';
 
 class DioRepo {
-  static late Dio _dio;
-  static late Dio _unAuthDio;
-  static late BuildContext context;
+  final Dio _dio = Dio(BaseOptions(
+    baseUrl: AppKey.BACKEND_URL,
+    headers: {
+      "Authorization":
+          "Bearer ${getx.Get.find<AuthController>().auth?.accessToken}",
+    },
+  ));
 
-  DioRepo() {
-    loadDio();
-  }
+  final Dio _unAuthDio = Dio(BaseOptions(baseUrl: AppKey.BACKEND_URL));
 
-  static loadDio() {
-    _dio = Dio(BaseOptions(
-      baseUrl: AppKey.BACKEND_URL,
-      headers: {
-        "Authorization": "Bearer ${SPref.instance.get(SPrefKey.accessToken)}",
-      },
-    ));
-
-    _unAuthDio = Dio(BaseOptions(
-      baseUrl: AppKey.BACKEND_URL,
-    ));
-  }
-
-  static Future<ResponseModel?> get(
+  Future<ResponseModel?> get(
     String path, {
     Map<String, dynamic>? parameters,
     bool unAuth = false,
@@ -59,7 +48,7 @@ class DioRepo {
     return null;
   }
 
-  static Future<ResponseModel?> post(
+  Future<ResponseModel?> post(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,

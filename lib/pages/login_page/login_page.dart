@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/widgets/widget_button.dart';
 import 'package:npssolutions_mobile/widgets/widget_textfield.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,9 +15,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final emailController = TextEditingController();
+  final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+
   void signUserIn() async {
+    Provider.of<AuthController>(context, listen: false).login(
+      username: usernameController.text,
+      password: passwordController.text,
+    );
     // try {
     //   await FirebaseAuth.instance.signInWithEmailAndPassword(
     //       email: emailController.text, password: passwordController.text);
@@ -106,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Email",
+                                      "Username",
                                       style: GoogleFonts.poppins(
                                         fontSize: 18,
                                         color: HexColor("#8d8d8d"),
@@ -117,9 +124,9 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                     MyTextField(
                                       onChanged: (() {
-                                        validateEmail(emailController.text);
+                                        validateEmail(usernameController.text);
                                       }),
-                                      controller: emailController,
+                                      controller: usernameController,
                                       hintText: "hello@gmail.com",
                                       obscureText: false,
                                       prefixIcon:

@@ -14,27 +14,56 @@ class AuthController extends ChangeNotifier {
 
   AuthController(BuildContext context) {
     SharedPreferences.getInstance().then((instance) async {
-      auth?.refreshToken = instance.getString(SPrefKey.refreshToken) ?? '';
-      auth?.accessToken = instance.getString(SPrefKey.accessToken) ?? '';
+      auth?.refreshToken = instance.getString(SPrefKey.refreshToken);
+      auth?.accessToken = instance.getString(SPrefKey.accessToken);
       notifyListeners();
     });
   }
 
-  Future refreshAuthentication() async {}
+  Future<bool> loggedInCheck() async {
+    await SharedPreferences.getInstance().then((instance) async {
+      auth?.refreshToken = instance.getString(SPrefKey.refreshToken);
+      auth?.accessToken = instance.getString(SPrefKey.accessToken);
+      notifyListeners();
+    });
 
-  Future<bool> login() async {
+    debugPrint(auth?.refreshToken);
+    debugPrint(auth?.accessToken);
+
+    if (auth?.refreshToken != null &&
+        auth?.refreshToken != '' &&
+        auth?.accessToken != null &&
+        auth?.accessToken != '') {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> login({
+    required String username,
+    required String password,
+  }) async {
     ResponseModel? response = await DioRepo.post(
       '/api/v1/auth/login',
       data: {
-        "username": "sangphan45",
-        "password": "#Minhthu28092001",
+        "username": username,
+        "password": password,
         "rememberMe": true,
       },
       unAuth: true,
     );
 
-    auth = AuthModel.fromJson(response?.data);
-    notifyListeners();
+    if (response?.data != null) {
+      auth = AuthModel.fromJson(response?.data);
+
+      await SharedPreferences.getInstance().then((instance) {
+        instance.setString(SPrefKey.refreshToken, auth?.refreshToken ?? '');
+        instance.setString(SPrefKey.accessToken, auth?.accessToken ?? '');
+      });
+
+      notifyListeners();
+    }
 
     return true;
   }

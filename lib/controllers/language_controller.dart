@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:npssolutions_mobile/configs/spref_key.dart';
 import 'package:npssolutions_mobile/services/spref.dart';
 
@@ -9,7 +10,7 @@ class LanguageValue {
   LanguageValue({required this.locale, required this.icon});
 }
 
-class LanguageController extends ChangeNotifier {
+class LanguageController extends GetxController {
   final Map<String, LanguageValue> languages = {
     'en': LanguageValue(
         locale: const Locale('en'), icon: 'icons/flags/png/gb.png'),
@@ -28,8 +29,9 @@ class LanguageController extends ChangeNotifier {
     if (!languages.containsKey(languageCode)) return;
 
     currentLocale = languages[languageCode];
+    await Get.updateLocale(Locale(languageCode));
     await SPref.instance.set(SPrefKey.languageCode, languageCode);
 
-    notifyListeners();
+    update();
   }
 }

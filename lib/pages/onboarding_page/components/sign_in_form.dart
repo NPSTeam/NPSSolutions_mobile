@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:npssolutions_mobile/controllers/auth_controller.dart';
-import 'package:npssolutions_mobile/generated/l10n.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import 'package:rive/rive.dart';
 
 class SignInForm extends StatefulWidget {
@@ -168,7 +166,7 @@ class _SignInFormState extends State<SignInForm> {
                     CupertinoIcons.arrow_right,
                     color: Color(0xFFFE0037),
                   ),
-                  label: Text(S.of(context).signInDialogSignInButton),
+                  label: Text('signInDialogSignInButton'.tr),
                 ),
               ),
             ],

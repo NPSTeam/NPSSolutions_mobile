@@ -1,14 +1,14 @@
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:npssolutions_mobile/controllers/language_controller.dart';
-import 'package:provider/provider.dart';
 
 class WidgetLanguageToggle extends StatelessWidget {
   const WidgetLanguageToggle({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LanguageController>(builder: (_, controller, __) {
+    return GetBuilder<LanguageController>(builder: (controller) {
       return AnimatedToggleSwitch.dual(
         current: controller.currentLocale?.locale.languageCode,
         first: 'en',

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:npssolutions_mobile/generated/l10n.dart';
+import 'package:get/get.dart';
 
 import 'sign_in_form.dart';
 
@@ -45,7 +45,7 @@ void showCustomDialog(BuildContext context, {required ValueChanged onValue}) {
                   child: Column(
                     children: [
                       Text(
-                        S.of(context).signInDialogTitle,
+                        'signInDialogTitle'.tr,
                         style: TextStyle(
                           fontSize: 34,
                           fontFamily: "Roboto",

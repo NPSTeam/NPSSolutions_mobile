@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:npssolutions_mobile/internationalization/message_keys.dart';
 import 'package:rive/rive.dart';
 
 class AnimatedBtn extends StatelessWidget {
@@ -36,7 +37,7 @@ class AnimatedBtn extends StatelessWidget {
                   const Icon(CupertinoIcons.arrow_right),
                   const SizedBox(width: 8),
                   Text(
-                    'getStarted'.tr,
+                    MessageKeys.getStarted.tr,
                     style: Theme.of(context).textTheme.button,
                   )
                 ],

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:npssolutions_mobile/internationalization/message_keys.dart';
 import 'package:npssolutions_mobile/pages/login_page/login_page.dart';
 import 'package:npssolutions_mobile/widgets/widget_language_toggle.dart';
 import 'package:rive/rive.dart';
@@ -78,7 +79,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'NPSTeam'.tr,
+                                MessageKeys.npsTeam.tr,
                                 style: const TextStyle(
                                   fontSize: 60,
                                   fontWeight: FontWeight.w700,

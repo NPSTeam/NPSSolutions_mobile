@@ -45,8 +45,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
       translations: Messages(), // your translations
-      locale: _languageController.currentLocale
-          ?.locale, // translations will be displayed in that locale
+      locale: _languageController.currentLocale?.locale,
       // fallbackLocale: const Locale('en', 'UK'), // specify the fallback locale in case an invalid locale is selected.
       home: GetBuilder<AuthController>(
         builder: (authController) => authController.auth != null

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/widgets/widget_button.dart';
 import 'package:npssolutions_mobile/widgets/widget_textfield.dart';
-import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,10 +18,13 @@ class _LoginPageState extends State<LoginPage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
+  bool rememberMe = false;
+
   void signUserIn() async {
-    Provider.of<AuthController>(context, listen: false).login(
+    await Get.find<AuthController>().login(
       username: usernameController.text,
       password: passwordController.text,
+      rememberMe: rememberMe,
     );
     // try {
     //   await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -81,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                   Stack(
                     children: [
                       Container(
-                        height: 535,
+                        height: 600,
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: HexColor("#ffffff"),
@@ -114,9 +117,9 @@ class _LoginPageState extends State<LoginPage> {
                                   children: [
                                     Text(
                                       "Username",
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         fontSize: 18,
-                                        color: HexColor("#8d8d8d"),
+                                        color: HexColor('#8d8d8d'),
                                       ),
                                     ),
                                     const SizedBox(
@@ -148,9 +151,9 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                     Text(
                                       "Password",
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         fontSize: 18,
-                                        color: HexColor("#8d8d8d"),
+                                        color: HexColor('#8d8d8d'),
                                       ),
                                     ),
                                     const SizedBox(
@@ -162,6 +165,34 @@ class _LoginPageState extends State<LoginPage> {
                                       obscureText: true,
                                       prefixIcon:
                                           const Icon(Icons.lock_outline),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          rememberMe = !rememberMe;
+                                        });
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Checkbox(
+                                            value: rememberMe,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                rememberMe = value ?? false;
+                                              });
+                                            },
+                                          ),
+                                          const Text(
+                                            "Remember Me",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 20,

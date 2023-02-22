@@ -1,5 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:npssolutions_mobile/controllers/auth_controller.dart';
+import 'package:npssolutions_mobile/pages/onboarding_page/onboarding_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -43,8 +46,9 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               Text(_tabIndex.toString(), textScaleFactor: 10.0),
               ElevatedButton(
-                child: Text('Go To Page of index 1'),
+                child: const Text('Go To Page of index 1'),
                 onPressed: () {
+                  Get.find<AuthController>().logout();
                   final CurvedNavigationBarState? navBarState =
                       _bottomNavigationKey.currentState;
                   navBarState?.setPage(1);

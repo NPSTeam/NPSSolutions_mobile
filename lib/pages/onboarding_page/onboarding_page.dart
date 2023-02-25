@@ -103,7 +103,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             Future.delayed(
                               const Duration(milliseconds: 800),
                               () {
-                                Get.to(const LoginPage());
+                                Get.to(() => const LoginPage());
                                 // setState(() {
                                 //   isShowSignInDialog = true;
                                 // });

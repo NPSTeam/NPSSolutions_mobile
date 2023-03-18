@@ -5,16 +5,24 @@ class Messages extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
         'en_US': {
-          MessageKeys.npsTeam: 'NPS Team',
+          // Onboarding Page
+          MessageKeys.npsSolutions: 'NPS Solutions',
+          MessageKeys.onboardingSlogan: 'Technology Solutions for Everyone',
           MessageKeys.getStarted: 'Get Started',
+          MessageKeys.developedBy: 'Developed by',
+          //
           MessageKeys.signInDialogTitle: 'Sign in',
           MessageKeys.signInDialogSignInButton: 'Sign In',
         },
         'vi_VN': {
-          MessageKeys.npsTeam: 'NPS Team',
+          // Onboarding Page
+          MessageKeys.npsSolutions: 'NPS Solutions',
+          MessageKeys.onboardingSlogan: 'Giải pháp cho mọi nhà',
           MessageKeys.getStarted: 'Bắt Đầu',
-          MessageKeys.signInDialogTitle: 'Đăng nhập',
+          MessageKeys.developedBy: 'Được phát triển bởi',
+          //
           MessageKeys.signInDialogSignInButton: 'Đăng Nhập',
+          MessageKeys.signInDialogTitle: 'Đăng nhập',
         },
       };
 }

@@ -185,14 +185,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  curved_navigation_bar:
-    dependency: "direct main"
-    description:
-      name: curved_navigation_bar
-      sha256: ea6412d00c5d83501bbf1cf9d1ac2ff11a20fbaf910c103c95ace7de82910334
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3"
   dart_style:
     dependency: transitive
     description:
@@ -209,6 +201,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.6"
+  drop_shadow:
+    dependency: "direct main"
+    description:
+      name: drop_shadow
+      sha256: "1fa552baeb7c6a3c36a7ff77186a2302a7bf53c93914f46328a9c4eb68ec6b08"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
+  emerge_alert_dialog:
+    dependency: "direct main"
+    description:
+      name: emerge_alert_dialog
+      sha256: "5b564b31ccd1229c05f72e35e119e6c5a96c1c3c8ba5775938094ed9b4074b18"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -736,6 +744,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
+  sidebarx:
+    dependency: "direct main"
+    description:
+      name: sidebarx
+      sha256: "26a8392ceddb659c8f2c688beba6c04bcbf520b4d5decb143c5fd7253653081f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.0"
   sky_engine:
     dependency: transitive
     description: flutter

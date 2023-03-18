@@ -23,6 +23,7 @@ class DioRepo {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onResponse: (Response response, ResponseInterceptorHandler handler) {
+          debugPrint("response");
           return handler.next(response);
         },
         onError: (DioError e, ErrorInterceptorHandler handler) async {

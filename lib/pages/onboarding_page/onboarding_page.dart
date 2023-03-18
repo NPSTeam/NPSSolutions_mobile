@@ -79,7 +79,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                MessageKeys.npsTeam.tr,
+                                MessageKeys.npsSolutions.tr,
                                 style: const TextStyle(
                                   fontSize: 60,
                                   fontWeight: FontWeight.w700,
@@ -88,8 +88,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              const Text(
-                                "Don't skip design. Learn design and code, by building real apps with Flutter and Swift. Complete courses about the best tools.",
+                              Text(
+                                MessageKeys.onboardingSlogan.tr,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: "Roboto",
+                                  fontStyle: FontStyle.italic,
+                                  height: 1.2,
+                                ),
                               ),
                             ],
                           ),
@@ -119,11 +126,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             );
                           },
                         ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 24),
-                          child: Text(
-                              "Purchase includes access to 30+ courses, 240+ premium tutorials, 120+ hours of videos, source files and certificates."),
-                        )
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          child: Text.rich(
+                            TextSpan(children: [
+                              TextSpan(text: MessageKeys.developedBy.tr),
+                              const TextSpan(
+                                  text: ' NPS Team',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ]),
+                          ),
+                        ),
                       ],
                     ),
                     const Positioned(

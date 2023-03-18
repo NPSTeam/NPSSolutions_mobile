@@ -6,7 +6,7 @@ version: 1.0.0+1
 
 
 environment:
-  sdk: '>=2.18.6 <3.0.0'
+  sdk: '>=2.19.0 <3.0.0'
   flutter: ^3.3.10
 
 
@@ -30,10 +30,12 @@ dependencies:
   flutter_svg: ^2.0.0+1
   animated_toggle_switch: ^0.6.1
   font_awesome_flutter: ^10.3.0
-  curved_navigation_bar: ^1.0.3
   hexcolor: ^3.0.1
   google_fonts: ^4.0.3
   ionicons: ^0.2.2
+  emerge_alert_dialog: ^0.0.3
+  sidebarx: ^0.15.0
+  drop_shadow: ^0.1.0
 
 
 dev_dependencies:

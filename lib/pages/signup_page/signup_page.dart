@@ -56,7 +56,6 @@ class _SignUpPageState extends State<SignUpPage> {
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
           shrinkWrap: true,
-          reverse: true,
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.end,

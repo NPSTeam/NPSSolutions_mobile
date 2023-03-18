@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:npssolutions_mobile/controllers/language_controller.dart';
 
+import '../configs/themes/assets_const.dart';
+
 class WidgetLanguageToggle extends StatelessWidget {
   const WidgetLanguageToggle({super.key});
 
@@ -29,8 +31,8 @@ class WidgetLanguageToggle extends StatelessWidget {
         height: 36,
         iconBuilder: (value) =>
             controller.currentLocale?.locale.languageCode == 'en'
-                ? Image.asset('assets/icons/png/flag_uk_rounded.png')
-                : Image.asset('assets/icons/png/flag_vietnam_rounded.png'),
+                ? Image.asset(AssetsConst.ukFlagRoundedIcon)
+                : Image.asset(AssetsConst.vnFlagRoundedIcon),
         textBuilder: (value) => value == 'en'
             ? const Center(child: Text('EN'))
             : const Center(child: Text('VI')),

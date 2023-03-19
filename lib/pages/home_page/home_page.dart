@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:npssolutions_mobile/configs/themes/assets_const.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
+import 'package:npssolutions_mobile/pages/home_page/components/drawer_component.dart';
 import 'package:npssolutions_mobile/widgets/widget_app_bar_avatar.dart';
 import 'package:sidebarx/sidebarx.dart';
 
@@ -120,107 +121,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         key: _scaffoldKey,
         backgroundColor: ColorConst.primary,
-        drawer: SidebarX(
-          controller: _drawerController,
-          theme: SidebarXTheme(
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: canvasColor,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            textStyle: const TextStyle(color: Colors.white),
-            selectedTextStyle: const TextStyle(color: Colors.white),
-            itemTextPadding: const EdgeInsets.only(left: 30),
-            selectedItemTextPadding: const EdgeInsets.only(left: 30),
-            itemDecoration:
-                BoxDecoration(border: Border.all(color: canvasColor)),
-            selectedItemDecoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: actionColor.withOpacity(0.37)),
-              gradient: LinearGradient(
-                colors: [accentCanvasColor, canvasColor],
-              ),
-              boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.28), blurRadius: 30)
-              ],
-            ),
-            iconTheme: const IconThemeData(color: Colors.white, size: 20),
-          ),
-          extendedTheme: SidebarXTheme(
-            width: Get.width * 0.7,
-            decoration: BoxDecoration(color: canvasColor),
-            margin: const EdgeInsets.only(right: 10),
-          ),
-          footerDivider: Column(
-            children: [
-              StreamBuilder(
-                  stream: _drawerController.extendStream,
-                  builder: (context, snapshot) {
-                    return DropShadow(
-                      offset: const Offset(0.0, 2.0),
-                      blurRadius: 10.0,
-                      spread: 0.5,
-                      opacity: 0.7,
-                      child: AnimatedCrossFade(
-                        duration: Duration(milliseconds: 500),
-                        firstChild: Image.asset(AssetsConst.npsSolutionsBrand,
-                            height: 50),
-                        secondChild:
-                            Image.asset(AssetsConst.npsLogo, height: 40),
-                        crossFadeState: _drawerController.extended
-                            ? CrossFadeState.showFirst
-                            : CrossFadeState.showSecond,
-                        // child: Image.asset(
-                        //   _drawerController.extended
-                        //       ? AssetsConst.npsSolutionsBrand
-                        //       : AssetsConst.npsLogo,
-                        //   height: 50,
-                        // ),
-                      ),
-                    );
-                  }),
-              divider,
-            ],
-          ),
-          headerBuilder: (context, extended) {
-            return const SafeArea(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(8, 12, 8, 8),
-                child: CircleAvatar(
-                  radius: 42.0,
-                  backgroundColor: Colors.blueGrey,
-                  child: CircleAvatar(
-                    radius: 40.0,
-                    backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage(
-                        'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'),
-                  ),
-                ),
-              ),
-            );
-          },
-          items: [
-            SidebarXItem(
-              icon: Icons.home,
-              label: 'Workspace Management',
-              onTap: () {
-                debugPrint('Hello');
-              },
-            ),
-            const SidebarXItem(
-              icon: Icons.search,
-              label: 'Search',
-            ),
-            const SidebarXItem(
-              icon: Icons.people,
-              label: 'People',
-            ),
-            const SidebarXItem(
-              icon: Icons.favorite,
-              label: 'Favorites',
-            ),
-          ],
-        ),
+        drawer: DrawerComponent(drawerController: _drawerController),
         appBar: AppBar(
           leading: InkWell(
             onTap: () => _scaffoldKey.currentState?.openDrawer(),

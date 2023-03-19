@@ -22,11 +22,17 @@ class DioRepo {
   DioRepo() {
     _dio.interceptors.add(
       InterceptorsWrapper(
+        onRequest: (options, handler) {
+          debugPrint("Request: ${options.method} ${options.path}");
+          return handler.next(options);
+        },
         onResponse: (Response response, ResponseInterceptorHandler handler) {
-          debugPrint("response");
+          debugPrint("Response: $response");
           return handler.next(response);
         },
         onError: (DioError e, ErrorInterceptorHandler handler) async {
+          debugPrint("Error: $e");
+          debugPrint("Error Response: ${e.response}");
           if (e.response?.statusCode == 401) {
             try {
               await _dio
@@ -36,23 +42,28 @@ class DioRepo {
                             getx.Get.find<AuthController>().auth?.refreshToken
                       }))
                   .then((value) async {
+                debugPrint("Refresh token successfully - ${value.data}");
                 if (value.statusCode == 200) {
-                  //get new tokens ...
                   debugPrint(
-                      "NEW ACCESS TOKEN - ${value.data['access_token']}");
+                      "NEW ACCESS TOKEN - ${value.data['data']['access_token']}");
                   debugPrint(
-                      "NEW REFRESH TOKEN - ${value.data['refresh_token']}");
+                      "NEW REFRESH TOKEN - ${value.data['data']['refresh_token']}");
 
-                  //set bearer
-                  await getx.Get.find<AuthController>().updateTokenToLocal(
-                    accessToken: value.data['access_token'],
-                    refreshToken: value.data['access_token'],
-                  );
+                  // Set bearer
+                  if (value.data['data']['access_token'] != null &&
+                      value.data['data']['access_token'] != '' &&
+                      value.data['data']['refresh_token'] != null &&
+                      value.data['data']['refresh_token'] != '') {
+                    await getx.Get.find<AuthController>().updateTokenToLocal(
+                      accessToken: value.data['data']['access_token'],
+                      refreshToken: value.data['data']['refresh_token'],
+                    );
 
-                  e.requestOptions.headers["Authorization"] =
-                      "Bearer ${value.data['access_token']}";
+                    e.requestOptions.headers["Authorization"] =
+                        "Bearer ${value.data['data']['access_token']}";
+                  }
 
-                  //create request with new access token
+                  // Resend request with new access token
                   final opts = Options(
                       method: e.requestOptions.method,
                       headers: e.requestOptions.headers);
@@ -64,7 +75,9 @@ class DioRepo {
                   return handler.resolve(cloneReq);
                 }
               });
-            } catch (e) {}
+            } catch (e) {
+              debugPrint("Refresh token failed - $e");
+            }
           }
 
           return handler.next(e); //continue
@@ -91,7 +104,6 @@ class DioRepo {
               queryParameters: parameters,
             );
 
-      debugPrint("${res.data}");
       return ResponseModel.fromJson(res.data);
     } on DioError catch (e) {
       if (e.response != null) {
@@ -124,7 +136,6 @@ class DioRepo {
               queryParameters: queryParameters,
             );
 
-      debugPrint("${res.data}");
       return ResponseModel.fromJson(res.data);
     } on DioError catch (e) {
       if (e.response != null) {

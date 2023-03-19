@@ -23,6 +23,7 @@ dependencies:
   flutter_dotenv: ^5.0.2
   image_picker: ^0.8.6+3
   intl: ^0.18.0
+  package_info_plus: ^3.0.3
 
   # UI packages
   cupertino_icons: ^1.0.2
@@ -36,6 +37,8 @@ dependencies:
   emerge_alert_dialog: ^0.0.3
   sidebarx: ^0.15.0
   drop_shadow: ^0.1.0
+  card_loading: ^0.3.0
+  auto_animated: ^3.1.0
 
 
 dev_dependencies:

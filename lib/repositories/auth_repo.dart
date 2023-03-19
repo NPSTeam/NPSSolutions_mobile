@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:npssolutions_mobile/models/response_model.dart';
-import 'package:npssolutions_mobile/repositories/dio_repo.dart';
 import 'package:path/path.dart' as p;
+
+import '../models/response_model.dart';
+import 'dio_repo.dart';
 
 final authRepo = _AuthRepo();
 

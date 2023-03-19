@@ -1,6 +1,10 @@
 import 'package:emerge_alert_dialog/emerge_alert_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:npssolutions_mobile/configs/string_const.dart';
 import 'package:npssolutions_mobile/configs/themes/size_const.dart';
+
+import '../controllers/auth_controller.dart';
 
 class WidgetAppBarAvatar extends StatefulWidget {
   const WidgetAppBarAvatar({super.key});
@@ -12,24 +16,28 @@ class WidgetAppBarAvatar extends StatefulWidget {
 class _WidgetAppBarAvatarState extends State<WidgetAppBarAvatar> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Center(
-        child: InkWell(
-          onTap: () => _showMyDialog(context),
-          child: const CircleAvatar(
-            radius: 22.0,
-            backgroundColor: Colors.blueGrey,
+    return GetBuilder<AuthController>(builder: (controller) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: InkWell(
+            // customBorder: const CircleBorder(),
+            onTap: () => _showMyDialog(context),
             child: CircleAvatar(
-              radius: 19.0,
-              backgroundColor: Colors.transparent,
-              backgroundImage: NetworkImage(
-                  'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'),
+              radius: 22.0,
+              backgroundColor: Colors.blueGrey,
+              child: CircleAvatar(
+                radius: 19.0,
+                backgroundColor: Colors.transparent,
+                backgroundImage: NetworkImage(
+                    controller.auth?.currentUser?.photoURL ??
+                        StringConst.placeholderImageUrl),
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Future _showMyDialog(BuildContext context) async {

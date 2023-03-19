@@ -3,9 +3,12 @@ import 'package:get/get.dart';
 import 'package:npssolutions_mobile/configs/spref_key.dart';
 import 'package:npssolutions_mobile/models/auth_model.dart';
 import 'package:npssolutions_mobile/models/response_model.dart';
+import 'package:npssolutions_mobile/models/user_model.dart';
 import 'package:npssolutions_mobile/pages/onboarding_page/onboarding_page.dart';
 import 'package:npssolutions_mobile/repositories/auth_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../repositories/user_repo.dart';
 
 class AuthController extends GetxController {
   AuthModel? auth;
@@ -13,7 +16,9 @@ class AuthController extends GetxController {
   AuthController() {
     SharedPreferences.getInstance().then((instance) async {
       if (instance.getString(SPrefKey.accessToken) != null &&
-          instance.getString(SPrefKey.refreshToken) != null) {
+          instance.getString(SPrefKey.accessToken) != '' &&
+          instance.getString(SPrefKey.refreshToken) != null &&
+          instance.getString(SPrefKey.refreshToken) != '') {
         auth = AuthModel(
           accessToken: instance.getString(SPrefKey.accessToken),
           refreshToken: instance.getString(SPrefKey.refreshToken),
@@ -21,6 +26,8 @@ class AuthController extends GetxController {
 
         debugPrint("ACCESS TOKEN - ${auth?.accessToken}");
         debugPrint("REFRESH TOKEN - ${auth?.refreshToken}");
+
+        getUserProfile();
 
         update();
       }
@@ -105,5 +112,18 @@ class AuthController extends GetxController {
 
     update();
     return true;
+  }
+
+  Future<bool> getUserProfile() async {
+    ResponseModel? response = await userRepo.getUserProfile();
+
+    if (response?.data != null) {
+      auth?.currentUser = UserModel.fromJson(response?.data);
+
+      update();
+      return true;
+    }
+
+    return false;
   }
 }

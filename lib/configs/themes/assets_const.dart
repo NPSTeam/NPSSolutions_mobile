@@ -6,4 +6,7 @@ class AssetsConst {
 
   static const String npsLogo = 'assets/images/NPSLogo.png';
   static const String npsSolutionsBrand = 'assets/images/NPSSolutionsBrand.png';
+
+  static const String profileAvatarPlaceholder =
+      'assets/images/profile_avatar_placeholder.png';
 }

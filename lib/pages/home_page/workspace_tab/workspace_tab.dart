@@ -1,11 +1,15 @@
 import 'package:auto_animated/auto_animated.dart';
 import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:npssolutions_mobile/configs/themes/color_const.dart';
 import 'package:npssolutions_mobile/controllers/workspace_management_controller.dart';
+import 'package:npssolutions_mobile/models/workspace_model.dart';
+import 'package:npssolutions_mobile/widgets/widget_dialog_overlay.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../../helpers/utils.dart';
 import '../../../widgets/widget_search_field.dart';
@@ -18,10 +22,23 @@ class WorkspaceTab extends StatefulWidget {
 }
 
 class _WorkspaceTabState extends State<WorkspaceTab> {
-  WorkspaceManagementController _workspaceManagementController =
+  final WorkspaceManagementController _workspaceManagementController =
       Get.put(WorkspaceManagementController());
 
   bool isLoadingWorkspaces = true;
+
+  final RoundedLoadingButtonController _createWorkspaceBtnController =
+      RoundedLoadingButtonController();
+
+  final _codeController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _addressController = TextEditingController();
+
+  final _serviceItemList = [
+    MultiSelectItem<String>("Powerline", "Powerline"),
+    MultiSelectItem<String>("Agriculture", "Agriculture"),
+  ];
+  List<String> _selectedServices = [];
 
   @override
   void initState() {
@@ -38,6 +55,29 @@ class _WorkspaceTabState extends State<WorkspaceTab> {
       builder: (controller) {
         return Scaffold(
           backgroundColor: ColorConst.primary,
+          floatingActionButton: SpeedDial(
+            animatedIcon: AnimatedIcons.menu_close,
+            animatedIconTheme: const IconThemeData(size: 22.0),
+            visible: true,
+            curve: Curves.bounceIn,
+            overlayColor: Colors.black,
+            overlayOpacity: 0.5,
+            onOpen: () => debugPrint('OPENING DIAL'),
+            onClose: () => debugPrint('DIAL CLOSED'),
+            tooltip: 'Options',
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            elevation: 8.0,
+            shape: const CircleBorder(),
+            animationDuration: const Duration(milliseconds: 200),
+            children: [
+              SpeedDialChild(
+                  child: const Icon(Ionicons.add),
+                  backgroundColor: ColorConst.primary,
+                  label: 'Create Workspace',
+                  onTap: () => showCreateWorkspaceDialog(context)),
+            ],
+          ),
           body: SafeArea(
             child: Column(
               children: [
@@ -159,6 +199,93 @@ class _WorkspaceTabState extends State<WorkspaceTab> {
         );
       },
     );
+  }
+
+  void _createWorkspace() async {
+    // await Future.delayed(const Duration(seconds: 3));
+    await _workspaceManagementController.createWorkspace(WorkspaceModel(
+      code: _codeController.text,
+      name: _nameController.text,
+      address: _addressController.text,
+      registerServices: _selectedServices,
+    ));
+
+    _createWorkspaceBtnController.success();
+    await Future.delayed(const Duration(seconds: 1));
+    _createWorkspaceBtnController.reset();
+    Get.back();
+  }
+
+  Future<dynamic> showCreateWorkspaceDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (_) => StatefulBuilder(builder: (context, setState) {
+              return WidgetDialogOverlay(
+                title: "Create Workspace",
+                body: Column(
+                  children: [
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: "Code",
+                      ),
+                      controller: _codeController,
+                    ),
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: "Name",
+                      ),
+                      controller: _nameController,
+                    ),
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: "Address",
+                      ),
+                      controller: _addressController,
+                    ),
+                    MultiSelectBottomSheetField(
+                      initialChildSize: 0.4,
+                      listType: MultiSelectListType.CHIP,
+                      searchable: true,
+                      buttonText: const Text("Services"),
+                      title: const Text("Services"),
+                      items: _serviceItemList,
+                      initialValue: _selectedServices,
+                      onConfirm: (values) => _selectedServices = values.cast(),
+                      chipDisplay: MultiSelectChipDisplay(
+                        onTap: (value) =>
+                            setState(() => _selectedServices.remove(value)),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: RoundedLoadingButton(
+                            controller: RoundedLoadingButtonController(),
+                            animateOnTap: false,
+                            color: Colors.grey,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Cancel',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Flexible(
+                          child: RoundedLoadingButton(
+                            controller: _createWorkspaceBtnController,
+                            onPressed: _createWorkspace,
+                            child: const Text('Create',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }));
   }
 
   Widget loadingListItem() {

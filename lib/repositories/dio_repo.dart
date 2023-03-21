@@ -147,4 +147,34 @@ class DioRepo {
 
     return null;
   }
+
+  Future<ResponseModel?> delete(
+    String path, {
+    Map<String, dynamic>? parameters,
+    bool unAuth = false,
+  }) async {
+    try {
+      Response res;
+
+      res = unAuth
+          ? await _unAuthDio.delete(
+              path,
+              queryParameters: parameters,
+            )
+          : await _dio.delete(
+              path,
+              queryParameters: parameters,
+            );
+
+      return ResponseModel.fromJson(res.data);
+    } on DioError catch (e) {
+      if (e.response != null) {
+        debugPrint("${e.response?.data}");
+      } else {
+        debugPrint(e.message);
+      }
+    }
+
+    return null;
+  }
 }

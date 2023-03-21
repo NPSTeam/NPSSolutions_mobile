@@ -20,4 +20,28 @@ class WorkspaceManagementController extends GetxController {
 
     return false;
   }
+
+  Future<bool> createWorkspace(WorkspaceModel workspace) async {
+    ResponseModel? response = await workspaceRepo.createWorkspace(workspace);
+
+    if (response?.data != null) {
+      workspaces?.add(workspace);
+      update();
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> deleteWorkspace(int id) async {
+    ResponseModel? response = await workspaceRepo.deleteWorkspace(id);
+
+    if (response?.data != null) {
+      workspaces?.removeWhere((element) => element.id == id);
+      update();
+      return true;
+    }
+
+    return false;
+  }
 }

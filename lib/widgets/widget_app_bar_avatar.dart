@@ -2,6 +2,7 @@ import 'package:emerge_alert_dialog/emerge_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:npssolutions_mobile/configs/string_const.dart';
+import 'package:npssolutions_mobile/configs/themes/assets_const.dart';
 import 'package:npssolutions_mobile/configs/themes/size_const.dart';
 
 import '../controllers/auth_controller.dart';
@@ -21,7 +22,7 @@ class _WidgetAppBarAvatarState extends State<WidgetAppBarAvatar> {
         padding: const EdgeInsets.all(8.0),
         child: Center(
           child: InkWell(
-            // customBorder: const CircleBorder(),
+            customBorder: const CircleBorder(),
             onTap: () => _showMyDialog(context),
             child: CircleAvatar(
               radius: 22.0,
@@ -29,7 +30,9 @@ class _WidgetAppBarAvatarState extends State<WidgetAppBarAvatar> {
               child: CircleAvatar(
                 radius: 19.0,
                 backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage(
+                backgroundImage:
+                    Image.asset(AssetsConst.profileAvatarPlaceholder).image,
+                foregroundImage: NetworkImage(
                     controller.auth?.currentUser?.photoURL ??
                         StringConst.placeholderImageUrl),
               ),

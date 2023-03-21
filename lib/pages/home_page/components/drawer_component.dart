@@ -76,7 +76,10 @@ class DrawerComponent extends StatelessWidget {
                         child: CircleAvatar(
                           radius: drawerController.extended ? 40.0 : 20.0,
                           backgroundColor: Colors.transparent,
-                          backgroundImage: NetworkImage(
+                          backgroundImage:
+                              Image.asset(AssetsConst.profileAvatarPlaceholder)
+                                  .image,
+                          foregroundImage: NetworkImage(
                               controller.auth?.currentUser?.photoURL ??
                                   StringConst.placeholderImageUrl),
                         ),
@@ -108,12 +111,18 @@ class DrawerComponent extends StatelessWidget {
           }),
         );
       },
-      items: const [
-        SidebarXItem(icon: Ionicons.business, label: 'Workspace Management'),
-        SidebarXItem(icon: Icons.search, label: 'Search'),
-        SidebarXItem(icon: Icons.people, label: 'People'),
-        SidebarXItem(icon: Icons.favorite, label: 'Favorites'),
-        SidebarXItem(icon: Icons.settings, label: 'Settings'),
+      items: [
+        const SidebarXItem(
+            icon: Ionicons.business, label: 'Workspace Management'),
+        const SidebarXItem(icon: Icons.search, label: 'Search'),
+        const SidebarXItem(icon: Icons.people, label: 'People'),
+        const SidebarXItem(icon: Icons.favorite, label: 'Favorites'),
+        const SidebarXItem(icon: Ionicons.settings_outline, label: 'Settings'),
+        SidebarXItem(
+          onTap: () => Get.find<AuthController>().logout(),
+          icon: Ionicons.log_out_outline,
+          label: 'Log Out',
+        ),
       ],
       footerDivider: Column(
         children: [

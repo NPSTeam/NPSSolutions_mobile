@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/pages/home_page/home_page.dart';
 import 'package:npssolutions_mobile/pages/onboarding_page/onboarding_page.dart';
 import 'package:npssolutions_mobile/services/spref.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 
 import 'configs/app_key.dart';
 import 'controllers/language_controller.dart';
@@ -20,12 +23,18 @@ Future main() async {
   await SPref.init();
   AppKey.init();
 
-  // runApp(MultiProvider(
-  //   providers: [
-  //     ChangeNotifierProvider(create: (context) => LanguageController()),
-  //   ],
-  //   child: MyApp(),
-  // ));
+  EasyLoading.instance
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Colors.yellow
+    ..backgroundColor = Colors.green
+    ..indicatorColor = Colors.yellow
+    ..textColor = Colors.yellow
+    ..maskColor = Colors.blue.withOpacity(0.5)
+    ..userInteractions = true
+    ..dismissOnTap = false;
 
   runApp(MyApp());
 }
@@ -43,10 +52,30 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto',
+        extensions: [
+          SimpleLoadingDialogTheme(
+            dialogBuilder: (context, message) {
+              return AlertDialog(
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 16),
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 16),
+                    Text(message),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       translations: Messages(), // your translations
       locale: _languageController.currentLocale?.locale,
       // fallbackLocale: const Locale('en', 'UK'), // specify the fallback locale in case an invalid locale is selected.
+      localizationsDelegates: const [RefreshLocalizations.delegate],
+      builder: EasyLoading.init(),
       home: GetBuilder<AuthController>(
         builder: (authController) => authController.auth != null
             ? const HomePage()

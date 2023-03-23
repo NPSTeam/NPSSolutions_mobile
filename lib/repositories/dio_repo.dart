@@ -20,9 +20,28 @@ class DioRepo {
   final Dio _unAuthDio = Dio(BaseOptions(baseUrl: AppKey.BACKEND_URL));
 
   DioRepo() {
+    _unAuthDio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          debugPrint("Request: ${options.method} ${options.path}");
+          return handler.next(options);
+        },
+        onResponse: (Response response, ResponseInterceptorHandler handler) {
+          debugPrint("Response: $response");
+          return handler.next(response);
+        },
+        onError: (DioError e, ErrorInterceptorHandler handler) {
+          debugPrint("Error: $e");
+          debugPrint("Error Response: ${e.response}");
+          return handler.next(e);
+        },
+      ),
+    );
+
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
+          debugPrint('----------------------------------------');
           debugPrint("Request: ${options.method} ${options.path}");
           return handler.next(options);
         },
@@ -34,6 +53,8 @@ class DioRepo {
           debugPrint("Error: $e");
           debugPrint("Error Response: ${e.response}");
           if (e.response?.statusCode == 401) {
+            debugPrint(
+                "Refresh token - ${e.requestOptions.headers['Authorization']}");
             try {
               await _dio
                   .post("${AppKey.BACKEND_URL}/api/v1/auth/refresh-token",
@@ -164,6 +185,38 @@ class DioRepo {
           : await _dio.delete(
               path,
               queryParameters: parameters,
+            );
+
+      return ResponseModel.fromJson(res.data);
+    } on DioError catch (e) {
+      if (e.response != null) {
+        debugPrint("${e.response?.data}");
+      } else {
+        debugPrint(e.message);
+      }
+    }
+
+    return null;
+  }
+
+  Future<ResponseModel?> put(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    bool unAuth = false,
+  }) async {
+    try {
+      Response res;
+      res = unAuth
+          ? await _unAuthDio.put(
+              path,
+              data: data,
+              queryParameters: queryParameters,
+            )
+          : await _dio.put(
+              path,
+              data: data,
+              queryParameters: queryParameters,
             );
 
       return ResponseModel.fromJson(res.data);

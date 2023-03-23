@@ -108,6 +108,8 @@ class AuthController extends GetxController {
       await instance.remove(SPrefKey.refreshToken);
     });
 
+    await Get.delete<AuthController>();
+    Get.put(AuthController());
     Get.offAll(const OnboardingPage());
 
     update();

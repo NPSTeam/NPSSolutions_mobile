@@ -24,4 +24,20 @@ class _WorkspaceRepo extends DioRepo {
   Future<ResponseModel?> deleteWorkspace(int id) async {
     return await delete('/api/v1/workspace/$id/delete');
   }
+
+  Future<ResponseModel?> getWorkspaceDetail(int id) async {
+    return await get('/api/v1/workspace/$id/detail');
+  }
+
+  Future<ResponseModel?> updateWorkspace(WorkspaceModel workspace) async {
+    return await put(
+      '/api/v1/workspace/update',
+      data: {
+        'id': workspace.id,
+        'name': workspace.name,
+        'address': workspace.address,
+        'registerServices': workspace.registerServices,
+      },
+    );
+  }
 }

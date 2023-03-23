@@ -26,19 +26,12 @@ class _LoginPageState extends State<LoginPage> {
   void signUserIn() async {
     debugPrint("Signing in...");
     if (await Get.find<AuthController>().login(
-          username: usernameController.text,
-          password: passwordController.text,
-          rememberMe: rememberMe,
-        ) ==
-        true) {
+      username: usernameController.text,
+      password: passwordController.text,
+      rememberMe: rememberMe,
+    )) {
       Get.offAll(() => const HomePage());
     }
-    // try {
-    //   await FirebaseAuth.instance.signInWithEmailAndPassword(
-    //       email: emailController.text, password: passwordController.text);
-    // } on FirebaseAuthException catch (e) {
-    //   showErrorMessage(e.code);
-    // }
   }
 
   void showErrorMessage(String message) {

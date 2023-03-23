@@ -25,7 +25,7 @@ class WorkspaceManagementController extends GetxController {
     ResponseModel? response = await workspaceRepo.createWorkspace(workspace);
 
     if (response?.data != null) {
-      workspaces?.add(workspace);
+      workspaces?.add(WorkspaceModel.fromJson(response?.data));
       update();
       return true;
     }

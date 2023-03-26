@@ -15,7 +15,11 @@ class AuthController extends GetxController {
   AuthModel? auth;
 
   AuthController() {
-    SharedPreferences.getInstance().then((instance) async {
+    init();
+  }
+
+  Future init() async {
+    await SharedPreferences.getInstance().then((instance) async {
       if (instance.getString(SPrefKey.accessToken) != null &&
           instance.getString(SPrefKey.accessToken) != '' &&
           instance.getString(SPrefKey.refreshToken) != null &&
@@ -113,11 +117,11 @@ class AuthController extends GetxController {
       await instance.remove(SPrefKey.refreshToken);
     });
 
-    await Get.delete<AuthController>();
-    Get.put(AuthController());
     Get.offAll(const OnboardingPage());
 
     update();
+    await init();
+
     return true;
   }
 

@@ -22,18 +22,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   bool isShowSignInDialog = false;
 
-  final AuthController _authController = Get.put(AuthController());
-
   @override
   void initState() {
     _btnAnimationController = OneShotAnimation(
       "active",
       autoplay: false,
     );
-
-    if (!Get.find<AuthController>().initialized) {
-      Get.put(AuthController());
-    }
 
     super.initState();
   }

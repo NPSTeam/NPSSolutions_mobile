@@ -8,6 +8,7 @@ import '../repositories/workspace_repo.dart';
 class WorkspaceDetailController extends GetxController {
   WorkspaceModel? workspace;
   List<WorkspaceUserModel>? workspaceUsers;
+  List<WorkspaceUserModel>? workspaceCheckedUsers;
 
   Future<bool> getWorkspaceDetail(int id) async {
     workspace = null;
@@ -41,6 +42,22 @@ class WorkspaceDetailController extends GetxController {
 
     if (response?.data != null) {
       workspaceUsers = (response?.data as List)
+          .map((e) => WorkspaceUserModel.fromJson(e))
+          .toList();
+      update();
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> getWorkspaceCheckedUsers(int workspaceId) async {
+    workspaceCheckedUsers = null;
+    ResponseModel? response =
+        await workspaceRepo.getWorkspaceCheckedUsers(workspaceId);
+
+    if (response?.data != null) {
+      workspaceCheckedUsers = (response?.data as List)
           .map((e) => WorkspaceUserModel.fromJson(e))
           .toList();
       update();

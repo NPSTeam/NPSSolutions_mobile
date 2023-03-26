@@ -44,4 +44,8 @@ class _WorkspaceRepo extends DioRepo {
   Future<ResponseModel?> getWorkspaceUsers(int workspaceId) async {
     return await get('/api/v1/workspace/$workspaceId/list-user');
   }
+
+  Future<ResponseModel?> getWorkspaceCheckedUsers(int workspaceId) async {
+    return await get('/api/v1/workspace/$workspaceId/list-user-checked');
+  }
 }

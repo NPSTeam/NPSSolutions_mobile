@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:npssolutions_mobile/configs/spref_key.dart';
 import 'package:npssolutions_mobile/models/auth_model.dart';
@@ -102,6 +103,10 @@ class AuthController extends GetxController {
 
   Future<bool> logout() async {
     auth = null;
+
+    if (EasyLoading.isShow) {
+      EasyLoading.dismiss();
+    }
 
     await SharedPreferences.getInstance().then((instance) async {
       await instance.remove(SPrefKey.accessToken);

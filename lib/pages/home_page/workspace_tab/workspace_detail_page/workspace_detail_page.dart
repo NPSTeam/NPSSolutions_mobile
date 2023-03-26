@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:npssolutions_mobile/configs/string_const.dart';
 import 'package:npssolutions_mobile/configs/themes/color_const.dart';
 import 'package:npssolutions_mobile/controllers/workspace_detail_controller.dart';
+import 'package:npssolutions_mobile/pages/home_page/workspace_tab/workspace_detail_page/workspace_users_page.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 
-import '../../../models/workspace_model.dart';
+import '../../../../models/workspace_model.dart';
 
 class WorkspaceDetailPage extends StatefulWidget {
-  const WorkspaceDetailPage({
-    super.key,
-    required this.workspaceId,
-  });
+  const WorkspaceDetailPage({super.key, required this.workspaceId});
 
   final int workspaceId;
 
@@ -75,10 +74,24 @@ class _WorkspaceDetailPageState extends State<WorkspaceDetailPage> {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: ColorConst.primary,
-          title: const Align(
+          title: Align(
             alignment: Alignment.centerLeft,
-            child: Text("AppBar Title"),
+            child: Text(controller.workspace?.name ?? "Workspace"),
           ),
+          actions: [
+            InkWell(
+              onTap: () {
+                Get.to(
+                  () => WorkspaceUsersPage(workspaceId: widget.workspaceId),
+                  transition: Transition.cupertino,
+                );
+              },
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(Ionicons.people),
+              ),
+            ),
+          ],
         ),
         body: isLoadingWorkspace
             ? const SizedBox()

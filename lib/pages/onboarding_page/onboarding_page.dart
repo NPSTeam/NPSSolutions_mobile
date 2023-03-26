@@ -7,6 +7,7 @@ import 'package:npssolutions_mobile/pages/login_page/login_page.dart';
 import 'package:npssolutions_mobile/widgets/widget_language_toggle.dart';
 import 'package:rive/rive.dart';
 
+import '../../controllers/auth_controller.dart';
 import 'components/animated_btn.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -21,12 +22,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   bool isShowSignInDialog = false;
 
+  final AuthController _authController = Get.put(AuthController());
+
   @override
   void initState() {
     _btnAnimationController = OneShotAnimation(
       "active",
       autoplay: false,
     );
+
+    if (!Get.find<AuthController>().initialized) {
+      Get.put(AuthController());
+    }
 
     super.initState();
   }

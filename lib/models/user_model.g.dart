@@ -14,9 +14,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       password: json['password'] as String?,
       phoneNumber: json['phoneNumber'] as String?,
       photoURL: json['photoURL'] as String?,
-      birthday: json['birthday'] == null
-          ? null
-          : DateTime.parse(json['birthday'] as String),
+      birthDay: UserModel._fromJson(json['birthDay'] as String),
       roles:
           (json['roles'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
@@ -29,6 +27,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'password': instance.password,
       'phoneNumber': instance.phoneNumber,
       'photoURL': instance.photoURL,
-      'birthday': instance.birthday?.toIso8601String(),
+      'birthDay': UserModel._toJson(instance.birthDay),
       'roles': instance.roles,
     };

@@ -1,37 +1,37 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:intl/intl.dart';
 
-part 'user_model.g.dart';
+part 'workspace_user_model.g.dart';
 
 @JsonSerializable()
-class UserModel {
-  int? id;
+class WorkspaceUserModel {
+  int? userId;
+  int? workspaceId;
   String? username;
-  String? displayName;
-  String? email;
-  String? password;
   String? phoneNumber;
-  String? photoURL;
   @JsonKey(fromJson: _fromJson, toJson: _toJson)
   DateTime? birthDay;
-  List<String>? roles;
+  String? email;
+  String? avatar;
+  String? type;
+  bool? checked;
 
-  UserModel({
-    this.id,
+  WorkspaceUserModel({
+    this.userId,
+    this.workspaceId,
     this.username,
-    this.displayName,
-    this.email,
-    this.password,
     this.phoneNumber,
-    this.photoURL,
     this.birthDay,
-    this.roles,
+    this.email,
+    this.avatar,
+    this.type,
+    this.checked,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+  factory WorkspaceUserModel.fromJson(Map<String, dynamic> json) =>
+      _$WorkspaceUserModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$UserModelToJson(this);
+  Map<String, dynamic> toJson() => _$WorkspaceUserModelToJson(this);
 
   static DateTime _fromJson(String dateTimeString) =>
       DateFormat("dd/MM/yyyy").parse(dateTimeString);

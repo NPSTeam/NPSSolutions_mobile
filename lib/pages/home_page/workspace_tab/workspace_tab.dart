@@ -9,7 +9,7 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:npssolutions_mobile/configs/themes/color_const.dart';
 import 'package:npssolutions_mobile/controllers/workspace_management_controller.dart';
 import 'package:npssolutions_mobile/models/workspace_model.dart';
-import 'package:npssolutions_mobile/pages/home_page/workspace_tab/workspace_detail_page.dart';
+import 'package:npssolutions_mobile/pages/home_page/workspace_tab/workspace_detail_page/workspace_detail_page.dart';
 import 'package:npssolutions_mobile/widgets/widget_dialog_overlay.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -58,7 +58,6 @@ class _WorkspaceTabState extends State<WorkspaceTab> {
 
   void _onLoading() async {
     await Future.delayed(const Duration(milliseconds: 1000));
-    // items.add((items.length + 1).toString());
     if (mounted) setState(() {});
     _refreshController.loadComplete();
   }
@@ -414,33 +413,6 @@ class _WorkspaceTabState extends State<WorkspaceTab> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget loadingListItem() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          CardLoading(
-            height: 30,
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            width: 100,
-            margin: EdgeInsets.only(bottom: 10),
-          ),
-          CardLoading(
-              height: 100,
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-              margin: EdgeInsets.only(bottom: 10)),
-          CardLoading(
-            height: 30,
-            width: 200,
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            margin: EdgeInsets.only(bottom: 10),
-          ),
-        ],
       ),
     );
   }

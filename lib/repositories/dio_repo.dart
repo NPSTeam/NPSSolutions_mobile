@@ -98,6 +98,7 @@ class DioRepo {
               });
             } catch (e) {
               debugPrint("Refresh token failed - $e");
+              await getx.Get.find<AuthController>().logout();
             }
           }
 

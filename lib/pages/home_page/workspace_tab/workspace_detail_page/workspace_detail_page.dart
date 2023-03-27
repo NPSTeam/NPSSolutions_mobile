@@ -138,7 +138,7 @@ class _WorkspaceDetailPageState extends State<WorkspaceDetailPage> {
                       onPressed: _updateWorkspace,
                       child: const Text('Update',
                           style: TextStyle(color: Colors.white)),
-                    )
+                    ),
                   ],
                 ),
               ),

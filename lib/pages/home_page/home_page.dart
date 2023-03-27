@@ -1,4 +1,3 @@
-import 'package:drop_shadow/drop_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -27,7 +26,17 @@ class _HomePageState extends State<HomePage> {
     return AnimatedBuilder(
       animation: _drawerController,
       builder: (context, child) {
-        switch (_drawerController.selectedIndex) {
+        final bool isAdmin = Get.find<AuthController>()
+                .auth
+                ?.currentUser
+                ?.roles
+                ?.where((e) => e == 'admin')
+                .isNotEmpty ??
+            false;
+
+        final workspaceTab = isAdmin ? 0 : 1;
+
+        switch (_drawerController.selectedIndex + workspaceTab) {
           case 0:
             return const WorkspaceTab();
           case 1:

@@ -6,10 +6,12 @@ class WidgetDialogOverlay extends StatefulWidget {
     super.key,
     this.title,
     this.body,
+    this.bottom,
   });
 
   final String? title;
   final Widget? body;
+  final Widget? bottom;
 
   @override
   State<StatefulWidget> createState() => WidgetDialogOverlayState();
@@ -44,7 +46,9 @@ class WidgetDialogOverlayState extends State<WidgetDialogOverlay>
         child: ScaleTransition(
           scale: scaleAnimation,
           child: Container(
-            constraints: BoxConstraints(maxWidth: Get.width * 0.85),
+            constraints: BoxConstraints(
+              maxWidth: Get.width * 0.85,
+            ),
             decoration: ShapeDecoration(
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -74,6 +78,12 @@ class WidgetDialogOverlayState extends State<WidgetDialogOverlay>
                     ? Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: widget.body!,
+                      )
+                    : const SizedBox(),
+                widget.bottom != null
+                    ? Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: widget.bottom!,
                       )
                     : const SizedBox(),
               ],

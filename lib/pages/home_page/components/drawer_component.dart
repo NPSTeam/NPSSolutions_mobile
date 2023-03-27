@@ -21,10 +21,32 @@ class DrawerComponent extends StatelessWidget {
 
   final divider = Divider(color: Colors.white.withOpacity(0.3), height: 1);
 
-  AuthController _authController = Get.find();
+  final AuthController _authController = Get.find();
+
+  List<SidebarXItem> items = [
+    const SidebarXItem(icon: Icons.search, label: 'Search'),
+    SidebarXItem(
+      onTap: () => Get.find<AuthController>().logout(),
+      icon: Ionicons.log_out_outline,
+      label: 'Log Out',
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
+    if (Get.find<AuthController>()
+            .auth
+            ?.currentUser
+            ?.roles
+            ?.where((e) => e == 'admin')
+            .isNotEmpty ??
+        false) {
+      items.insert(
+          0,
+          const SidebarXItem(
+              icon: Ionicons.business, label: 'Workspace Management'));
+    }
+
     return SidebarX(
       controller: drawerController,
       theme: SidebarXTheme(
@@ -111,19 +133,7 @@ class DrawerComponent extends StatelessWidget {
           }),
         );
       },
-      items: [
-        const SidebarXItem(
-            icon: Ionicons.business, label: 'Workspace Management'),
-        const SidebarXItem(icon: Icons.search, label: 'Search'),
-        const SidebarXItem(icon: Icons.people, label: 'People'),
-        const SidebarXItem(icon: Icons.favorite, label: 'Favorites'),
-        const SidebarXItem(icon: Ionicons.settings_outline, label: 'Settings'),
-        SidebarXItem(
-          onTap: () => Get.find<AuthController>().logout(),
-          icon: Ionicons.log_out_outline,
-          label: 'Log Out',
-        ),
-      ],
+      items: items,
       footerDivider: Column(
         children: [
           StreamBuilder(

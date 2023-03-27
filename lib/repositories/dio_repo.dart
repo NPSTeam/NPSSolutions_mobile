@@ -9,7 +9,7 @@ import 'package:npssolutions_mobile/models/response_model.dart';
 import '../controllers/auth_controller.dart';
 
 class DioRepo {
-  final Dio _dio = Dio(BaseOptions(
+  Dio _dio = Dio(BaseOptions(
     baseUrl: AppKey.BACKEND_URL,
     headers: {
       "Authorization":
@@ -43,6 +43,7 @@ class DioRepo {
         onRequest: (options, handler) {
           debugPrint('----------------------------------------');
           debugPrint("Request: ${options.method} ${options.path}");
+          debugPrint("Request Body: ${options.data}");
           return handler.next(options);
         },
         onResponse: (Response response, ResponseInterceptorHandler handler) {
@@ -81,6 +82,16 @@ class DioRepo {
                     );
 
                     e.requestOptions.headers["Authorization"] =
+                        "Bearer ${value.data['data']['access_token']}";
+
+                    // _dio = Dio(BaseOptions(
+                    //   baseUrl: AppKey.BACKEND_URL,
+                    //   headers: {
+                    //     "Authorization":
+                    //         "Bearer ${getx.Get.find<AuthController>().auth?.accessToken}",
+                    //   },
+                    // ));
+                    _dio.options.headers["Authorization"] =
                         "Bearer ${value.data['data']['access_token']}";
                   }
 

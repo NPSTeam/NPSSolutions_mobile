@@ -52,6 +52,8 @@ class AuthController extends GetxController {
         await instance.setString(
             SPrefKey.refreshToken, auth?.refreshToken ?? '');
       });
+
+      update();
     } catch (e) {
       return false;
     }
@@ -64,8 +66,11 @@ class AuthController extends GetxController {
     required String password,
     required bool rememberMe,
   }) async {
-    ResponseModel? response =
-        await authRepo.login(username: username, password: password);
+    ResponseModel? response = await authRepo.login(
+      username: username,
+      password: password,
+      rememberMe: rememberMe,
+    );
 
     if (response?.data != null) {
       auth = AuthModel.fromJson(response?.data);
@@ -117,10 +122,10 @@ class AuthController extends GetxController {
       await instance.remove(SPrefKey.refreshToken);
     });
 
-    Get.offAll(const OnboardingPage());
+    await init();
+    Get.offAll(() => const OnboardingPage());
 
     update();
-    await init();
 
     return true;
   }

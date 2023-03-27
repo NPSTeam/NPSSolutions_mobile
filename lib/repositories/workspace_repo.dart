@@ -1,5 +1,6 @@
 import 'package:npssolutions_mobile/models/response_model.dart';
 import 'package:npssolutions_mobile/models/workspace_model.dart';
+import 'package:npssolutions_mobile/models/workspace_user_model.dart';
 import 'package:npssolutions_mobile/repositories/dio_repo.dart';
 
 final workspaceRepo = _WorkspaceRepo();
@@ -47,5 +48,19 @@ class _WorkspaceRepo extends DioRepo {
 
   Future<ResponseModel?> getWorkspaceCheckedUsers(int workspaceId) async {
     return await get('/api/v1/workspace/$workspaceId/list-user-checked');
+  }
+
+  Future<ResponseModel?> updateWorkspaceUsers(
+    int workspaceId,
+    List<WorkspaceUserModel> users,
+  ) async {
+    return await post(
+      '/api/v1/workspace/add-user',
+      data: {
+        'workspaceId': workspaceId,
+        'userList':
+            users.map((e) => {'userId': e.userId, 'type': 'Member'}).toList(),
+      },
+    );
   }
 }

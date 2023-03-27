@@ -66,4 +66,19 @@ class WorkspaceDetailController extends GetxController {
 
     return false;
   }
+
+  Future<bool> updateWorkspaceUsers(
+    int workspaceId,
+    List<WorkspaceUserModel> users,
+  ) async {
+    ResponseModel? response =
+        await workspaceRepo.updateWorkspaceUsers(workspaceId, users);
+
+    if (response?.data != null) {
+      update();
+      return true;
+    }
+
+    return false;
+  }
 }

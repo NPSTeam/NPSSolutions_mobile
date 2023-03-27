@@ -12,13 +12,14 @@ class _AuthRepo extends DioRepo {
   Future<ResponseModel?> login({
     required String username,
     required String password,
+    required bool rememberMe,
   }) async {
     return await post(
       '/api/v1/auth/login',
       data: {
         "username": username,
         "password": password,
-        "rememberMe": true,
+        "rememberMe": rememberMe,
       },
       unAuth: true,
     );

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:npssolutions_mobile/controllers/workspace_detail_controller.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../../../configs/themes/assets_const.dart';
 import '../../../../configs/themes/color_const.dart';
@@ -28,6 +29,9 @@ class _WorkspaceUsersPageState extends State<WorkspaceUsersPage> {
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+
+  final RoundedLoadingButtonController _updateWorkspaceUserBtnController =
+      RoundedLoadingButtonController();
 
   void _onRefresh() async {
     if (await _workspaceDetailController
@@ -197,7 +201,9 @@ class _WorkspaceUsersPageState extends State<WorkspaceUsersPage> {
       }
     }
 
-    void onLoading() async {
+    void onLoading(
+      void Function(void Function()) setState,
+    ) async {
       await Future.delayed(const Duration(milliseconds: 1000));
       if (mounted) setState(() {});
       refreshController.loadComplete();
@@ -224,8 +230,11 @@ class _WorkspaceUsersPageState extends State<WorkspaceUsersPage> {
                   builder: (controller) {
                 return WidgetDialogOverlay(
                   title: "Users",
-                  body: SizedBox(
-                    height: Get.height * 0.7,
+                  body: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: Get.width * 0.85,
+                      maxHeight: Get.height * 0.5,
+                    ),
                     child: isLoadingCheckedUsers
                         ? LiveList(
                             padding: const EdgeInsets.symmetric(vertical: 5),
@@ -258,7 +267,7 @@ class _WorkspaceUsersPageState extends State<WorkspaceUsersPage> {
                                   Icon(Icons.close, color: Colors.black),
                             ),
                             onRefresh: onRefresh,
-                            onLoading: onLoading,
+                            onLoading: () => onLoading(setState),
                             child: (controller.workspaceCheckedUsers?.isEmpty ??
                                     false)
                                 ? const Text(
@@ -281,10 +290,16 @@ class _WorkspaceUsersPageState extends State<WorkspaceUsersPage> {
                                         0,
                                     itemBuilder: animationItemBuilder(
                                       (index) => workspaceCheckedUserListItem(
-                                          controller, index),
+                                          controller, index, setState),
                                     ),
                                   ),
                           ),
+                  ),
+                  bottom: RoundedLoadingButton(
+                    controller: _updateWorkspaceUserBtnController,
+                    onPressed: _updateWorkspaceUser,
+                    child: const Text('Save',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 );
               });
@@ -292,15 +307,22 @@ class _WorkspaceUsersPageState extends State<WorkspaceUsersPage> {
   }
 
   Card workspaceCheckedUserListItem(
-      WorkspaceDetailController controller, int index) {
+    WorkspaceDetailController controller,
+    int index,
+    void Function(void Function()) setState,
+  ) {
     return Card(
       elevation: 5,
       shadowColor: Colors.grey.withOpacity(0.2),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       clipBehavior: Clip.hardEdge,
       child: CheckboxListTile(
-        value: false,
-        onChanged: (value) => {},
+        value: controller.workspaceCheckedUsers?[index].checked ?? false,
+        onChanged: (value) => {
+          setState(() {
+            controller.workspaceCheckedUsers?[index].checked = value;
+          })
+        },
         secondary: CircleAvatar(
           backgroundColor: Colors.grey,
           backgroundImage:
@@ -346,5 +368,25 @@ class _WorkspaceUsersPageState extends State<WorkspaceUsersPage> {
         ),
       ),
     );
+  }
+
+  void _updateWorkspaceUser() async {
+    await _workspaceDetailController
+        .updateWorkspaceUsers(
+            widget.workspaceId,
+            _workspaceDetailController.workspaceCheckedUsers
+                    ?.where((e) => e.checked == true)
+                    .toList() ??
+                [])
+        .then((success) {
+      if (success) {
+        _updateWorkspaceUserBtnController.success();
+      } else {
+        _updateWorkspaceUserBtnController.error();
+      }
+      Future.delayed(const Duration(seconds: 1), () {
+        _updateWorkspaceUserBtnController.reset();
+      });
+    });
   }
 }

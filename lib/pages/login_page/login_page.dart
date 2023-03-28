@@ -8,7 +8,7 @@ import 'package:npssolutions_mobile/pages/home_page/home_page.dart';
 import 'package:npssolutions_mobile/pages/signup_page/signup_page.dart';
 import 'package:npssolutions_mobile/widgets/widget_button.dart';
 import 'package:npssolutions_mobile/widgets/widget_language_toggle.dart';
-import 'package:npssolutions_mobile/widgets/widget_textfield.dart';
+import 'package:npssolutions_mobile/widgets/widget_text_field.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final passwordController = TextEditingController();
 
   bool rememberMe = false;
+  bool obscurePassword = true;
 
   void signUserIn() async {
     debugPrint("Signing in...");
@@ -121,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                      MyTextField(
+                                      WidgetTextField(
                                         onChanged: (() {
                                           validateEmail(
                                               usernameController.text);
@@ -156,12 +157,26 @@ class _LoginPageState extends State<LoginPage> {
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                      MyTextField(
+                                      WidgetTextField(
                                         controller: passwordController,
                                         hintText: "**************",
-                                        obscureText: true,
+                                        obscureText: obscurePassword,
                                         prefixIcon:
                                             const Icon(Icons.lock_outline),
+                                        suffixWidget: IconButton(
+                                          icon: Icon(
+                                            obscurePassword
+                                                ? Icons.visibility
+                                                : Icons.visibility_off,
+                                            color: HexColor("#4f4f4f"),
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              obscurePassword =
+                                                  !obscurePassword;
+                                            });
+                                          },
+                                        ),
                                       ),
                                       const SizedBox(
                                         height: 10,

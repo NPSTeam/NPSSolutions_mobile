@@ -4,20 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class MyTextField extends StatelessWidget {
+class WidgetTextField extends StatelessWidget {
   final controller;
   final String hintText;
   final bool obscureText;
   final Icon prefixIcon;
-  final Function()? onChanged;
+  final Function? onChanged;
+  final Widget? suffixWidget;
 
-  const MyTextField(
-      {super.key,
-      required this.controller,
-      required this.hintText,
-      required this.obscureText,
-      required this.prefixIcon,
-      this.onChanged});
+  const WidgetTextField({
+    super.key,
+    required this.controller,
+    required this.hintText,
+    required this.obscureText,
+    required this.prefixIcon,
+    this.onChanged,
+    this.suffixWidget,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +43,7 @@ class MyTextField extends StatelessWidget {
         prefixIcon: prefixIcon,
         prefixIconColor: HexColor("#4f4f4f"),
         filled: true,
+        suffixIcon: suffixWidget,
       ),
     );
   }

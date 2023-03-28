@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/widgets/widget_button.dart';
-import 'package:npssolutions_mobile/widgets/widget_textfield.dart';
+import 'package:npssolutions_mobile/widgets/widget_text_field.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -26,6 +26,9 @@ class _SignUpPageState extends State<SignUpPage> {
   DateTime birthday = DateTime.now();
 
   XFile? avatarImageXFile;
+
+  bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
 
   Future signUp() async {
     await Get.find<AuthController>().register(
@@ -134,7 +137,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  MyTextField(
+                                  WidgetTextField(
                                     controller: usernameController,
                                     hintText: "salter",
                                     obscureText: false,
@@ -160,7 +163,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  MyTextField(
+                                  WidgetTextField(
                                     controller: phoneController,
                                     hintText: "+0123456789",
                                     obscureText: false,
@@ -176,7 +179,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  MyTextField(
+                                  WidgetTextField(
                                     controller: emailController,
                                     hintText: "salter@gmail.com",
                                     obscureText: false,
@@ -191,11 +194,24 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  MyTextField(
+                                  WidgetTextField(
                                     controller: passwordController,
                                     hintText: "**************",
-                                    obscureText: true,
+                                    obscureText: obscurePassword,
                                     prefixIcon: const Icon(Icons.lock_outline),
+                                    suffixWidget: IconButton(
+                                      icon: Icon(
+                                        obscurePassword
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        color: HexColor("#4f4f4f"),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          obscurePassword = !obscurePassword;
+                                        });
+                                      },
+                                    ),
                                   ),
                                   const SizedBox(height: 10),
                                   Text(
@@ -206,11 +222,25 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  MyTextField(
+                                  WidgetTextField(
                                     controller: confirmPasswordController,
                                     hintText: "**************",
-                                    obscureText: true,
+                                    obscureText: obscureConfirmPassword,
                                     prefixIcon: const Icon(Icons.lock_outline),
+                                    suffixWidget: IconButton(
+                                      icon: Icon(
+                                        obscurePassword
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        color: HexColor("#4f4f4f"),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          obscureConfirmPassword =
+                                              !obscureConfirmPassword;
+                                        });
+                                      },
+                                    ),
                                   ),
                                   const SizedBox(height: 10),
                                   InkWell(
@@ -233,7 +263,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  MyTextField(
+                                  WidgetTextField(
                                     controller: emailController,
                                     hintText: "salter@gmail.com",
                                     obscureText: false,

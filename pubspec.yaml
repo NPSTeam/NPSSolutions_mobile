@@ -46,6 +46,7 @@ dependencies:
   pull_to_refresh: ^2.0.0
   flutter_easyloading: ^3.0.5
   simple_loading_dialog: ^0.4.1
+  drag_and_drop_lists: ^0.3.3
 
 
 dev_dependencies:

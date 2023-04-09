@@ -9,7 +9,7 @@ import 'package:npssolutions_mobile/models/response_model.dart';
 import '../controllers/auth_controller.dart';
 
 class DioRepo {
-  Dio _dio = Dio(BaseOptions(
+  final Dio _dio = Dio(BaseOptions(
     baseUrl: AppKey.BACKEND_URL,
     headers: {
       "Authorization":
@@ -44,6 +44,7 @@ class DioRepo {
           debugPrint('----------------------------------------');
           debugPrint("Request: ${options.method} ${options.path}");
           debugPrint("Request Body: ${options.data}");
+
           return handler.next(options);
         },
         onResponse: (Response response, ResponseInterceptorHandler handler) {
@@ -55,15 +56,21 @@ class DioRepo {
           debugPrint("Error Response: ${e.response}");
           if (e.response?.statusCode == 401) {
             debugPrint(
-                "Refresh token - ${e.requestOptions.headers['Authorization']}");
+                "Access token - ${e.requestOptions.headers['Authorization']}");
             try {
-              await _dio
-                  .post("${AppKey.BACKEND_URL}/api/v1/auth/refresh-token",
-                      data: jsonEncode({
-                        "idRefreshToken":
-                            getx.Get.find<AuthController>().auth?.refreshToken
-                      }))
-                  .then((value) async {
+              await Dio(BaseOptions(
+                baseUrl: AppKey.BACKEND_URL,
+                headers: {
+                  "Authorization":
+                      "Bearer ${getx.Get.find<AuthController>().auth?.accessToken}",
+                },
+              )).post(
+                "${AppKey.BACKEND_URL}/api/v1/auth/refresh-token",
+                data: {
+                  "idRefreshToken":
+                      getx.Get.find<AuthController>().auth?.refreshToken
+                },
+              ).then((value) async {
                 debugPrint("Refresh token successfully - ${value.data}");
                 if (value.statusCode == 200) {
                   debugPrint(
@@ -71,7 +78,7 @@ class DioRepo {
                   debugPrint(
                       "NEW REFRESH TOKEN - ${value.data['data']['refresh_token']}");
 
-                  // Set bearer
+                  // Set tokens
                   if (value.data['data']['access_token'] != null &&
                       value.data['data']['access_token'] != '' &&
                       value.data['data']['refresh_token'] != null &&
@@ -84,13 +91,6 @@ class DioRepo {
                     e.requestOptions.headers["Authorization"] =
                         "Bearer ${value.data['data']['access_token']}";
 
-                    // _dio = Dio(BaseOptions(
-                    //   baseUrl: AppKey.BACKEND_URL,
-                    //   headers: {
-                    //     "Authorization":
-                    //         "Bearer ${getx.Get.find<AuthController>().auth?.accessToken}",
-                    //   },
-                    // ));
                     _dio.options.headers["Authorization"] =
                         "Bearer ${value.data['data']['access_token']}";
                   }
@@ -113,7 +113,7 @@ class DioRepo {
             }
           }
 
-          return handler.next(e); //continue
+          // return handler.next(e); //continue
         },
       ),
     );
@@ -124,6 +124,9 @@ class DioRepo {
     Map<String, dynamic>? parameters,
     bool unAuth = false,
   }) async {
+    _dio.options.headers["Authorization"] =
+        "Bearer ${getx.Get.find<AuthController>().auth?.accessToken}";
+
     try {
       Response res;
 
@@ -155,6 +158,9 @@ class DioRepo {
     Map<String, dynamic>? queryParameters,
     bool unAuth = false,
   }) async {
+    _dio.options.headers["Authorization"] =
+        "Bearer ${getx.Get.find<AuthController>().auth?.accessToken}";
+
     try {
       Response res;
       res = unAuth
@@ -186,6 +192,9 @@ class DioRepo {
     Map<String, dynamic>? parameters,
     bool unAuth = false,
   }) async {
+    _dio.options.headers["Authorization"] =
+        "Bearer ${getx.Get.find<AuthController>().auth?.accessToken}";
+
     try {
       Response res;
 
@@ -217,6 +226,9 @@ class DioRepo {
     Map<String, dynamic>? queryParameters,
     bool unAuth = false,
   }) async {
+    _dio.options.headers["Authorization"] =
+        "Bearer ${getx.Get.find<AuthController>().auth?.accessToken}";
+
     try {
       Response res;
       res = unAuth

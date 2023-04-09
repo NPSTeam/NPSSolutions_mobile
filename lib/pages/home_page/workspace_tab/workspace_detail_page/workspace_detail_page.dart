@@ -8,7 +8,6 @@ import 'package:npssolutions_mobile/configs/themes/color_const.dart';
 import 'package:npssolutions_mobile/controllers/workspace_detail_controller.dart';
 import 'package:npssolutions_mobile/pages/home_page/workspace_tab/workspace_detail_page/workspace_users_page.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
-import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 
 import '../../../../models/workspace_model.dart';
 

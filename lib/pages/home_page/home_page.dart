@@ -8,6 +8,7 @@ import 'package:npssolutions_mobile/widgets/widget_app_bar_avatar.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 import '../../configs/themes/color_const.dart';
+import 'task_tab/task_tab.dart';
 import 'workspace_tab/workspace_tab.dart';
 
 class HomePage extends StatefulWidget {
@@ -34,68 +35,11 @@ class _HomePageState extends State<HomePage> {
                 .isNotEmpty ??
             false;
 
-        final workspaceTab = isAdmin ? 0 : 1;
-
-        switch (_drawerController.selectedIndex + workspaceTab) {
-          case 0:
+        switch (DrawerComponent.items[_drawerController.selectedIndex].label) {
+          case 'Workspace Management':
             return const WorkspaceTab();
-          case 1:
-            return Container(
-              color: ColorConst.primary,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(_drawerController.selectedIndex.toString(),
-                        textScaleFactor: 10.0),
-                    ElevatedButton(
-                      child: const Text('Go To Page of index 1'),
-                      onPressed: () {
-                        Get.find<AuthController>().logout();
-                      },
-                    )
-                  ],
-                ),
-              ),
-            );
-          case 2:
-            return Container(
-              color: ColorConst.primary,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(_drawerController.selectedIndex.toString(),
-                        textScaleFactor: 10.0),
-                    ElevatedButton(
-                      child: const Text('Go To Page of index 1'),
-                      onPressed: () {
-                        Get.find<AuthController>().logout();
-                      },
-                    )
-                  ],
-                ),
-              ),
-            );
-          case 3:
-            return Container(
-              color: ColorConst.primary,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(_drawerController.selectedIndex.toString(),
-                        textScaleFactor: 10.0),
-                    ElevatedButton(
-                      child: const Text('Go To Page of index 1'),
-                      onPressed: () {
-                        Get.find<AuthController>().logout();
-                      },
-                    )
-                  ],
-                ),
-              ),
-            );
+          case 'Tasks':
+            return const TaskTab();
           default:
             return Text(
               'Not found page',

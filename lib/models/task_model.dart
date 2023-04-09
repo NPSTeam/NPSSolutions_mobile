@@ -10,7 +10,6 @@ class TaskModel {
   String? title;
   String? note;
   bool? completed;
-  @JsonKey(fromJson: _fromJson, toJson: _toJson)
   DateTime? dueDate;
   int? priority;
   int? order;
@@ -28,8 +27,8 @@ class TaskModel {
     this.tags,
   });
 
-  static DateTime _fromJson(String dateTimeString) =>
-      DateFormat("dd/MM/yyyy").parse(dateTimeString);
-  static String _toJson(DateTime? dateTime) =>
-      dateTime != null ? DateFormat("dd/MM/yyyy").format(dateTime) : "";
+  factory TaskModel.fromJson(Map<String, dynamic> json) =>
+      _$TaskModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TaskModelToJson(this);
 }

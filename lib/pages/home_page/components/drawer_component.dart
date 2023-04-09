@@ -23,8 +23,8 @@ class DrawerComponent extends StatelessWidget {
 
   final AuthController _authController = Get.find();
 
-  List<SidebarXItem> items = [
-    const SidebarXItem(icon: Icons.search, label: 'Search'),
+  static List<SidebarXItem> items = [
+    const SidebarXItem(icon: Ionicons.checkmark_circle_outline, label: 'Tasks'),
     SidebarXItem(
       onTap: () => Get.find<AuthController>().logout(),
       icon: Ionicons.log_out_outline,
@@ -32,19 +32,25 @@ class DrawerComponent extends StatelessWidget {
     ),
   ];
 
+  static bool builtItem = false;
+
   @override
   Widget build(BuildContext context) {
-    if (Get.find<AuthController>()
-            .auth
-            ?.currentUser
-            ?.roles
-            ?.where((e) => e == 'admin')
-            .isNotEmpty ??
-        false) {
-      items.insert(
-          0,
-          const SidebarXItem(
-              icon: Ionicons.business, label: 'Workspace Management'));
+    if (!builtItem) {
+      builtItem = true;
+
+      if (Get.find<AuthController>()
+              .auth
+              ?.currentUser
+              ?.roles
+              ?.where((e) => e == 'admin')
+              .isNotEmpty ??
+          false) {
+        items.insert(
+            items.length - 1,
+            const SidebarXItem(
+                icon: Ionicons.business, label: 'Workspace Management'));
+      }
     }
 
     return SidebarX(

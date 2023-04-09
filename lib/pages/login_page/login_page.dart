@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -9,6 +8,7 @@ import 'package:npssolutions_mobile/pages/signup_page/signup_page.dart';
 import 'package:npssolutions_mobile/widgets/widget_button.dart';
 import 'package:npssolutions_mobile/widgets/widget_language_toggle.dart';
 import 'package:npssolutions_mobile/widgets/widget_text_field.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,14 +24,24 @@ class _LoginPageState extends State<LoginPage> {
   bool rememberMe = false;
   bool obscurePassword = true;
 
+  final RoundedLoadingButtonController _loginBtnController =
+      RoundedLoadingButtonController();
+
   void signUserIn() async {
     debugPrint("Signing in...");
+
     if (await Get.find<AuthController>().login(
       username: usernameController.text,
       password: passwordController.text,
       rememberMe: rememberMe,
     )) {
+      _loginBtnController.success();
+      await Future.delayed(const Duration(milliseconds: 500));
       Get.offAll(() => const HomePage());
+    } else {
+      _loginBtnController.error();
+      await Future.delayed(const Duration(milliseconds: 500));
+      _loginBtnController.reset();
     }
   }
 
@@ -102,9 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                                     color: HexColor("#4f4f4f"),
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
+                                const SizedBox(height: 20),
                                 Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(15, 0, 0, 20),
@@ -119,9 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                                           color: HexColor('#8d8d8d'),
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
+                                      const SizedBox(height: 10),
                                       WidgetTextField(
                                         onChanged: (() {
                                           validateEmail(
@@ -144,9 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
+                                      const SizedBox(height: 10),
                                       Text(
                                         "Password",
                                         style: TextStyle(
@@ -154,9 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                                           color: HexColor('#8d8d8d'),
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
+                                      const SizedBox(height: 10),
                                       WidgetTextField(
                                         controller: passwordController,
                                         hintText: "**************",
@@ -178,9 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                                           },
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
+                                      const SizedBox(height: 10),
                                       InkWell(
                                         onTap: () {
                                           setState(() {
@@ -206,16 +206,20 @@ class _LoginPageState extends State<LoginPage> {
                                           ],
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      MyButton(
+                                      const SizedBox(height: 20),
+                                      RoundedLoadingButton(
+                                        controller: _loginBtnController,
+                                        color: HexColor('#44564a'),
                                         onPressed: signUserIn,
-                                        buttonText: 'Submit',
+                                        child: const Text('Login',
+                                            style:
+                                                TextStyle(color: Colors.white)),
                                       ),
-                                      const SizedBox(
-                                        height: 12,
-                                      ),
+                                      // MyButton(
+                                      //   onPressed: signUserIn,
+                                      //   buttonText: 'Submit',
+                                      // ),
+                                      const SizedBox(height: 12),
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(
                                             35, 0, 0, 0),
@@ -235,8 +239,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 ),
                                               ),
                                               onPressed: () => Get.to(
-                                                () => const SignUpPage(),
-                                              ),
+                                                  () => const SignUpPage()),
                                             ),
                                           ],
                                         ),

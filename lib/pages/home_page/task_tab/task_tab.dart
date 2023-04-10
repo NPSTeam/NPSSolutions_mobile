@@ -1,6 +1,8 @@
+import 'package:async/async.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
@@ -24,24 +26,49 @@ class _TaskTabState extends State<TaskTab> {
 
   List<DragAndDropList> _contents = [];
 
+  late RestartableTimer _updateTaskOrderTimer;
+
   @override
   void initState() {
     _taskListController.getTasks().then((value) {
       _contents = [
         DragAndDropList(
+          canDrag: false,
           children: _taskListController.tasks
                   ?.map((e) => DragAndDropItem(
-                        child: Card(
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 12),
-                                child: Text(
-                                  e.title ?? '',
+                        child: InkWell(
+                          onTap: () {
+                            debugPrint("");
+                          },
+                          child: Card(
+                            child: Row(
+                              children: [
+                                e.type == 'task'
+                                    ? Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 0, horizontal: 12),
+                                        child: InkWell(
+                                          onTap: () {},
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          child: Icon(
+                                            Ionicons.checkmark_circle,
+                                            color: e.completed == true
+                                                ? ColorConst.primary
+                                                : Colors.grey,
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 12),
+                                  child: Text(
+                                    e.title ?? '',
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ))
@@ -53,7 +80,18 @@ class _TaskTabState extends State<TaskTab> {
       setState(() => isLoadingTasks = false);
     });
 
+    _updateTaskOrderTimer = RestartableTimer(
+        const Duration(seconds: 1), () => _taskListController.reorderTasks());
+    _updateTaskOrderTimer.cancel();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _updateTaskOrderTimer.cancel();
+
+    super.dispose();
   }
 
   @override
@@ -142,6 +180,10 @@ class _TaskTabState extends State<TaskTab> {
                               onListReorder: (_, __) {},
                               listPadding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 10),
+                              onItemDraggingChanged: (item, isDragging) {
+                                HapticFeedback.lightImpact();
+                              },
+                              listDragOnLongPress: false,
                               lastItemTargetHeight: 8,
                               addLastItemTargetHeightToTop: true,
                               lastListTargetSize: 40,
@@ -185,6 +227,6 @@ class _TaskTabState extends State<TaskTab> {
       }
     });
 
-    _taskListController.reorderTasks();
+    _updateTaskOrderTimer.reset();
   }
 }

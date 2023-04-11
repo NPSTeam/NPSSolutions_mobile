@@ -18,6 +18,8 @@ TaskModel _$TaskModelFromJson(Map<String, dynamic> json) => TaskModel(
       priority: json['priority'] as int?,
       order: json['order'] as int?,
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      subTasks:
+          (json['subTasks'] as List<dynamic>?)?.map((e) => e as int).toList(),
     );
 
 Map<String, dynamic> _$TaskModelToJson(TaskModel instance) => <String, dynamic>{
@@ -30,4 +32,5 @@ Map<String, dynamic> _$TaskModelToJson(TaskModel instance) => <String, dynamic>{
       'priority': instance.priority,
       'order': instance.order,
       'tags': instance.tags,
+      'subTasks': instance.subTasks,
     };

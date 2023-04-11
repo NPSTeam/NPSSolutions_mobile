@@ -31,6 +31,26 @@ class _TaskTabState extends State<TaskTab> {
   @override
   void initState() {
     _taskListController.getTasks().then((value) {
+      setState(() => isLoadingTasks = false);
+    });
+
+    _updateTaskOrderTimer = RestartableTimer(
+        const Duration(seconds: 1), () => _taskListController.reorderTasks());
+    _updateTaskOrderTimer.cancel();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _updateTaskOrderTimer.cancel();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<TaskListController>(builder: (controller) {
       _contents = [
         DragAndDropList(
           canDrag: false,
@@ -48,7 +68,21 @@ class _TaskTabState extends State<TaskTab> {
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 0, horizontal: 12),
                                         child: InkWell(
-                                          onTap: () {},
+                                          onTap: () {
+                                            setState(() {
+                                              e.completed =
+                                                  !(e.completed ?? false);
+                                            });
+
+                                            _taskListController
+                                                .updateTask(e)
+                                                .then((value) {
+                                              if (value) {
+                                                _taskListController
+                                                    .updateRemainingTasks();
+                                              }
+                                            });
+                                          },
                                           borderRadius:
                                               BorderRadius.circular(50),
                                           child: Icon(
@@ -77,26 +111,6 @@ class _TaskTabState extends State<TaskTab> {
         )
       ];
 
-      setState(() => isLoadingTasks = false);
-    });
-
-    _updateTaskOrderTimer = RestartableTimer(
-        const Duration(seconds: 1), () => _taskListController.reorderTasks());
-    _updateTaskOrderTimer.cancel();
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _updateTaskOrderTimer.cancel();
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GetBuilder<TaskListController>(builder: (controller) {
       return Scaffold(
         backgroundColor: ColorConst.primary,
         floatingActionButton: SpeedDial(

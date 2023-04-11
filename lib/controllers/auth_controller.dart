@@ -48,9 +48,8 @@ class AuthController extends GetxController {
       auth?.refreshToken = refreshToken;
 
       await SharedPreferences.getInstance().then((instance) async {
-        await instance.setString(SPrefKey.accessToken, auth?.accessToken ?? '');
-        await instance.setString(
-            SPrefKey.refreshToken, auth?.refreshToken ?? '');
+        await instance.setString(SPrefKey.accessToken, accessToken);
+        await instance.setString(SPrefKey.refreshToken, refreshToken);
       });
 
       update();

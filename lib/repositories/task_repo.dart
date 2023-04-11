@@ -19,4 +19,8 @@ class _TaskRepo extends DioRepo {
       },
     );
   }
+
+  Future<ResponseModel?> updateTask(TaskModel task) async {
+    return await put('/api/v1/tasks', data: task.toJson());
+  }
 }

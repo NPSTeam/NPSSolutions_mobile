@@ -58,13 +58,7 @@ class DioRepo {
             debugPrint(
                 "Access token - ${e.requestOptions.headers['Authorization']}");
             try {
-              await Dio(BaseOptions(
-                baseUrl: AppKey.BACKEND_URL,
-                headers: {
-                  "Authorization":
-                      "Bearer ${getx.Get.find<AuthController>().auth?.accessToken}",
-                },
-              )).post(
+              await _dio.post(
                 "${AppKey.BACKEND_URL}/api/v1/auth/refresh-token",
                 data: {
                   "idRefreshToken":
@@ -109,6 +103,10 @@ class DioRepo {
               });
             } catch (e) {
               debugPrint("Refresh token failed - $e");
+              debugPrint(
+                  "Failed with ACCESS TOKEN - ${getx.Get.find<AuthController>().auth?.accessToken}");
+              debugPrint(
+                  "Failed with REFRESH TOKEN - ${getx.Get.find<AuthController>().auth?.refreshToken}");
               await getx.Get.find<AuthController>().logout();
             }
           }

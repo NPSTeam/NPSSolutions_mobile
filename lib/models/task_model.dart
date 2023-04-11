@@ -14,6 +14,7 @@ class TaskModel {
   int? priority;
   int? order;
   List<int>? tags;
+  List<int>? subTasks;
 
   TaskModel({
     this.id,
@@ -25,6 +26,7 @@ class TaskModel {
     this.priority,
     this.order,
     this.tags,
+    this.subTasks,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) =>

@@ -39,4 +39,14 @@ class TaskListController extends GetxController {
 
     return false;
   }
+
+  Future<bool> updateTask(TaskModel task) async {
+    ResponseModel? response = await taskRepo.updateTask(task);
+
+    if (response?.data != null) {
+      return true;
+    }
+
+    return false;
+  }
 }

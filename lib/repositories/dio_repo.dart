@@ -41,6 +41,9 @@ class DioRepo {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
+          options.headers['Authorization'] =
+              'Bearer ${getx.Get.find<AuthController>().auth?.accessToken}';
+
           debugPrint('----------------------------------------');
           debugPrint("Request: ${options.method} ${options.path}");
           debugPrint("Request Body: ${options.data}");

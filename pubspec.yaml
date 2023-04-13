@@ -35,7 +35,6 @@ dependencies:
   google_fonts: ^4.0.3
   ionicons: ^0.2.2
   emerge_alert_dialog: ^0.0.3
-  sidebarx: ^0.15.0
   drop_shadow: ^0.1.0
   card_loading: ^0.3.0
   auto_animated: ^3.1.0

@@ -1,176 +1,208 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:ionicons/ionicons.dart';
-import 'package:npssolutions_mobile/configs/string_const.dart';
-import 'package:npssolutions_mobile/configs/themes/color_const.dart';
-import 'package:npssolutions_mobile/controllers/auth_controller.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:sidebarx/sidebarx.dart';
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:ionicons/ionicons.dart';
+// import 'package:npssolutions_mobile/configs/string_const.dart';
+// import 'package:npssolutions_mobile/configs/themes/color_const.dart';
+// import 'package:npssolutions_mobile/controllers/auth_controller.dart';
+// import 'package:npssolutions_mobile/models/drawer_tab_item_model.dart';
+// import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../../configs/themes/assets_const.dart';
+// import '../../../configs/themes/assets_const.dart';
 
-class DrawerComponent extends StatelessWidget {
-  DrawerComponent({super.key, required this.drawerController});
+// class DrawerComponent extends StatelessWidget {
+//   DrawerComponent({super.key});
 
-  final SidebarXController drawerController;
+//   final canvasColor = ColorConst.primary;
+//   final accentCanvasColor = const Color(0xFF3E3E61);
+//   final white = Colors.white;
+//   final actionColor = const Color(0xFF5F5FA7);
 
-  final canvasColor = ColorConst.primary;
-  final accentCanvasColor = const Color(0xFF3E3E61);
-  final white = Colors.white;
-  final actionColor = const Color(0xFF5F5FA7);
+//   final divider = Divider(color: Colors.white.withOpacity(0.3), height: 1);
 
-  final divider = Divider(color: Colors.white.withOpacity(0.3), height: 1);
+//   final AuthController _authController = Get.find();
 
-  final AuthController _authController = Get.find();
+//   static List<DrawerTabItemModel> items = [
+//     const DrawerTabItemModel(
+//       icon: Ionicons.checkmark_circle_outline,
+//       label: 'Tasks',
+//     ),
+//     DrawerTabItemModel(
+//       onTap: () => Get.find<AuthController>().logout(),
+//       icon: Ionicons.log_out_outline,
+//       label: 'Log Out',
+//     ),
+//   ];
 
-  static List<SidebarXItem> items = [
-    const SidebarXItem(icon: Ionicons.checkmark_circle_outline, label: 'Tasks'),
-    SidebarXItem(
-      onTap: () => Get.find<AuthController>().logout(),
-      icon: Ionicons.log_out_outline,
-      label: 'Log Out',
-    ),
-  ];
+//   static bool builtItem = false;
 
-  static bool builtItem = false;
+//   @override
+//   Widget build(BuildContext context) {
+//     if (!builtItem) {
+//       builtItem = true;
 
-  @override
-  Widget build(BuildContext context) {
-    if (!builtItem) {
-      builtItem = true;
+//       if (Get.find<AuthController>()
+//               .auth
+//               ?.currentUser
+//               ?.roles
+//               ?.where((e) => e == 'admin')
+//               .isNotEmpty ??
+//           false) {
+//         items.insert(
+//             items.length - 1,
+//             const SidebarXItem(
+//                 icon: Ionicons.business, label: 'Workspace Management'));
+//       }
+//     }
 
-      if (Get.find<AuthController>()
-              .auth
-              ?.currentUser
-              ?.roles
-              ?.where((e) => e == 'admin')
-              .isNotEmpty ??
-          false) {
-        items.insert(
-            items.length - 1,
-            const SidebarXItem(
-                icon: Ionicons.business, label: 'Workspace Management'));
-      }
-    }
+//     return SidebarX(
+//       controller: drawerController,
+//       theme: SidebarXTheme(
+//         margin: const EdgeInsets.all(10),
+//         decoration: BoxDecoration(
+//             color: canvasColor, borderRadius: BorderRadius.circular(20)),
+//         textStyle: const TextStyle(color: Colors.white),
+//         selectedTextStyle: const TextStyle(color: Colors.white),
+//         itemTextPadding: const EdgeInsets.only(left: 30),
+//         selectedItemTextPadding: const EdgeInsets.only(left: 30),
+//         itemDecoration: BoxDecoration(border: Border.all(color: canvasColor)),
+//         selectedItemDecoration: BoxDecoration(
+//           borderRadius: BorderRadius.circular(10),
+//           border: Border.all(color: actionColor.withOpacity(0.37)),
+//           gradient: LinearGradient(
+//             colors: [accentCanvasColor, canvasColor],
+//           ),
+//           boxShadow: [
+//             BoxShadow(color: Colors.black.withOpacity(0.28), blurRadius: 30)
+//           ],
+//         ),
+//         iconTheme: const IconThemeData(color: Colors.white, size: 20),
+//       ),
+//       extendedTheme: SidebarXTheme(
+//         width: Get.width * 0.7,
+//         decoration: BoxDecoration(color: canvasColor),
+//         margin: const EdgeInsets.only(right: 10),
+//       ),
+//       headerBuilder: (context, extended) {
+//         return SafeArea(
+//           child: GetBuilder<AuthController>(builder: (controller) {
+//             return StreamBuilder(
+//                 stream: drawerController.extendStream,
+//                 builder: (context, snapshot) {
+//                   return Column(
+//                     children: [
+//                       Container(
+//                         margin: const EdgeInsets.fromLTRB(8, 12, 8, 8),
+//                         decoration: BoxDecoration(
+//                           color: Colors.transparent,
+//                           shape: BoxShape.circle,
+//                           boxShadow: [
+//                             BoxShadow(
+//                                 blurRadius: 10,
+//                                 color: Colors.grey.withOpacity(0.5),
+//                                 spreadRadius: 3)
+//                           ],
+//                         ),
+//                         child: CircleAvatar(
+//                           radius: drawerController.extended ? 40.0 : 20.0,
+//                           backgroundColor: Colors.transparent,
+//                           backgroundImage:
+//                               Image.asset(AssetsConst.profileAvatarPlaceholder)
+//                                   .image,
+//                           foregroundImage: NetworkImage(
+//                               controller.auth?.currentUser?.photoURL ??
+//                                   StringConst.placeholderImageUrl),
+//                         ),
+//                       ),
+//                       drawerController.extended
+//                           ? Text(
+//                               controller.auth?.currentUser?.displayName ?? '',
+//                               style: const TextStyle(
+//                                   color: Colors.white,
+//                                   fontSize: 18,
+//                                   fontWeight: FontWeight.w600),
+//                             )
+//                           : const SizedBox(),
+//                       ...drawerController.extended
+//                           ? [
+//                               const SizedBox(height: 4),
+//                               Text(
+//                                 controller.auth?.currentUser?.email ?? '',
+//                                 style: const TextStyle(
+//                                     color: Colors.white,
+//                                     fontSize: 14,
+//                                     fontWeight: FontWeight.w400),
+//                               ),
+//                             ]
+//                           : [],
+//                     ],
+//                   );
+//                 });
+//           }),
+//         );
+//       },
+//       items: items,
+//       footerDivider: Column(
+//         children: [
+//           StreamBuilder(
+//               stream: drawerController.extendStream,
+//               builder: (context, snapshot) {
+//                 return Padding(
+//                   padding: const EdgeInsets.all(4.0),
+//                   child: AnimatedCrossFade(
+//                     duration: const Duration(milliseconds: 500),
+//                     firstChild:
+//                         Image.asset(AssetsConst.npsSolutionsBrand, height: 50),
+//                     secondChild: Image.asset(AssetsConst.npsLogo, height: 40),
+//                     crossFadeState: drawerController.extended
+//                         ? CrossFadeState.showFirst
+//                         : CrossFadeState.showSecond,
+//                   ),
+//                 );
+//               }),
+//           divider,
+//           FutureBuilder(
+//               future: PackageInfo.fromPlatform(),
+//               builder: (context, snapshot) {
+//                 return Text(
+//                   snapshot.hasData ? 'v${snapshot.data!.version}' : 'v0.0.0',
+//                   style: const TextStyle(
+//                       color: Colors.white,
+//                       decoration: TextDecoration.underline),
+//                 );
+//               }),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
-    return SidebarX(
-      controller: drawerController,
-      theme: SidebarXTheme(
-        margin: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            color: canvasColor, borderRadius: BorderRadius.circular(20)),
-        textStyle: const TextStyle(color: Colors.white),
-        selectedTextStyle: const TextStyle(color: Colors.white),
-        itemTextPadding: const EdgeInsets.only(left: 30),
-        selectedItemTextPadding: const EdgeInsets.only(left: 30),
-        itemDecoration: BoxDecoration(border: Border.all(color: canvasColor)),
-        selectedItemDecoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: actionColor.withOpacity(0.37)),
-          gradient: LinearGradient(
-            colors: [accentCanvasColor, canvasColor],
-          ),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.28), blurRadius: 30)
-          ],
-        ),
-        iconTheme: const IconThemeData(color: Colors.white, size: 20),
-      ),
-      extendedTheme: SidebarXTheme(
-        width: Get.width * 0.7,
-        decoration: BoxDecoration(color: canvasColor),
-        margin: const EdgeInsets.only(right: 10),
-      ),
-      headerBuilder: (context, extended) {
-        return SafeArea(
-          child: GetBuilder<AuthController>(builder: (controller) {
-            return StreamBuilder(
-                stream: drawerController.extendStream,
-                builder: (context, snapshot) {
-                  return Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(8, 12, 8, 8),
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                                blurRadius: 10,
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 3)
-                          ],
-                        ),
-                        child: CircleAvatar(
-                          radius: drawerController.extended ? 40.0 : 20.0,
-                          backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              Image.asset(AssetsConst.profileAvatarPlaceholder)
-                                  .image,
-                          foregroundImage: NetworkImage(
-                              controller.auth?.currentUser?.photoURL ??
-                                  StringConst.placeholderImageUrl),
-                        ),
-                      ),
-                      drawerController.extended
-                          ? Text(
-                              controller.auth?.currentUser?.displayName ?? '',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600),
-                            )
-                          : const SizedBox(),
-                      ...drawerController.extended
-                          ? [
-                              const SizedBox(height: 4),
-                              Text(
-                                controller.auth?.currentUser?.email ?? '',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                            ]
-                          : [],
-                    ],
-                  );
-                });
-          }),
-        );
-      },
-      items: items,
-      footerDivider: Column(
-        children: [
-          StreamBuilder(
-              stream: drawerController.extendStream,
-              builder: (context, snapshot) {
-                return Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: AnimatedCrossFade(
-                    duration: const Duration(milliseconds: 500),
-                    firstChild:
-                        Image.asset(AssetsConst.npsSolutionsBrand, height: 50),
-                    secondChild: Image.asset(AssetsConst.npsLogo, height: 40),
-                    crossFadeState: drawerController.extended
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                  ),
-                );
-              }),
-          divider,
-          FutureBuilder(
-              future: PackageInfo.fromPlatform(),
-              builder: (context, snapshot) {
-                return Text(
-                  snapshot.hasData ? 'v${snapshot.data!.version}' : 'v0.0.0',
-                  style: const TextStyle(
-                      color: Colors.white,
-                      decoration: TextDecoration.underline),
-                );
-              }),
-        ],
-      ),
-    );
-  }
-}
+// class DrawerTabItem {
+//   final int id;
+//   final String label;
+//   final IconData iconData;
+//   final Widget Function() createWidget;
+//   bool isSelected = false;
+//   final List<DrawerTabItem>? subItems;
+//   DrawerTabItem({
+//     required this.createWidget,
+//     required this.label,
+//     required this.id,
+//     required this.iconData,
+//     this.subItems,
+//   });
+
+//   @override
+//   bool operator ==(Object other) {
+//     if (identical(this, other)) {
+//       return true;
+//     }
+//     if (other.runtimeType != runtimeType) {
+//       return false;
+//     }
+//     return other is DrawerTabItem && other.id == id;
+//   }
+
+//   @override
+//   // TODO: implement hashCode
+//   int get hashCode => super.hashCode;
+// }

@@ -5,9 +5,10 @@ import 'package:npssolutions_mobile/configs/themes/assets_const.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/pages/home_page/components/drawer_component.dart';
 import 'package:npssolutions_mobile/widgets/widget_app_bar_avatar.dart';
-import 'package:sidebarx/sidebarx.dart';
 
+import '../../configs/string_const.dart';
 import '../../configs/themes/color_const.dart';
+import '../../controllers/my_drawer_controller.dart';
 import 'task_tab/task_tab.dart';
 import 'workspace_tab/workspace_tab.dart';
 
@@ -20,25 +21,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  late SidebarXController _drawerController;
 
   Widget _buildTabs() {
     final theme = Theme.of(context);
-    return AnimatedBuilder(
-      animation: _drawerController,
-      builder: (context, child) {
-        final bool isAdmin = Get.find<AuthController>()
-                .auth
-                ?.currentUser
-                ?.roles
-                ?.where((e) => e == 'admin')
-                .isNotEmpty ??
-            false;
-
-        switch (DrawerComponent.items[_drawerController.selectedIndex].label) {
-          case 'Workspace Management':
+    return GetBuilder<MyDrawerController>(
+      init: MyDrawerController(),
+      builder: (controller) {
+        switch (controller.selectedTabId) {
+          case 'WORKSPACE_MANAGEMENT':
             return const WorkspaceTab();
-          case 'Tasks':
+          case 'TASKS':
             return const TaskTab();
           default:
             return Text(
@@ -52,8 +44,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    _drawerController = SidebarXController(selectedIndex: 0, extended: true);
-
     super.initState();
   }
 
@@ -74,7 +64,62 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         key: _scaffoldKey,
         backgroundColor: ColorConst.primary,
-        drawer: DrawerComponent(drawerController: _drawerController),
+        drawer: Drawer(
+          child: ListView(
+            padding: const EdgeInsets.all(0),
+            children: [
+              GetBuilder<AuthController>(builder: (controller) {
+                return DrawerHeader(
+                  padding: const EdgeInsets.all(0),
+                  margin: const EdgeInsets.all(0),
+                  decoration: BoxDecoration(color: ColorConst.primary),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(8, 12, 8, 8),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 10,
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 3)
+                          ],
+                        ),
+                        child: CircleAvatar(
+                          radius: 40.0,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              Image.asset(AssetsConst.profileAvatarPlaceholder)
+                                  .image,
+                          foregroundImage: NetworkImage(
+                              controller.auth?.currentUser?.photoURL ??
+                                  StringConst.placeholderImageUrl),
+                        ),
+                      ),
+                      Text(
+                        controller.auth?.currentUser?.displayName ?? '',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        controller.auth?.currentUser?.email ?? '',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
         appBar: AppBar(
           leading: InkWell(
             onTap: () => _scaffoldKey.currentState?.openDrawer(),

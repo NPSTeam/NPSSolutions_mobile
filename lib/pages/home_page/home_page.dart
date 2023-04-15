@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:npssolutions_mobile/configs/themes/assets_const.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/pages/home_page/components/drawer_component.dart';
 import 'package:npssolutions_mobile/widgets/widget_app_bar_avatar.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../configs/string_const.dart';
 import '../../configs/themes/color_const.dart';
@@ -20,7 +22,44 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final MyDrawerController _drawerController = Get.put(MyDrawerController());
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+  final List<DrawerTabItem> _drawerTabItems = [
+    DrawerTabItem(
+      id: 'TASKS',
+      label: 'Tasks',
+      icon: Ionicons.checkmark_circle_outline,
+      onTap: () {
+        Get.find<MyDrawerController>().selectTab('TASKS');
+        Get.back();
+      },
+    ),
+    DrawerTabItem(
+      id: 'SYSTEM',
+      label: "System",
+      icon: Ionicons.business_outline,
+      subItems: [
+        DrawerTabItem(
+          id: 'WORKSPACE_MANAGEMENT',
+          label: "Workspace Management",
+          icon: Ionicons.business_outline,
+          onTap: () {
+            Get.find<MyDrawerController>().selectTab('WORKSPACE_MANAGEMENT');
+            Get.back();
+          },
+        ),
+      ],
+    ),
+    DrawerTabItem(
+      id: 'LOG_OUT',
+      label: 'Log Out',
+      icon: Ionicons.log_out_outline,
+      onTap: () {
+        Get.find<AuthController>().logout();
+      },
+    ),
+  ];
 
   Widget _buildTabs() {
     final theme = Theme.of(context);
@@ -65,8 +104,9 @@ class _HomePageState extends State<HomePage> {
         key: _scaffoldKey,
         backgroundColor: ColorConst.primary,
         drawer: Drawer(
-          child: ListView(
-            padding: const EdgeInsets.all(0),
+          backgroundColor: ColorConst.primary,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               GetBuilder<AuthController>(builder: (controller) {
                 return DrawerHeader(
@@ -117,6 +157,83 @@ class _HomePageState extends State<HomePage> {
                   ),
                 );
               }),
+              divider,
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(0),
+                  children: List.generate(
+                    _drawerTabItems.length,
+                    (index) => (_drawerTabItems[index].subItems?.isEmpty ??
+                            true)
+                        ? ListTile(
+                            leading: Icon(_drawerTabItems[index].icon,
+                                color: Colors.white),
+                            title: Text(_drawerTabItems[index].label,
+                                style: const TextStyle(color: Colors.white)),
+                            onTap: () => _drawerTabItems[index].onTap!(),
+                          )
+                        : Theme(
+                            data: Theme.of(context)
+                                .copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
+                              title: Text(_drawerTabItems[index].label,
+                                  style: const TextStyle(color: Colors.white)),
+                              leading: Icon(_drawerTabItems[index].icon,
+                                  color: Colors.white),
+                              iconColor: Colors.white,
+                              collapsedIconColor: Colors.white,
+                              children: List.generate(
+                                _drawerTabItems[index].subItems?.length ?? 0,
+                                (subItemIndex) => Padding(
+                                  padding: const EdgeInsets.only(left: 15),
+                                  child: ListTile(
+                                    leading: Icon(
+                                        _drawerTabItems[index]
+                                            .subItems![subItemIndex]
+                                            .icon,
+                                        color: Colors.white),
+                                    title: Text(
+                                        _drawerTabItems[index]
+                                            .subItems![subItemIndex]
+                                            .label,
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                    onTap: () => _drawerTabItems[index]
+                                        .subItems![subItemIndex]
+                                        .onTap!(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child:
+                        Image.asset(AssetsConst.npsSolutionsBrand, height: 50),
+                  ),
+                  divider,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FutureBuilder(
+                        future: PackageInfo.fromPlatform(),
+                        builder: (context, snapshot) {
+                          return Text(
+                            snapshot.hasData
+                                ? 'v${snapshot.data!.version}'
+                                : 'v0.0.0',
+                            style: const TextStyle(
+                                color: Colors.white,
+                                decoration: TextDecoration.underline),
+                          );
+                        }),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

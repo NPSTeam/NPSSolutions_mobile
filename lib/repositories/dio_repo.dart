@@ -56,43 +56,44 @@ class DioRepo {
         },
         onError: (DioError e, ErrorInterceptorHandler handler) async {
           debugPrint("Error: $e");
+          debugPrint("Status Code: ${e.response?.statusCode}");
           debugPrint("Error Response: ${e.response}");
+          RequestOptions origin = e.requestOptions;
+
           if (e.response?.statusCode == 401) {
-            debugPrint(
-                "Access token - ${e.requestOptions.headers['Authorization']}");
             try {
-              await _dio.post(
+              Response<dynamic> data = await Dio(BaseOptions(
+                baseUrl: AppKey.BACKEND_URL,
+                headers: {
+                  "Authorization":
+                      "Bearer ${getx.Get.find<AuthController>().auth?.accessToken}",
+                },
+              )).post(
                 "${AppKey.BACKEND_URL}/api/v1/auth/refresh-token",
                 data: {
                   "idRefreshToken":
                       getx.Get.find<AuthController>().auth?.refreshToken
                 },
-              ).then((value) async {
-                debugPrint("Refresh token successfully - ${value.data}");
-                if (value.statusCode == 200) {
-                  debugPrint(
-                      "NEW ACCESS TOKEN - ${value.data['data']['access_token']}");
-                  debugPrint(
-                      "NEW REFRESH TOKEN - ${value.data['data']['refresh_token']}");
+              );
 
-                  // Set tokens
-                  if (value.data['data']['access_token'] != null &&
-                      value.data['data']['access_token'] != '' &&
-                      value.data['data']['refresh_token'] != null &&
-                      value.data['data']['refresh_token'] != '') {
-                    await getx.Get.find<AuthController>().updateTokenToLocal(
-                      accessToken: value.data['data']['access_token'],
-                      refreshToken: value.data['data']['refresh_token'],
-                    );
+              if (data.statusCode == 200) {
+                debugPrint("Refresh token successfully - ${data.data}");
+                debugPrint(
+                    "NEW ACCESS TOKEN - ${data.data['data']['access_token']}");
+                debugPrint(
+                    "NEW REFRESH TOKEN - ${data.data['data']['refresh_token']}");
 
-                    e.requestOptions.headers["Authorization"] =
-                        "Bearer ${value.data['data']['access_token']}";
+                if (data.data['data']['access_token'] != null &&
+                    data.data['data']['access_token'] != '' &&
+                    data.data['data']['refresh_token'] != null &&
+                    data.data['data']['refresh_token'] != '') {
+                  await getx.Get.find<AuthController>().updateTokenToLocal(
+                      accessToken: data.data['data']['access_token'],
+                      refreshToken: data.data['data']['refresh_token']);
 
-                    _dio.options.headers["Authorization"] =
-                        "Bearer ${value.data['data']['access_token']}";
-                  }
+                  origin.headers['Authorization'] =
+                      "Bearer ${data.data['data']['access_token']}";
 
-                  // Resend request with new access token
                   final opts = Options(
                       method: e.requestOptions.method,
                       headers: e.requestOptions.headers);
@@ -102,19 +103,16 @@ class DioRepo {
                       queryParameters: e.requestOptions.queryParameters);
 
                   return handler.resolve(cloneReq);
+                } else if (data.statusCode == 401) {
+                  await getx.Get.find<AuthController>().logout();
+                  return;
                 }
-              });
-            } catch (e) {
-              debugPrint("Refresh token failed - $e");
-              debugPrint(
-                  "Failed with ACCESS TOKEN - ${getx.Get.find<AuthController>().auth?.accessToken}");
-              debugPrint(
-                  "Failed with REFRESH TOKEN - ${getx.Get.find<AuthController>().auth?.refreshToken}");
+              }
+            } catch (err) {
               await getx.Get.find<AuthController>().logout();
+              return;
             }
           }
-
-          // return handler.next(e); //continue
         },
       ),
     );

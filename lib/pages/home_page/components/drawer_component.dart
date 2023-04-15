@@ -1,13 +1,12 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:ionicons/ionicons.dart';
-// import 'package:npssolutions_mobile/configs/string_const.dart';
-// import 'package:npssolutions_mobile/configs/themes/color_const.dart';
-// import 'package:npssolutions_mobile/controllers/auth_controller.dart';
-// import 'package:npssolutions_mobile/models/drawer_tab_item_model.dart';
-// import 'package:package_info_plus/package_info_plus.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:npssolutions_mobile/configs/string_const.dart';
+import 'package:npssolutions_mobile/configs/themes/color_const.dart';
+import 'package:npssolutions_mobile/controllers/auth_controller.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-// import '../../../configs/themes/assets_const.dart';
+import '../../../configs/themes/assets_const.dart';
 
 // class DrawerComponent extends StatelessWidget {
 //   DrawerComponent({super.key});
@@ -176,33 +175,18 @@
 //   }
 // }
 
-// class DrawerTabItem {
-//   final int id;
-//   final String label;
-//   final IconData iconData;
-//   final Widget Function() createWidget;
-//   bool isSelected = false;
-//   final List<DrawerTabItem>? subItems;
-//   DrawerTabItem({
-//     required this.createWidget,
-//     required this.label,
-//     required this.id,
-//     required this.iconData,
-//     this.subItems,
-//   });
+class DrawerTabItem {
+  final String id;
+  final String label;
+  final IconData icon;
+  final Function? onTap;
+  final List<DrawerTabItem>? subItems;
 
-//   @override
-//   bool operator ==(Object other) {
-//     if (identical(this, other)) {
-//       return true;
-//     }
-//     if (other.runtimeType != runtimeType) {
-//       return false;
-//     }
-//     return other is DrawerTabItem && other.id == id;
-//   }
-
-//   @override
-//   // TODO: implement hashCode
-//   int get hashCode => super.hashCode;
-// }
+  DrawerTabItem({
+    required this.id,
+    required this.label,
+    required this.icon,
+    this.onTap,
+    this.subItems,
+  });
+}

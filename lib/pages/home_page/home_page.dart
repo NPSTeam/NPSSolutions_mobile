@@ -22,55 +22,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final MyDrawerController _drawerController = Get.put(MyDrawerController());
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  final List<DrawerTabItem> _drawerTabItems = [
-    DrawerTabItem(
-      id: 'TASKS',
-      label: 'Tasks',
-      icon: Ionicons.checkmark_circle_outline,
-      onTap: () {
-        Get.find<MyDrawerController>().selectTab('TASKS');
-        Get.back();
-      },
-    ),
-    DrawerTabItem(
-      id: 'SYSTEM',
-      label: "System",
-      icon: Ionicons.business_outline,
-      subItems: [
-        DrawerTabItem(
-          id: 'WORKSPACE_MANAGEMENT',
-          label: "Workspace Management",
-          icon: Ionicons.business_outline,
-          onTap: () {
-            Get.find<MyDrawerController>().selectTab('WORKSPACE_MANAGEMENT');
-            Get.back();
-          },
-        ),
-      ],
-    ),
-    DrawerTabItem(
-      id: 'LOG_OUT',
-      label: 'Log Out',
-      icon: Ionicons.log_out_outline,
-      onTap: () {
-        Get.find<AuthController>().logout();
-      },
-    ),
-  ];
+  final MyDrawerController _drawerController = Get.put(MyDrawerController());
 
   Widget _buildTabs() {
     final theme = Theme.of(context);
     return GetBuilder<MyDrawerController>(
-      init: MyDrawerController(),
       builder: (controller) {
         switch (controller.selectedTabId) {
-          case 'WORKSPACE_MANAGEMENT':
-            return const WorkspaceTab();
-          case 'TASKS':
+          case DrawerTabId.TASKS:
             return const TaskTab();
+          case DrawerTabId.WORKSPACE_MANAGEMENT:
+            return const WorkspaceTab();
           default:
             return Text(
               'Not found page',
@@ -103,140 +67,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         key: _scaffoldKey,
         backgroundColor: ColorConst.primary,
-        drawer: Drawer(
-          backgroundColor: ColorConst.primary,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              GetBuilder<AuthController>(builder: (controller) {
-                return DrawerHeader(
-                  padding: const EdgeInsets.all(0),
-                  margin: const EdgeInsets.all(0),
-                  decoration: BoxDecoration(color: ColorConst.primary),
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(8, 12, 8, 8),
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                                blurRadius: 10,
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 3)
-                          ],
-                        ),
-                        child: CircleAvatar(
-                          radius: 40.0,
-                          backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              Image.asset(AssetsConst.profileAvatarPlaceholder)
-                                  .image,
-                          foregroundImage: NetworkImage(
-                              controller.auth?.currentUser?.photoURL ??
-                                  StringConst.placeholderImageUrl),
-                        ),
-                      ),
-                      Text(
-                        controller.auth?.currentUser?.displayName ?? '',
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        controller.auth?.currentUser?.email ?? '',
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-              divider,
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(0),
-                  children: List.generate(
-                    _drawerTabItems.length,
-                    (index) => (_drawerTabItems[index].subItems?.isEmpty ??
-                            true)
-                        ? ListTile(
-                            leading: Icon(_drawerTabItems[index].icon,
-                                color: Colors.white),
-                            title: Text(_drawerTabItems[index].label,
-                                style: const TextStyle(color: Colors.white)),
-                            onTap: () => _drawerTabItems[index].onTap!(),
-                          )
-                        : Theme(
-                            data: Theme.of(context)
-                                .copyWith(dividerColor: Colors.transparent),
-                            child: ExpansionTile(
-                              title: Text(_drawerTabItems[index].label,
-                                  style: const TextStyle(color: Colors.white)),
-                              leading: Icon(_drawerTabItems[index].icon,
-                                  color: Colors.white),
-                              iconColor: Colors.white,
-                              collapsedIconColor: Colors.white,
-                              children: List.generate(
-                                _drawerTabItems[index].subItems?.length ?? 0,
-                                (subItemIndex) => Padding(
-                                  padding: const EdgeInsets.only(left: 15),
-                                  child: ListTile(
-                                    leading: Icon(
-                                        _drawerTabItems[index]
-                                            .subItems![subItemIndex]
-                                            .icon,
-                                        color: Colors.white),
-                                    title: Text(
-                                        _drawerTabItems[index]
-                                            .subItems![subItemIndex]
-                                            .label,
-                                        style: const TextStyle(
-                                            color: Colors.white)),
-                                    onTap: () => _drawerTabItems[index]
-                                        .subItems![subItemIndex]
-                                        .onTap!(),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                  ),
-                ),
-              ),
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child:
-                        Image.asset(AssetsConst.npsSolutionsBrand, height: 50),
-                  ),
-                  divider,
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FutureBuilder(
-                        future: PackageInfo.fromPlatform(),
-                        builder: (context, snapshot) {
-                          return Text(
-                            snapshot.hasData
-                                ? 'v${snapshot.data!.version}'
-                                : 'v0.0.0',
-                            style: const TextStyle(
-                                color: Colors.white,
-                                decoration: TextDecoration.underline),
-                          );
-                        }),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        drawer: DrawerComponent(),
         appBar: AppBar(
           leading: InkWell(
             onTap: () => _scaffoldKey.currentState?.openDrawer(),

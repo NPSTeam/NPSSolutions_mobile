@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 class MyDrawerController extends GetxController {
-  String selectedTabId = '';
+  String selectedTabId = 'TASKS';
 
   void selectTab(String tabId) {
     selectedTabId = tabId;

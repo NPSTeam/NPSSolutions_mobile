@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
+import 'package:npssolutions_mobile/internationalization/message_keys.dart';
 import 'package:npssolutions_mobile/pages/home_page/home_page.dart';
 import 'package:npssolutions_mobile/pages/signup_page/signup_page.dart';
 import 'package:npssolutions_mobile/widgets/widget_button.dart';
@@ -105,8 +106,8 @@ class _LoginPageState extends State<LoginPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Log In",
-                                  style: GoogleFonts.poppins(
+                                  MessageKeys.loginPageTitle.tr,
+                                  style: TextStyle(
                                     fontSize: 40,
                                     fontWeight: FontWeight.bold,
                                     color: HexColor("#4f4f4f"),
@@ -121,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Username",
+                                        MessageKeys.loginPageUsername.tr,
                                         style: TextStyle(
                                           fontSize: 18,
                                           color: HexColor('#8d8d8d'),
@@ -152,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                       const SizedBox(height: 10),
                                       Text(
-                                        "Password",
+                                        MessageKeys.loginPagePassword.tr,
                                         style: TextStyle(
                                           fontSize: 18,
                                           color: HexColor('#8d8d8d'),
@@ -197,9 +198,10 @@ class _LoginPageState extends State<LoginPage> {
                                                 });
                                               },
                                             ),
-                                            const Text(
-                                              "Remember Me",
-                                              style: TextStyle(
+                                            Text(
+                                              MessageKeys
+                                                  .loginPageRememberMe.tr,
+                                              style: const TextStyle(
                                                 fontSize: 16,
                                               ),
                                             ),
@@ -211,28 +213,28 @@ class _LoginPageState extends State<LoginPage> {
                                         controller: _loginBtnController,
                                         color: HexColor('#44564a'),
                                         onPressed: signUserIn,
-                                        child: const Text('Login',
-                                            style:
-                                                TextStyle(color: Colors.white)),
+                                        child: Text(
+                                            MessageKeys
+                                                .loginPageSignInButton.tr,
+                                            style: const TextStyle(
+                                                color: Colors.white)),
                                       ),
-                                      // MyButton(
-                                      //   onPressed: signUserIn,
-                                      //   buttonText: 'Submit',
-                                      // ),
                                       const SizedBox(height: 12),
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(
                                             35, 0, 0, 0),
                                         child: Row(
                                           children: [
-                                            Text("Don't have an account?",
+                                            Text(
+                                                MessageKeys
+                                                    .dontHaveAnAccount.tr,
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 15,
                                                   color: HexColor("#8d8d8d"),
                                                 )),
                                             TextButton(
                                               child: Text(
-                                                "Sign Up",
+                                                MessageKeys.loginPageSignUp.tr,
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 15,
                                                   color: HexColor("#44564a"),

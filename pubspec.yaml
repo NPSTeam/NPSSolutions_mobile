@@ -46,6 +46,8 @@ dependencies:
   flutter_easyloading: ^3.0.5
   simple_loading_dialog: ^0.4.1
   drag_and_drop_lists: ^0.3.3
+  datetime_picker_formfield_new: ^2.1.0
+  animated_custom_dropdown: ^1.5.0
 
 
 dev_dependencies:

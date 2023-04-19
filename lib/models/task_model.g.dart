@@ -10,7 +10,7 @@ TaskModel _$TaskModelFromJson(Map<String, dynamic> json) => TaskModel(
       id: json['id'] as int?,
       type: json['type'] as String?,
       title: json['title'] as String?,
-      note: json['note'] as String?,
+      notes: json['notes'] as String?,
       completed: json['completed'] as bool?,
       dueDate: json['dueDate'] == null
           ? null
@@ -26,7 +26,7 @@ Map<String, dynamic> _$TaskModelToJson(TaskModel instance) => <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
       'title': instance.title,
-      'note': instance.note,
+      'notes': instance.notes,
       'completed': instance.completed,
       'dueDate': instance.dueDate?.toIso8601String(),
       'priority': instance.priority,

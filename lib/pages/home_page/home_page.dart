@@ -5,6 +5,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:npssolutions_mobile/configs/themes/assets_const.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/pages/home_page/components/drawer_component.dart';
+import 'package:npssolutions_mobile/pages/home_page/scrumboard_tab/scrumboard_tab.dart';
 import 'package:npssolutions_mobile/widgets/widget_app_bar_avatar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -81,6 +82,8 @@ class _HomePageState extends State<HomePage> {
         switch (controller.selectedTabId) {
           case DrawerTabId.TASKS:
             return const TaskTab();
+          case DrawerTabId.SCRUM_BOARD:
+            return const ScrumboardTab();
           case DrawerTabId.WORKSPACE_MANAGEMENT:
             return const WorkspaceTab();
           default:

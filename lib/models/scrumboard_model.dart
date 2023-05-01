@@ -1,23 +1,27 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'board_model.dart';
+
 part 'scrumboard_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class ScrumboardModel {
-  int? scrumboardId;
+  int? id;
   int? workspaceId;
   String? title;
   String? description;
   String? icons;
   DateTime? lastActivity;
+  List<BoardModel>? lists;
 
   ScrumboardModel({
-    this.scrumboardId,
+    this.id,
     this.workspaceId,
     this.title,
     this.description,
     this.icons,
     this.lastActivity,
+    this.lists,
   });
 
   factory ScrumboardModel.fromJson(Map<String, dynamic> json) =>

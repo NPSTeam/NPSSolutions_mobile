@@ -1,6 +1,5 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:async/async.dart';
-import 'package:auto_animated/auto_animated.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +10,10 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:npssolutions_mobile/models/task_model.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../../configs/themes/color_const.dart';
 import '../../../controllers/task_list_controller.dart';
-import '../../../helpers/utils.dart';
 import '../../../widgets/widget_dialog_overlay.dart';
 
 class TaskTab extends StatefulWidget {

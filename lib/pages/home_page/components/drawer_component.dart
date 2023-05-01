@@ -34,24 +34,16 @@ class _DrawerComponentState extends State<DrawerComponent> {
       },
     ),
     DrawerTabItem(
-      id: 'SYSTEM',
-      label: "System",
-      icon: Ionicons.settings_outline,
-      subItems: [
-        DrawerTabItem(
-          id: DrawerTabId.WORKSPACE_MANAGEMENT,
-          label: "Workspace Management",
-          icon: Ionicons.business_outline,
-          onTap: () {
-            Get.find<MyDrawerController>()
-                .selectTab(DrawerTabId.WORKSPACE_MANAGEMENT);
-            Get.back();
-          },
-        ),
-      ],
+      id: DrawerTabId.SCRUM_BOARD,
+      label: 'Scrum Board',
+      icon: Icons.calendar_view_week_outlined,
+      onTap: () {
+        Get.find<MyDrawerController>().selectTab(DrawerTabId.SCRUM_BOARD);
+        Get.back();
+      },
     ),
     DrawerTabItem(
-      id: 'LOG_OUT',
+      id: DrawerTabId.LOG_OUT,
       label: 'Log Out',
       icon: Ionicons.log_out_outline,
       onTap: () {
@@ -62,6 +54,31 @@ class _DrawerComponentState extends State<DrawerComponent> {
 
   @override
   void initState() {
+    if (_authController.auth?.currentUser?.roles
+            ?.where((e) => e == "admin")
+            .isNotEmpty ??
+        false) {
+      _drawerTabItems.insert(
+        _drawerTabItems.length - 1,
+        DrawerTabItem(
+          id: 'SYSTEM',
+          label: "System",
+          icon: Ionicons.settings_outline,
+          subItems: [
+            DrawerTabItem(
+              id: DrawerTabId.WORKSPACE_MANAGEMENT,
+              label: "Workspace Management",
+              icon: Ionicons.business_outline,
+              onTap: () {
+                Get.find<MyDrawerController>()
+                    .selectTab(DrawerTabId.WORKSPACE_MANAGEMENT);
+                Get.back();
+              },
+            ),
+          ],
+        ),
+      );
+    }
     super.initState();
   }
 
@@ -220,5 +237,7 @@ class DrawerTabItem {
 
 class DrawerTabId {
   static const String TASKS = 'TASKS';
+  static const String SCRUM_BOARD = 'SCRUM_BOARD';
   static const String WORKSPACE_MANAGEMENT = 'WORKSPACE_MANAGEMENT';
+  static const String LOG_OUT = 'LOG_OUT';
 }

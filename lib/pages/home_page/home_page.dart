@@ -26,25 +26,6 @@ class _HomePageState extends State<HomePage> {
 
   final MyDrawerController _drawerController = Get.put(MyDrawerController());
 
-  Widget _buildTabs() {
-    final theme = Theme.of(context);
-    return GetBuilder<MyDrawerController>(
-      builder: (controller) {
-        switch (controller.selectedTabId) {
-          case DrawerTabId.TASKS:
-            return const TaskTab();
-          case DrawerTabId.WORKSPACE_MANAGEMENT:
-            return const WorkspaceTab();
-          default:
-            return Text(
-              'Not found page',
-              style: theme.textTheme.headlineSmall,
-            );
-        }
-      },
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -81,13 +62,44 @@ class _HomePageState extends State<HomePage> {
           ],
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Center(
-            child: Text("Workspace",
-                style: TextStyle(fontWeight: FontWeight.w500)),
+          title: Center(
+            child: GetBuilder<MyDrawerController>(builder: (context) {
+              return Text(_getTitle(),
+                  style: const TextStyle(fontWeight: FontWeight.w500));
+            }),
           ),
         ),
         body: _buildTabs(),
       ),
     );
+  }
+
+  Widget _buildTabs() {
+    final theme = Theme.of(context);
+    return GetBuilder<MyDrawerController>(
+      builder: (controller) {
+        switch (controller.selectedTabId) {
+          case DrawerTabId.TASKS:
+            return const TaskTab();
+          case DrawerTabId.WORKSPACE_MANAGEMENT:
+            return const WorkspaceTab();
+          default:
+            return Text('Not found page', style: theme.textTheme.headlineSmall);
+        }
+      },
+    );
+  }
+
+  String _getTitle() {
+    switch (_drawerController.selectedTabId) {
+      case DrawerTabId.TASKS:
+        return 'Tasks';
+      case DrawerTabId.SCRUM_BOARD:
+        return 'Scrum Board';
+      case DrawerTabId.WORKSPACE_MANAGEMENT:
+        return 'Workspace';
+      default:
+        return 'Untitled';
+    }
   }
 }

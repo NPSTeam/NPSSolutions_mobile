@@ -11,10 +11,6 @@ import '../controllers/auth_controller.dart';
 class DioRepo {
   final Dio _dio = Dio(BaseOptions(
     baseUrl: AppKey.BACKEND_URL,
-    headers: {
-      "Authorization":
-          "Bearer ${getx.Get.find<AuthController>().auth?.accessToken}",
-    },
   ));
 
   final Dio _unAuthDio = Dio(BaseOptions(baseUrl: AppKey.BACKEND_URL));
@@ -60,7 +56,7 @@ class DioRepo {
           debugPrint("Error Response: ${e.response}");
           RequestOptions origin = e.requestOptions;
 
-          if (e.response?.statusCode == 401) {
+          if (e.response?.statusCode == 401 || e.response?.statusCode == 400) {
             try {
               Response<dynamic> data = await Dio(BaseOptions(
                 baseUrl: AppKey.BACKEND_URL,
@@ -109,7 +105,10 @@ class DioRepo {
                 }
               }
             } catch (err) {
+              debugPrint(err.toString());
+
               await getx.Get.find<AuthController>().logout();
+
               return;
             }
           }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../configs/themes/color_const.dart';
 import '../../../controllers/scrumboard_list_controller.dart';
 import '../../../models/scrumboard_model.dart';
+import 'scrumboard_board_page.dart';
 
 class ScrumboardTab extends StatefulWidget {
   const ScrumboardTab({super.key});
@@ -22,14 +25,10 @@ class _ScrumboardTabState extends State<ScrumboardTab>
 
   @override
   void initState() {
-    // _scrumboardListController.getScrumboards(8);
-
-    _scrumboardListController.getWorkspaces().then((value) {
-      // _tabController = TabController(
-      //     initialIndex: -1,
-      //     length: _scrumboardListController.workspaces?.length ?? 0,
-      //     vsync: this);
-    });
+    EasyLoading.show();
+    _scrumboardListController
+        .getWorkspaces()
+        .then((_) => EasyLoading.dismiss());
 
     super.initState();
   }
@@ -52,6 +51,7 @@ class _ScrumboardTabState extends State<ScrumboardTab>
                       height: 40,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
                         itemCount: controller.workspaces?.length ?? 0,
                         itemBuilder: (context, index) => InkWell(
                           onTap: () => setState(() {
@@ -134,10 +134,55 @@ class _ScrumboardTabState extends State<ScrumboardTab>
                                     childAspectRatio: 0.8,
                                   ),
                                   itemCount:
-                                      controller.scrumboards?.length ?? 0,
-                                  itemBuilder: (context, index) =>
-                                      _scrumboardListItem(
-                                          controller.scrumboards![index]),
+                                      (controller.scrumboards?.length ?? 0) + 1,
+                                  itemBuilder: (context, index) {
+                                    if (index ==
+                                        (controller.scrumboards?.length ?? 0)) {
+                                      return Card(
+                                        clipBehavior: Clip.hardEdge,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: InkWell(
+                                          onTap: () async {
+                                            EasyLoading.show(
+                                                status: 'Creating');
+
+                                            if (_selectedWorkspaceId != null) {
+                                              await controller
+                                                  .createScrumboard(
+                                                      _selectedWorkspaceId!)
+                                                  .then((value) {
+                                                if (value != null) {
+                                                  EasyLoading.dismiss();
+                                                  Get.to(
+                                                    () => ScrumboardBoardPage(
+                                                        scrumboardId:
+                                                            value.id!),
+                                                    transition:
+                                                        Transition.cupertino,
+                                                  );
+                                                }
+                                              });
+                                            }
+
+                                            EasyLoading.dismiss();
+                                          },
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(10),
+                                            child: Icon(
+                                              Ionicons.add_circle_outline,
+                                              size: 50,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+
+                                    return _scrumboardListItem(
+                                        controller.scrumboards![index]);
+                                  },
                                 ),
                         ),
                       ),
@@ -154,11 +199,14 @@ class _ScrumboardTabState extends State<ScrumboardTab>
 
   Widget _scrumboardListItem(ScrumboardModel scrumboard) => Card(
         clipBehavior: Clip.hardEdge,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            if (scrumboard.id != null) {
+              Get.to(() => ScrumboardBoardPage(scrumboardId: scrumboard.id!),
+                  transition: Transition.cupertino);
+            }
+          },
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(

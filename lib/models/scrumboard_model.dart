@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:npssolutions_mobile/models/scrumboard_setting_model.dart';
 
 import 'board_model.dart';
 
@@ -13,6 +14,7 @@ class ScrumboardModel {
   String? icons;
   DateTime? lastActivity;
   List<BoardModel>? lists;
+  ScrumboardSettingModel? settings;
 
   ScrumboardModel({
     this.id,
@@ -22,6 +24,7 @@ class ScrumboardModel {
     this.icons,
     this.lastActivity,
     this.lists,
+    this.settings,
   });
 
   factory ScrumboardModel.fromJson(Map<String, dynamic> json) =>

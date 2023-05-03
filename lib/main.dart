@@ -24,8 +24,8 @@ Future main() async {
   AppKey.init();
 
   EasyLoading.instance
-    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
-    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorType = EasyLoadingIndicatorType.ring
+    ..loadingStyle = EasyLoadingStyle.light
     ..indicatorSize = 45.0
     ..radius = 10.0
     ..progressColor = Colors.yellow
@@ -33,8 +33,16 @@ Future main() async {
     ..indicatorColor = Colors.yellow
     ..textColor = Colors.yellow
     ..maskColor = Colors.blue.withOpacity(0.5)
+    ..maskType = EasyLoadingMaskType.black
     ..userInteractions = true
-    ..dismissOnTap = false;
+    ..dismissOnTap = false
+    ..boxShadow = const [
+      BoxShadow(
+        color: Colors.black,
+        offset: Offset(0.0, 5.0),
+        blurRadius: 10.0,
+      )
+    ];
 
   runApp(MyApp());
 }

@@ -3,6 +3,7 @@ import 'package:npssolutions_mobile/repositories/workspace_repo.dart';
 
 import '../models/response_model.dart';
 import '../models/scrumboard_model.dart';
+import '../models/scrumboard_setting_model.dart';
 import '../models/workspace_model.dart';
 import '../repositories/scrumboard_repo.dart';
 
@@ -43,5 +44,22 @@ class ScrumboardListController extends GetxController {
     }
 
     return false;
+  }
+
+  Future<ScrumboardModel?> createScrumboard(int workspaceId) async {
+    ResponseModel? response = await scrumboardRepo.createBoard(ScrumboardModel(
+      title: 'Untitled',
+      description: '...',
+      lastActivity: DateTime.now(),
+      settings: ScrumboardSettingModel(subscribed: true, cardCoverImages: true),
+      lists: [],
+      workspaceId: workspaceId,
+    ));
+
+    if (response?.data != null) {
+      return ScrumboardModel.fromJson(response?.data);
+    }
+
+    return null;
   }
 }

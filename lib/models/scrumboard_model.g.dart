@@ -19,6 +19,10 @@ ScrumboardModel _$ScrumboardModelFromJson(Map<String, dynamic> json) =>
       lists: (json['lists'] as List<dynamic>?)
           ?.map((e) => BoardModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      settings: json['settings'] == null
+          ? null
+          : ScrumboardSettingModel.fromJson(
+              json['settings'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ScrumboardModelToJson(ScrumboardModel instance) =>
@@ -30,4 +34,5 @@ Map<String, dynamic> _$ScrumboardModelToJson(ScrumboardModel instance) =>
       'icons': instance.icons,
       'lastActivity': instance.lastActivity?.toIso8601String(),
       'lists': instance.lists?.map((e) => e.toJson()).toList(),
+      'settings': instance.settings?.toJson(),
     };

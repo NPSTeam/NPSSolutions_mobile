@@ -4,6 +4,7 @@ import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -50,7 +51,9 @@ class _TaskTabState extends State<TaskTab> {
 
   @override
   void initState() {
+    EasyLoading.show();
     _taskListController.getTasks().then((value) {
+      EasyLoading.dismiss();
       setState(() => isLoadingTasks = false);
     });
 

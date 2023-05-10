@@ -8,7 +8,7 @@ import 'package:npssolutions_mobile/pages/home_page/home_page.dart';
 import 'package:npssolutions_mobile/pages/signup_page/signup_page.dart';
 import 'package:npssolutions_mobile/widgets/widget_button.dart';
 import 'package:npssolutions_mobile/widgets/widget_language_toggle.dart';
-import 'package:npssolutions_mobile/widgets/widget_text_field.dart';
+import 'package:npssolutions_mobile/widgets/widget_login_text_field.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class LoginPage extends StatefulWidget {
@@ -129,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                       ),
                                       const SizedBox(height: 10),
-                                      WidgetTextField(
+                                      WidgetLoginTextField(
                                         onChanged: (() {
                                           validateEmail(
                                               usernameController.text);
@@ -160,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                       ),
                                       const SizedBox(height: 10),
-                                      WidgetTextField(
+                                      WidgetLoginTextField(
                                         controller: passwordController,
                                         hintText: "**************",
                                         obscureText: obscurePassword,

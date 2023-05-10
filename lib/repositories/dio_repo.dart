@@ -9,9 +9,7 @@ import 'package:npssolutions_mobile/models/response_model.dart';
 import '../controllers/auth_controller.dart';
 
 class DioRepo {
-  final Dio _dio = Dio(BaseOptions(
-    baseUrl: AppKey.BACKEND_URL,
-  ));
+  final Dio _dio = Dio(BaseOptions(baseUrl: AppKey.BACKEND_URL));
 
   final Dio _unAuthDio = Dio(BaseOptions(baseUrl: AppKey.BACKEND_URL));
 

@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:npssolutions_mobile/models/task_model.dart';
+import 'package:npssolutions_mobile/pages/home_page/task_tab/task_detail_page.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../../configs/themes/color_const.dart';
@@ -80,6 +81,9 @@ class _TaskTabState extends State<TaskTab> {
           children: controller.tasks
                   ?.map((e) => DragAndDropItem(
                         child: InkWell(
+                          onTap: () => Get.to(
+                              () => TaskDetailPage(taskId: e.id!),
+                              transition: Transition.cupertino),
                           onLongPress: () =>
                               showDeleteTaskDialog(context, e.id!),
                           child: e.type == 'task'

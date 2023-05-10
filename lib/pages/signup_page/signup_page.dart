@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/widgets/widget_button.dart';
-import 'package:npssolutions_mobile/widgets/widget_text_field.dart';
+import 'package:npssolutions_mobile/widgets/widget_login_text_field.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -137,7 +137,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  WidgetTextField(
+                                  WidgetLoginTextField(
                                     controller: usernameController,
                                     hintText: "salter",
                                     obscureText: false,
@@ -163,7 +163,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  WidgetTextField(
+                                  WidgetLoginTextField(
                                     controller: phoneController,
                                     hintText: "+0123456789",
                                     obscureText: false,
@@ -179,7 +179,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  WidgetTextField(
+                                  WidgetLoginTextField(
                                     controller: emailController,
                                     hintText: "salter@gmail.com",
                                     obscureText: false,
@@ -194,7 +194,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  WidgetTextField(
+                                  WidgetLoginTextField(
                                     controller: passwordController,
                                     hintText: "**************",
                                     obscureText: obscurePassword,
@@ -222,7 +222,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  WidgetTextField(
+                                  WidgetLoginTextField(
                                     controller: confirmPasswordController,
                                     hintText: "**************",
                                     obscureText: obscureConfirmPassword,
@@ -263,7 +263,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  WidgetTextField(
+                                  WidgetLoginTextField(
                                     controller: emailController,
                                     hintText: "salter@gmail.com",
                                     obscureText: false,

@@ -35,4 +35,12 @@ class _TaskRepo extends DioRepo {
   Future<ResponseModel?> createTask(TaskModel task) async {
     return await post('/api/v1/tasks', data: task.toJson());
   }
+
+  Future<ResponseModel?> getTaskDetail(int taskId) async {
+    return await get('/api/v1/tasks/$taskId');
+  }
+
+  Future<ResponseModel?> createTag(String name) async {
+    return await post('/api/v1/tasks/tags', data: {"title": name});
+  }
 }

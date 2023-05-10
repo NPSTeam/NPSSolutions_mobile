@@ -81,9 +81,8 @@ class _WorkspaceDetailPageState extends State<WorkspaceDetailPage> {
             InkWell(
               onTap: () {
                 Get.to(
-                  () => WorkspaceUsersPage(workspaceId: widget.workspaceId),
-                  transition: Transition.cupertino,
-                );
+                    () => WorkspaceUsersPage(workspaceId: widget.workspaceId),
+                    transition: Transition.cupertino);
               },
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
@@ -117,6 +116,7 @@ class _WorkspaceDetailPageState extends State<WorkspaceDetailPage> {
                       controller: _addressController,
                     ),
                     MultiSelectBottomSheetField(
+                      buttonIcon: const Icon(Ionicons.grid_outline),
                       initialChildSize: 0.4,
                       listType: MultiSelectListType.CHIP,
                       searchable: true,

@@ -8,6 +8,7 @@ import 'package:npssolutions_mobile/widgets/widget_app_bar_avatar.dart';
 
 import '../../configs/themes/color_const.dart';
 import '../../controllers/my_drawer_controller.dart';
+import '../../internationalization/message_keys.dart';
 import 'task_tab/task_tab.dart';
 import 'workspace_tab/workspace_tab.dart';
 
@@ -81,7 +82,8 @@ class _HomePageState extends State<HomePage> {
           case DrawerTabId.WORKSPACE_MANAGEMENT:
             return const WorkspaceTab();
           default:
-            return Text('Not found page', style: theme.textTheme.headlineSmall);
+            return Text(MessageKeys.notFoundPage.tr,
+                style: theme.textTheme.headlineSmall);
         }
       },
     );
@@ -90,13 +92,13 @@ class _HomePageState extends State<HomePage> {
   String _getTitle() {
     switch (_drawerController.selectedTabId) {
       case DrawerTabId.TASKS:
-        return 'Tasks';
+        return MessageKeys.homeTitleTask.tr;
       case DrawerTabId.SCRUM_BOARD:
-        return 'Scrum Board';
+        return MessageKeys.homeTitleScrumboard.tr;
       case DrawerTabId.WORKSPACE_MANAGEMENT:
-        return 'Workspace';
+        return MessageKeys.homeTitleWorkspace.tr;
       default:
-        return 'Untitled';
+        return MessageKeys.homeTitleUntitled.tr;
     }
   }
 }

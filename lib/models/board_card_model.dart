@@ -9,6 +9,7 @@ class BoardCardModel {
   int? listId;
   String? title;
   String? description;
+  @JsonKey(fromJson: _fromJson, toJson: _toJson)
   DateTime? dueDate;
   List<int>? memberIds;
   bool? subscribed;
@@ -28,4 +29,10 @@ class BoardCardModel {
       _$BoardCardModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$BoardCardModelToJson(this);
+
+  static DateTime? _fromJson(int? dateTime) => dateTime == null
+      ? null
+      : DateTime.fromMillisecondsSinceEpoch(dateTime).toLocal();
+  static int? _toJson(DateTime? dateTime) =>
+      dateTime?.toUtc().millisecondsSinceEpoch;
 }

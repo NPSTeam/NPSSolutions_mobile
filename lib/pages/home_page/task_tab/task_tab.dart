@@ -1,4 +1,3 @@
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:async/async.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:npssolutions_mobile/models/task_model.dart';
@@ -17,6 +15,7 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../../configs/themes/color_const.dart';
 import '../../../controllers/task_list_controller.dart';
+import '../../../internationalization/message_keys.dart';
 import '../../../widgets/widget_checkbox_list_tile.dart';
 import '../../../widgets/widget_date_time_field.dart';
 import '../../../widgets/widget_dialog_overlay.dart';
@@ -109,7 +108,11 @@ class _TaskTabState extends State<TaskTab> {
                           onTap: () => Get.to(
                                   () => TaskDetailPage(taskId: e.id!),
                                   transition: Transition.cupertino)
-                              ?.then((_) => _taskListController.getTasks()),
+                              ?.then((_) async {
+                            EasyLoading.show();
+                            await _taskListController.getTasks();
+                            EasyLoading.dismiss();
+                          }),
                           onLongPress: () =>
                               showDeleteTaskDialog(context, e.id!),
                           child: e.type == 'task'
@@ -187,9 +190,6 @@ class _TaskTabState extends State<TaskTab> {
           curve: Curves.bounceIn,
           overlayColor: Colors.black,
           overlayOpacity: 0.5,
-          onOpen: () => debugPrint('OPENING DIAL'),
-          onClose: () => debugPrint('DIAL CLOSED'),
-          tooltip: 'Options',
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
           elevation: 8.0,
@@ -199,13 +199,13 @@ class _TaskTabState extends State<TaskTab> {
             SpeedDialChild(
               child: const Icon(Ionicons.add, color: Colors.white),
               backgroundColor: ColorConst.primary,
-              label: 'Add Task',
+              label: MessageKeys.addTask.tr,
               onTap: () => showCreateDialog(context, true),
             ),
             SpeedDialChild(
               child: const Icon(Ionicons.add),
               backgroundColor: Colors.white,
-              label: 'Add Section',
+              label: MessageKeys.addSection.tr,
               onTap: () => showCreateDialog(context, false),
             ),
           ],
@@ -220,12 +220,12 @@ class _TaskTabState extends State<TaskTab> {
                   children: [
                     const SizedBox(height: 25.0),
                     Text(
-                      '${controller.remainingTasks ?? 0} remaining tasks',
+                      MessageKeys.remainingTasks.trParams(
+                          {'value': '${controller.remainingTasks ?? 0}'}),
                       style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(height: 25.0),
                   ],
@@ -240,9 +240,8 @@ class _TaskTabState extends State<TaskTab> {
                     ],
                     color: Colors.grey.shade100,
                     borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(35.0),
-                      topRight: Radius.circular(35.0),
-                    ),
+                        topLeft: Radius.circular(35.0),
+                        topRight: Radius.circular(35.0)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -281,10 +280,8 @@ class _TaskTabState extends State<TaskTab> {
                                 itemDragHandle: const DragHandle(
                                   child: Padding(
                                     padding: EdgeInsets.only(right: 10),
-                                    child: Icon(
-                                      Ionicons.menu_outline,
-                                      color: Colors.blueGrey,
-                                    ),
+                                    child: Icon(Ionicons.menu_outline,
+                                        color: Colors.blueGrey),
                                   ),
                                 ),
                               ),

@@ -12,7 +12,7 @@ TaskModel _$TaskModelFromJson(Map<String, dynamic> json) => TaskModel(
       title: json['title'] as String?,
       notes: json['notes'] as String?,
       completed: json['completed'] as bool?,
-      dueDate: TaskModel._fromJson(json['dueDate'] as String),
+      dueDate: TaskModel._fromJson(json['dueDate'] as String?),
       priority: json['priority'] as int?,
       order: json['order'] as int?,
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e as int).toList(),

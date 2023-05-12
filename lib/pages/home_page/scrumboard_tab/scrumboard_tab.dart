@@ -54,13 +54,16 @@ class _ScrumboardTabState extends State<ScrumboardTab>
                         physics: const BouncingScrollPhysics(),
                         itemCount: controller.workspaces?.length ?? 0,
                         itemBuilder: (context, index) => InkWell(
-                          onTap: () => setState(() {
-                            _selectedWorkspaceId =
-                                controller.workspaces?[index].id;
-
-                            _scrumboardListController
+                          onTap: () async {
+                            setState(() {
+                              _selectedWorkspaceId =
+                                  controller.workspaces?[index].id;
+                            });
+                            EasyLoading.show();
+                            await _scrumboardListController
                                 .getScrumboards(_selectedWorkspaceId!);
-                          }),
+                            await EasyLoading.dismiss();
+                          },
                           child: Container(
                             margin: const EdgeInsets.only(right: 15),
                             padding: const EdgeInsets.symmetric(

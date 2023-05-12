@@ -13,9 +13,7 @@ BoardCardModel _$BoardCardModelFromJson(Map<String, dynamic> json) =>
       listId: json['listId'] as int?,
       title: json['title'] as String?,
       description: json['description'] as String?,
-      dueDate: json['dueDate'] == null
-          ? null
-          : DateTime.parse(json['dueDate'] as String),
+      dueDate: BoardCardModel._fromJson(json['dueDate'] as int?),
       memberIds:
           (json['memberIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
       subscribed: json['subscribed'] as bool?,
@@ -28,7 +26,7 @@ Map<String, dynamic> _$BoardCardModelToJson(BoardCardModel instance) =>
       'listId': instance.listId,
       'title': instance.title,
       'description': instance.description,
-      'dueDate': instance.dueDate?.toIso8601String(),
+      'dueDate': BoardCardModel._toJson(instance.dueDate),
       'memberIds': instance.memberIds,
       'subscribed': instance.subscribed,
     };

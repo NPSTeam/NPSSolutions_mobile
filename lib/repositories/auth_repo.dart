@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
 import '../models/response_model.dart';
@@ -34,23 +35,28 @@ class _AuthRepo extends DioRepo {
     required DateTime birthday,
     required String avatarFilePath,
   }) async {
-    File imageFile = File(avatarFilePath);
-    String base64String =
-        "data:image/${p.extension(avatarFilePath).replaceFirst('.', '')};base64,${base64Encode(await imageFile.readAsBytes())}";
+    try {
+      File imageFile = File(avatarFilePath);
+      String base64String =
+          "data:image/${p.extension(avatarFilePath).replaceFirst('.', '')};base64,${base64Encode(await imageFile.readAsBytes())}";
 
-    return await post(
-      '/api/v1/auth/register',
-      data: {
-        "username": username,
-        "phone": phone,
-        "email": email,
-        "password": password,
-        "confirmPassword": confirmPassword,
-        "birthDay": '$birthday',
-        "fileContent": base64String,
-        "fileName": "$username${p.extension(avatarFilePath)}",
-      },
-      unAuth: true,
-    );
+      return await post(
+        '/api/v1/auth/register',
+        data: {
+          "username": username,
+          "phone": phone,
+          "email": email,
+          "password": password,
+          "confirmPassword": confirmPassword,
+          "birthDay": '$birthday',
+          "fileContent": base64String,
+          "fileName": "$username${p.extension(avatarFilePath)}",
+        },
+        unAuth: true,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
   }
 }

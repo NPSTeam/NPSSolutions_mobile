@@ -12,10 +12,8 @@ ScrumboardModel _$ScrumboardModelFromJson(Map<String, dynamic> json) =>
       workspaceId: json['workspaceId'] as int?,
       title: json['title'] as String?,
       description: json['description'] as String?,
-      icons: json['icons'] as String?,
-      lastActivity: json['lastActivity'] == null
-          ? null
-          : DateTime.parse(json['lastActivity'] as String),
+      icon: json['icon'] as String?,
+      lastActivity: ScrumboardModel._fromJson(json['lastActivity'] as String?),
       lists: (json['lists'] as List<dynamic>?)
           ?.map((e) => BoardModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -23,6 +21,8 @@ ScrumboardModel _$ScrumboardModelFromJson(Map<String, dynamic> json) =>
           ? null
           : ScrumboardSettingModel.fromJson(
               json['settings'] as Map<String, dynamic>),
+      members:
+          (json['members'] as List<dynamic>?)?.map((e) => e as int).toList(),
     );
 
 Map<String, dynamic> _$ScrumboardModelToJson(ScrumboardModel instance) =>
@@ -31,8 +31,9 @@ Map<String, dynamic> _$ScrumboardModelToJson(ScrumboardModel instance) =>
       'workspaceId': instance.workspaceId,
       'title': instance.title,
       'description': instance.description,
-      'icons': instance.icons,
-      'lastActivity': instance.lastActivity?.toIso8601String(),
+      'icon': instance.icon,
+      'lastActivity': ScrumboardModel._toJson(instance.lastActivity),
       'lists': instance.lists?.map((e) => e.toJson()).toList(),
       'settings': instance.settings?.toJson(),
+      'members': instance.members,
     };

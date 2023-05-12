@@ -1,3 +1,4 @@
+import 'package:npssolutions_mobile/models/board_card_model.dart';
 import 'package:npssolutions_mobile/models/scrumboard_model.dart';
 
 import '../models/response_model.dart';
@@ -24,5 +25,18 @@ class _ScrumboardRepo extends DioRepo {
 
   Future<ResponseModel?> createBoard(ScrumboardModel board) async {
     return await post('/api/v1/scrumboards/boards', data: board.toJson());
+  }
+
+  Future<ResponseModel?> updateScrumboard(ScrumboardModel board) async {
+    return await put('/api/v1/scrumboards/boards/${board.id}',
+        data: board.toJson());
+  }
+
+  Future<ResponseModel?> createCard({
+    required int boardId,
+    required BoardCardModel card,
+  }) async {
+    return await post('/api/v1/scrumboards/cards/$boardId/cards',
+        data: card.toJson());
   }
 }

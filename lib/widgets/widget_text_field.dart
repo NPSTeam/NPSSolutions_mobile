@@ -26,6 +26,7 @@ class WidgetTextField extends StatelessWidget {
         ),
         labelText: labelText,
         hintText: hintText,
+        // floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       maxLines: maxLines,
       onChanged: onChanged,

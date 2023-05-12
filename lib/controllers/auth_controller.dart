@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:npssolutions_mobile/configs/spref_key.dart';
+import 'package:npssolutions_mobile/controllers/my_drawer_controller.dart';
 import 'package:npssolutions_mobile/models/auth_model.dart';
 import 'package:npssolutions_mobile/models/response_model.dart';
 import 'package:npssolutions_mobile/models/user_model.dart';
@@ -96,7 +97,7 @@ class AuthController extends GetxController {
     required DateTime birthday,
     required String avatarFilePath,
   }) async {
-    await authRepo.register(
+    ResponseModel? response = await authRepo.register(
       username: username,
       phone: phone,
       email: email,
@@ -106,7 +107,11 @@ class AuthController extends GetxController {
       avatarFilePath: avatarFilePath,
     );
 
-    return true;
+    if (response != null) {
+      return true;
+    }
+
+    return false;
   }
 
   Future<bool> logout() async {
@@ -123,6 +128,7 @@ class AuthController extends GetxController {
 
     await init();
     Get.offAll(() => const OnboardingPage());
+    Get.delete<MyDrawerController>();
 
     update();
 

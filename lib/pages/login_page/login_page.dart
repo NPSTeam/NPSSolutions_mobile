@@ -11,6 +11,7 @@ import 'package:npssolutions_mobile/widgets/widget_language_toggle.dart';
 import 'package:npssolutions_mobile/widgets/widget_login_text_field.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
+import '../../configs/themes/text_style_const.dart';
 import '../../widgets/widget_checkbox_list_tile.dart';
 
 class LoginPage extends StatefulWidget {
@@ -203,8 +204,10 @@ class _LoginPageState extends State<LoginPage> {
                                           child: Text(
                                               MessageKeys
                                                   .loginPageSignInButton.tr,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                              style:
+                                                  TextStyleConst.semiBoldStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.white)),
                                         ),
                                         const SizedBox(height: 12),
                                         Padding(

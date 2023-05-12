@@ -1,11 +1,8 @@
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:async/async.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:async/async.dart';
-
 import 'package:ionicons/ionicons.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:npssolutions_mobile/controllers/task_detail_controller.dart';

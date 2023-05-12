@@ -34,8 +34,8 @@ class TaskModel {
 
   Map<String, dynamic> toJson() => _$TaskModelToJson(this);
 
-  static DateTime _fromJson(String dateTime) =>
-      DateTime.parse(dateTime).toLocal();
+  static DateTime? _fromJson(String? dateTime) =>
+      dateTime == null ? null : DateTime.parse(dateTime).toLocal();
   static String? _toJson(DateTime? dateTime) =>
       dateTime?.toUtc().toIso8601String();
 }

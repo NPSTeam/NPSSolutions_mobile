@@ -9,6 +9,10 @@ import 'package:ionicons/ionicons.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/widgets/widget_button.dart';
 import 'package:npssolutions_mobile/widgets/widget_login_text_field.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
+
+import '../../configs/themes/text_style_const.dart';
+import '../../internationalization/message_keys.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -30,8 +34,11 @@ class _SignUpPageState extends State<SignUpPage> {
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
 
+  final RoundedLoadingButtonController _signUpBtnController =
+      RoundedLoadingButtonController();
+
   Future signUp() async {
-    await Get.find<AuthController>().register(
+    if (await Get.find<AuthController>().register(
       username: usernameController.text,
       phone: phoneController.text,
       email: emailController.text,
@@ -39,7 +46,15 @@ class _SignUpPageState extends State<SignUpPage> {
       confirmPassword: confirmPasswordController.text,
       birthday: birthday,
       avatarFilePath: avatarImageXFile?.path ?? '',
-    );
+    )) {
+      _signUpBtnController.success();
+      await Future.delayed(const Duration(milliseconds: 500));
+      Get.back();
+    } else {
+      _signUpBtnController.error();
+      await Future.delayed(const Duration(milliseconds: 500));
+      _signUpBtnController.reset();
+    }
 
     // try {
     //   await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -81,7 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Sign Up",
+                                MessageKeys.signUpPageTitle.tr,
                                 style: GoogleFonts.poppins(
                                   fontSize: 40,
                                   fontWeight: FontWeight.bold,
@@ -133,7 +148,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       ),
                                     ),
                                     Text(
-                                      "Username",
+                                      MessageKeys.signUpPageUsername.tr,
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: HexColor('#8d8d8d'),
@@ -159,7 +174,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     //   ),
                                     // ),
                                     Text(
-                                      "Phone",
+                                      MessageKeys.signUpPhone.tr,
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: HexColor('#8d8d8d'),
@@ -191,7 +206,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                     const SizedBox(height: 10),
                                     Text(
-                                      "Password",
+                                      MessageKeys.signUpPassword.tr,
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: HexColor('#8d8d8d'),
@@ -220,7 +235,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                     const SizedBox(height: 10),
                                     Text(
-                                      "Confirm Password",
+                                      MessageKeys.signUpConfirmPassword.tr,
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: HexColor('#8d8d8d'),
@@ -248,40 +263,15 @@ class _SignUpPageState extends State<SignUpPage> {
                                         },
                                       ),
                                     ),
-                                    const SizedBox(height: 10),
-                                    InkWell(
-                                      onTap: () async {
-                                        birthday = await showDatePicker(
-                                              context: context,
-                                              initialDate: DateTime.now(),
-                                              firstDate: DateTime
-                                                  .fromMicrosecondsSinceEpoch(
-                                                      0),
-                                              lastDate: DateTime.now(),
-                                            ) ??
-                                            birthday;
-                                      },
-                                      child: Text(
-                                        "Birthday",
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: HexColor('#8d8d8d'),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    WidgetLoginTextField(
-                                      controller: emailController,
-                                      hintText: "salter@gmail.com",
-                                      obscureText: false,
-                                      prefixIcon:
-                                          const Icon(Icons.mail_outline),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    const SizedBox(height: 20),
-                                    MyButton(
+                                    const SizedBox(height: 30),
+                                    RoundedLoadingButton(
+                                      controller: _signUpBtnController,
+                                      color: HexColor('#44564a'),
                                       onPressed: signUp,
-                                      buttonText: 'Submit',
+                                      child: Text(MessageKeys.signUpSignUp.tr,
+                                          style: TextStyleConst.semiBoldStyle(
+                                              fontSize: 18,
+                                              color: Colors.white)),
                                     ),
                                     const SizedBox(height: 12),
                                     Padding(
@@ -289,14 +279,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                           35, 0, 0, 0),
                                       child: Row(
                                         children: [
-                                          Text("Do you have an account?",
+                                          Text(
+                                              MessageKeys
+                                                  .signUpDoYouHaveAnAccount.tr,
                                               style: GoogleFonts.poppins(
                                                 fontSize: 15,
                                                 color: HexColor("#8d8d8d"),
                                               )),
                                           TextButton(
                                             child: Text(
-                                              "Login",
+                                              MessageKeys.signUpLogin.tr,
                                               style: GoogleFonts.poppins(
                                                 fontSize: 15,
                                                 color: HexColor("#44564a"),

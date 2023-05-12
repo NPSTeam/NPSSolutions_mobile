@@ -4,10 +4,13 @@ import 'package:ionicons/ionicons.dart';
 import 'package:npssolutions_mobile/configs/string_const.dart';
 import 'package:npssolutions_mobile/configs/themes/color_const.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
+import 'package:npssolutions_mobile/controllers/language_controller.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../configs/themes/assets_const.dart';
 import '../../../controllers/my_drawer_controller.dart';
+import '../../../internationalization/message_keys.dart';
+import '../../../widgets/widget_language_toggle.dart';
 
 class DrawerComponent extends StatefulWidget {
   DrawerComponent({super.key});
@@ -23,51 +26,62 @@ class _DrawerComponentState extends State<DrawerComponent> {
 
   final MyDrawerController _drawerController = Get.find<MyDrawerController>();
 
-  final List<DrawerTabItem> _drawerTabItems = [
-    DrawerTabItem(
-      id: DrawerTabId.TASKS,
-      label: 'Tasks',
-      icon: Ionicons.checkmark_circle_outline,
-      onTap: () {
-        Get.find<MyDrawerController>().selectTab(DrawerTabId.TASKS);
-        Get.back();
-      },
-    ),
-    DrawerTabItem(
-      id: DrawerTabId.SCRUM_BOARD,
-      label: 'Scrum Board',
-      icon: Icons.calendar_view_week_outlined,
-      onTap: () {
-        Get.find<MyDrawerController>().selectTab(DrawerTabId.SCRUM_BOARD);
-        Get.back();
-      },
-    ),
-    DrawerTabItem(
-      id: DrawerTabId.LOG_OUT,
-      label: 'Log Out',
-      icon: Ionicons.log_out_outline,
-      onTap: () {
-        Get.find<AuthController>().logout();
-      },
-    ),
-  ];
+  List<DrawerTabItem> _drawerTabItems = [];
 
   @override
   void initState() {
+    super.initState();
+  }
+
+  _buildTabItems() {
+    _drawerTabItems = [
+      DrawerTabItem(
+        id: DrawerTabId.TASKS,
+        label: MessageKeys.tasks.tr,
+        icon: Ionicons.checkmark_circle_outline,
+        onTap: () {
+          Get.find<MyDrawerController>().selectTab(DrawerTabId.TASKS);
+          Get.back();
+        },
+      ),
+      DrawerTabItem(
+        id: DrawerTabId.SCRUM_BOARD,
+        label: MessageKeys.scrumboard.tr,
+        icon: Icons.calendar_view_week_outlined,
+        onTap: () {
+          Get.find<MyDrawerController>().selectTab(DrawerTabId.SCRUM_BOARD);
+          Get.back();
+        },
+      ),
+      DrawerTabItem(
+        id: DrawerTabId.LANGUAGE_TOGGLE,
+        label: MessageKeys.languageToggle.tr,
+        icon: Ionicons.language_outline,
+      ),
+      DrawerTabItem(
+        id: DrawerTabId.LOG_OUT,
+        label: MessageKeys.logOut.tr,
+        icon: Ionicons.log_out_outline,
+        onTap: () {
+          Get.find<AuthController>().logout();
+        },
+      ),
+    ];
+
     if (_authController.auth?.currentUser?.roles
             ?.where((e) => e == "admin")
             .isNotEmpty ??
         false) {
       _drawerTabItems.insert(
-        _drawerTabItems.length - 1,
+        _drawerTabItems.length - 2,
         DrawerTabItem(
           id: 'SYSTEM',
-          label: "System",
+          label: MessageKeys.system.tr,
           icon: Ionicons.settings_outline,
           subItems: [
             DrawerTabItem(
               id: DrawerTabId.WORKSPACE_MANAGEMENT,
-              label: "Workspace Management",
+              label: MessageKeys.workspaceManagement.tr,
               icon: Ionicons.business_outline,
               onTap: () {
                 Get.find<MyDrawerController>()
@@ -79,11 +93,12 @@ class _DrawerComponentState extends State<DrawerComponent> {
         ),
       );
     }
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _buildTabItems();
+
     return Drawer(
       backgroundColor: ColorConst.primary,
       child: Column(
@@ -142,51 +157,61 @@ class _DrawerComponentState extends State<DrawerComponent> {
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(0),
-              children: List.generate(
-                _drawerTabItems.length,
-                (index) => (_drawerTabItems[index].subItems?.isEmpty ?? true)
-                    ? ListTile(
-                        leading: Icon(_drawerTabItems[index].icon,
-                            color: Colors.white),
-                        title: Text(_drawerTabItems[index].label,
-                            style: const TextStyle(color: Colors.white)),
-                        onTap: () => _drawerTabItems[index].onTap!(),
-                      )
-                    : Theme(
-                        data: Theme.of(context)
-                            .copyWith(dividerColor: Colors.transparent),
-                        child: ExpansionTile(
-                          title: Text(_drawerTabItems[index].label,
-                              style: const TextStyle(color: Colors.white)),
-                          leading: Icon(_drawerTabItems[index].icon,
-                              color: Colors.white),
-                          iconColor: Colors.white,
-                          collapsedIconColor: Colors.white,
-                          children: List.generate(
-                            _drawerTabItems[index].subItems?.length ?? 0,
-                            (subItemIndex) => Padding(
-                              padding: const EdgeInsets.only(left: 15),
-                              child: ListTile(
-                                leading: Icon(
-                                    _drawerTabItems[index]
-                                        .subItems![subItemIndex]
-                                        .icon,
-                                    color: Colors.white),
-                                title: Text(
-                                    _drawerTabItems[index]
-                                        .subItems![subItemIndex]
-                                        .label,
-                                    style:
-                                        const TextStyle(color: Colors.white)),
-                                onTap: () => _drawerTabItems[index]
+              children: List.generate(_drawerTabItems.length, (index) {
+                if (_drawerTabItems[index].id == DrawerTabId.LANGUAGE_TOGGLE) {
+                  return ListTile(
+                    leading:
+                        Icon(_drawerTabItems[index].icon, color: Colors.white),
+                    title: Text(_drawerTabItems[index].label,
+                        style: const TextStyle(color: Colors.white)),
+                    trailing: const WidgetLanguageToggle(),
+                  );
+                }
+
+                if (_drawerTabItems[index].subItems?.isEmpty ?? true) {
+                  return ListTile(
+                    leading:
+                        Icon(_drawerTabItems[index].icon, color: Colors.white),
+                    title: Text(_drawerTabItems[index].label,
+                        style: const TextStyle(color: Colors.white)),
+                    onTap: () => _drawerTabItems[index].onTap!(),
+                  );
+                } else {
+                  return Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      title: Text(_drawerTabItems[index].label,
+                          style: const TextStyle(color: Colors.white)),
+                      leading: Icon(_drawerTabItems[index].icon,
+                          color: Colors.white),
+                      iconColor: Colors.white,
+                      collapsedIconColor: Colors.white,
+                      children: List.generate(
+                        _drawerTabItems[index].subItems?.length ?? 0,
+                        (subItemIndex) => Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: ListTile(
+                            leading: Icon(
+                                _drawerTabItems[index]
                                     .subItems![subItemIndex]
-                                    .onTap!(),
-                              ),
-                            ),
+                                    .icon,
+                                color: Colors.white),
+                            title: Text(
+                                _drawerTabItems[index]
+                                    .subItems![subItemIndex]
+                                    .label,
+                                style: const TextStyle(color: Colors.white)),
+                            onTap: () => _drawerTabItems[index]
+                                .subItems![subItemIndex]
+                                .onTap!(),
                           ),
                         ),
                       ),
-              ),
+                    ),
+                  );
+                }
+              }),
             ),
           ),
           Column(
@@ -239,5 +264,6 @@ class DrawerTabId {
   static const String TASKS = 'TASKS';
   static const String SCRUM_BOARD = 'SCRUM_BOARD';
   static const String WORKSPACE_MANAGEMENT = 'WORKSPACE_MANAGEMENT';
+  static const String LANGUAGE_TOGGLE = 'LANGUAGE_TOGGLE';
   static const String LOG_OUT = 'LOG_OUT';
 }

@@ -12,11 +12,18 @@ import 'package:ionicons/ionicons.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:npssolutions_mobile/models/task_model.dart';
 import 'package:npssolutions_mobile/pages/home_page/task_tab/task_detail_page.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../../configs/themes/color_const.dart';
 import '../../../controllers/task_list_controller.dart';
+import '../../../widgets/widget_checkbox_list_tile.dart';
+import '../../../widgets/widget_date_time_field.dart';
 import '../../../widgets/widget_dialog_overlay.dart';
+import '../../../widgets/widget_dropdown.dart';
+import '../../../widgets/widget_refresher.dart';
+import '../../../widgets/widget_text_field.dart';
+import '../../../widgets/widget_text_form_field.dart';
 
 class TaskTab extends StatefulWidget {
   const TaskTab({super.key});
@@ -43,12 +50,30 @@ class _TaskTabState extends State<TaskTab> {
       RoundedLoadingButtonController();
 
   bool completed = false;
-  DateTime dueDate = DateTime.now();
+  DateTime? dueDate;
 
-  final TextEditingController _dropdownController = TextEditingController();
+  final TextEditingController _dropdownController =
+      TextEditingController(text: 'Normal');
 
   final RoundedLoadingButtonController _deleteTaskBtnController =
       RoundedLoadingButtonController();
+
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  void _onRefresh() async {
+    if (await _taskListController.getTasks()) {
+      _refreshController.refreshCompleted();
+    } else {
+      _refreshController.refreshFailed();
+    }
+  }
+
+  void _onLoading() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (mounted) setState(() {});
+    _refreshController.loadComplete();
+  }
 
   @override
   void initState() {
@@ -82,8 +107,9 @@ class _TaskTabState extends State<TaskTab> {
                   ?.map((e) => DragAndDropItem(
                         child: InkWell(
                           onTap: () => Get.to(
-                              () => TaskDetailPage(taskId: e.id!),
-                              transition: Transition.cupertino),
+                                  () => TaskDetailPage(taskId: e.id!),
+                                  transition: Transition.cupertino)
+                              ?.then((_) => _taskListController.getTasks()),
                           onLongPress: () =>
                               showDeleteTaskDialog(context, e.id!),
                           child: e.type == 'task'
@@ -171,14 +197,14 @@ class _TaskTabState extends State<TaskTab> {
           animationDuration: const Duration(milliseconds: 200),
           children: [
             SpeedDialChild(
-              child: const Icon(Ionicons.add),
+              child: const Icon(Ionicons.add, color: Colors.white),
               backgroundColor: ColorConst.primary,
               label: 'Add Task',
               onTap: () => showCreateDialog(context, true),
             ),
             SpeedDialChild(
               child: const Icon(Ionicons.add),
-              backgroundColor: ColorConst.primary,
+              backgroundColor: Colors.white,
               label: 'Add Section',
               onTap: () => showCreateDialog(context, false),
             ),
@@ -235,25 +261,30 @@ class _TaskTabState extends State<TaskTab> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(top: 20.0),
-                            child: DragAndDropLists(
-                              children: _contents,
-                              onItemReorder: _onItemReorder,
-                              onListReorder: (_, __) {},
-                              listPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              onItemDraggingChanged: (item, isDragging) {
-                                HapticFeedback.lightImpact();
-                              },
-                              listDragOnLongPress: false,
-                              lastItemTargetHeight: 8,
-                              addLastItemTargetHeightToTop: true,
-                              lastListTargetSize: 40,
-                              itemDragHandle: const DragHandle(
-                                child: Padding(
-                                  padding: EdgeInsets.only(right: 10),
-                                  child: Icon(
-                                    Ionicons.menu_outline,
-                                    color: Colors.blueGrey,
+                            child: WidgetRefresher(
+                              controller: _refreshController,
+                              onRefresh: _onRefresh,
+                              onLoading: _onLoading,
+                              child: DragAndDropLists(
+                                children: _contents,
+                                onItemReorder: _onItemReorder,
+                                onListReorder: (_, __) {},
+                                listPadding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                onItemDraggingChanged: (item, isDragging) {
+                                  HapticFeedback.lightImpact();
+                                },
+                                listDragOnLongPress: false,
+                                lastItemTargetHeight: 8,
+                                addLastItemTargetHeightToTop: true,
+                                lastListTargetSize: 40,
+                                itemDragHandle: const DragHandle(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Icon(
+                                      Ionicons.menu_outline,
+                                      color: Colors.blueGrey,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -292,6 +323,11 @@ class _TaskTabState extends State<TaskTab> {
   }
 
   Future<dynamic> showCreateDialog(BuildContext context, bool isCreateTask) {
+    completed = false;
+    _titleController.clear();
+    _notesController.clear();
+    _dropdownController.text = 'Normal';
+    dueDate = null;
     _selectedTags = [];
     _taskListController.getTags();
 
@@ -301,138 +337,131 @@ class _TaskTabState extends State<TaskTab> {
         builder: (context, setState) {
           return WidgetDialogOverlay(
             title: "Create ${isCreateTask ? "Task" : "Section"}",
-            body: Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      completed = !completed;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: completed,
-                        onChanged: (value) {
-                          setState(() {
-                            completed = value ?? false;
-                          });
-                        },
-                      ),
-                      const Text("Mark as complete",
-                          style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: "${isCreateTask ? "Task" : "Section"} Title",
-                  ),
-                  controller: _titleController,
-                ),
-                const SizedBox(height: 5),
-                CustomDropdown(
-                  hintText: "Priority",
-                  items: taskPriorityMap.entries.map((e) => e.value).toList(),
-                  controller: _dropdownController,
-                  listItemBuilder: (context, value) => Row(
-                    children: [
-                      if (value == 'Low')
-                        const Icon(Ionicons.arrow_down_outline,
-                            color: Colors.red),
-                      if (value == 'Normal')
-                        const Icon(Ionicons.remove_outline),
-                      if (value == 'High')
-                        const Icon(Ionicons.arrow_up_outline,
-                            color: Colors.green),
-                      const SizedBox(width: 5),
-                      Text(
-                        value,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ),
-                GetBuilder<TaskListController>(builder: (controller) {
-                  return MultiSelectBottomSheetField(
-                    initialChildSize: 0.4,
-                    listType: MultiSelectListType.CHIP,
-                    searchable: true,
-                    buttonText: const Text("Tags"),
-                    title: const Text("Tags"),
-                    items: controller.tags
-                            ?.map((e) => MultiSelectItem<int>(e.id!, e.title!))
-                            .toList() ??
-                        [],
-                    initialValue: _selectedTags,
-                    onConfirm: (values) => _selectedTags = values.cast(),
-                    chipDisplay: MultiSelectChipDisplay(
-                      onTap: (value) =>
-                          setState(() => _selectedTags.remove(value)),
-                    ),
-                  );
-                }),
-                DateTimeField(
-                  format: DateFormat("yyyy-MM-dd HH:mm"),
-                  decoration: const InputDecoration(
-                    labelText: "Due Date",
-                  ),
-                  onShowPicker: (context, currentValue) async {
-                    dueDate = await showDatePicker(
-                      context: context,
-                      firstDate: DateTime(1900),
-                      initialDate: currentValue ?? DateTime.now(),
-                      lastDate: DateTime(2100),
-                    ).then((DateTime? date) async {
-                      if (date != null) {
-                        final time = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.fromDateTime(
-                              currentValue ?? DateTime.now()),
-                        );
-                        return DateTimeField.combine(date, time);
-                      } else {
-                        return currentValue ?? DateTime.now();
-                      }
-                    });
-
-                    return dueDate;
-                  },
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: "Notes"),
-                  controller: _notesController,
-                  maxLines: 10,
-                ),
-                const SizedBox(height: 20),
-                Row(
+            body: SizedBox(
+              height: Get.height * 0.4,
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
                   children: [
-                    Flexible(
-                      child: RoundedLoadingButton(
-                        controller: RoundedLoadingButtonController(),
-                        animateOnTap: false,
-                        color: Colors.grey,
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Cancel',
-                            style: TextStyle(color: Colors.white)),
+                    WidgetCheckboxListTile(
+                      title: const Text('Mark as complete',
+                          style: TextStyle(fontSize: 16)),
+                      value: completed,
+                      onChanged: (value) =>
+                          setState(() => completed = value ?? false),
+                    ),
+                    const SizedBox(height: 10),
+                    WidgetTextFormField(
+                      controller: _titleController,
+                      labelText: '${isCreateTask ? "Task" : "Section"} Title',
+                    ),
+                    const SizedBox(height: 10),
+                    WidgetDropdown(
+                      hintText: 'Priority',
+                      items:
+                          taskPriorityMap.entries.map((e) => e.value).toList(),
+                      controller: _dropdownController,
+                      listItemBuilder: (context, value) => Row(
+                        children: [
+                          if (value == 'Low')
+                            const Icon(Ionicons.arrow_down_outline,
+                                color: Colors.red),
+                          if (value == 'Normal')
+                            const Icon(Ionicons.remove_outline),
+                          if (value == 'High')
+                            const Icon(Ionicons.arrow_up_outline,
+                                color: Colors.green),
+                          const SizedBox(width: 5),
+                          Text(
+                            value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 20),
-                    Flexible(
-                      child: RoundedLoadingButton(
-                        controller: _createTaskBtnController,
-                        onPressed: () => _createTask(isCreateTask),
-                        child: const Text('Create',
-                            style: TextStyle(color: Colors.white)),
-                      ),
+                    const SizedBox(height: 10),
+                    GetBuilder<TaskListController>(builder: (controller) {
+                      return MultiSelectBottomSheetField(
+                        initialChildSize: 0.4,
+                        listType: MultiSelectListType.CHIP,
+                        searchable: true,
+                        buttonText: const Text('Tags'),
+                        title: const Text('Tags'),
+                        items: controller.tags
+                                ?.map((e) =>
+                                    MultiSelectItem<int>(e.id!, e.title!))
+                                .toList() ??
+                            [],
+                        initialValue: _selectedTags,
+                        onConfirm: (values) => _selectedTags = values.cast(),
+                        chipDisplay: MultiSelectChipDisplay(
+                          onTap: (value) =>
+                              setState(() => _selectedTags.remove(value)),
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 10),
+                    WidgetDateTimeField(
+                      labelText: 'Due Date',
+                      onShowPicker: (context, currentValue) async {
+                        dueDate = await showDatePicker(
+                          context: context,
+                          firstDate: DateTime(1900),
+                          initialDate: currentValue ?? DateTime.now(),
+                          lastDate: DateTime(2100),
+                        ).then((DateTime? date) async {
+                          if (date != null) {
+                            final time = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.fromDateTime(
+                                  currentValue ?? DateTime.now()),
+                            );
+                            return DateTimeField.combine(date, time);
+                          } else {
+                            return currentValue ?? DateTime.now();
+                          }
+                        });
+
+                        return dueDate;
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    WidgetTextField(
+                      controller: _notesController,
+                      labelText: 'Notes',
+                      maxLines: 10,
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: RoundedLoadingButton(
+                            controller: RoundedLoadingButtonController(),
+                            animateOnTap: false,
+                            color: Colors.grey,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Cancel',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Flexible(
+                          child: RoundedLoadingButton(
+                            controller: _createTaskBtnController,
+                            onPressed: () => _createTask(isCreateTask),
+                            child: const Text('Create',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           );
         },
@@ -449,7 +478,7 @@ class _TaskTabState extends State<TaskTab> {
       completed: completed,
       dueDate: dueDate,
       priority: taskPriorityMap.entries
-          .firstWhere((element) => element.value == _dropdownController.text)
+          .singleWhere((element) => element.value == _dropdownController.text)
           .key,
     ));
 

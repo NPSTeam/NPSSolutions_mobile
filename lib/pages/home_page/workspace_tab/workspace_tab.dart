@@ -16,6 +16,7 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../../configs/string_const.dart';
 import '../../../helpers/utils.dart';
+import '../../../widgets/widget_refresher.dart';
 import '../../../widgets/widget_search_field.dart';
 
 class WorkspaceTab extends StatefulWidget {
@@ -158,27 +159,8 @@ class _WorkspaceTabState extends State<WorkspaceTab> {
                                         (index) => loadingListItem(),
                                       ),
                                     )
-                                  : SmartRefresher(
-                                      physics: const BouncingScrollPhysics(),
+                                  : WidgetRefresher(
                                       controller: _refreshController,
-                                      header: const ClassicHeader(
-                                        idleText: 'Pull to refresh',
-                                        releaseText: 'Release to refresh',
-                                        refreshingText: 'Refreshing...',
-                                        completeText: 'Refreshed',
-                                        failedText: 'Refresh failed',
-                                        textStyle:
-                                            TextStyle(color: Colors.black),
-                                        iconPos: IconPosition.top,
-                                        releaseIcon: Icon(Icons.arrow_upward,
-                                            color: Colors.black),
-                                        refreshingIcon: Icon(Icons.refresh,
-                                            color: Colors.black),
-                                        completeIcon: Icon(Icons.check,
-                                            color: Colors.black),
-                                        failedIcon: Icon(Icons.close,
-                                            color: Colors.black),
-                                      ),
                                       onRefresh: _onRefresh,
                                       onLoading: _onLoading,
                                       child: LiveList(

@@ -11,6 +11,8 @@ import 'package:npssolutions_mobile/widgets/widget_language_toggle.dart';
 import 'package:npssolutions_mobile/widgets/widget_login_text_field.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
+import '../../widgets/widget_checkbox_list_tile.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -77,202 +79,186 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: HexColor("#fed8c3"),
-        body: Stack(
-          children: [
-            ListView(
-              padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: HexColor("#ffffff"),
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              topRight: Radius.circular(40),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  MessageKeys.loginPageTitle.tr,
-                                  style: TextStyle(
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.bold,
-                                    color: HexColor("#4f4f4f"),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(15, 0, 0, 20),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        MessageKeys.loginPageUsername.tr,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: HexColor('#8d8d8d'),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      WidgetLoginTextField(
-                                        onChanged: (() {
-                                          validateEmail(
-                                              usernameController.text);
-                                        }),
-                                        controller: usernameController,
-                                        hintText: "hello@gmail.com",
-                                        obscureText: false,
-                                        prefixIcon:
-                                            const Icon(Icons.person_outline),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            8, 0, 0, 0),
-                                        child: Text(
-                                          _errorMessage,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Text(
-                                        MessageKeys.loginPagePassword.tr,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: HexColor('#8d8d8d'),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      WidgetLoginTextField(
-                                        controller: passwordController,
-                                        hintText: "**************",
-                                        obscureText: obscurePassword,
-                                        prefixIcon:
-                                            const Icon(Icons.lock_outline),
-                                        suffixWidget: IconButton(
-                                          icon: Icon(
-                                            obscurePassword
-                                                ? Icons.visibility
-                                                : Icons.visibility_off,
-                                            color: HexColor("#4f4f4f"),
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              obscurePassword =
-                                                  !obscurePassword;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            rememberMe = !rememberMe;
-                                          });
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Checkbox(
-                                              value: rememberMe,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  rememberMe = value ?? false;
-                                                });
-                                              },
-                                            ),
-                                            Text(
-                                              MessageKeys
-                                                  .loginPageRememberMe.tr,
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      RoundedLoadingButton(
-                                        controller: _loginBtnController,
-                                        color: HexColor('#44564a'),
-                                        onPressed: signUserIn,
-                                        child: Text(
-                                            MessageKeys
-                                                .loginPageSignInButton.tr,
-                                            style: const TextStyle(
-                                                color: Colors.white)),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            35, 0, 0, 0),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                                MessageKeys
-                                                    .dontHaveAnAccount.tr,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 15,
-                                                  color: HexColor("#8d8d8d"),
-                                                )),
-                                            TextButton(
-                                              child: Text(
-                                                MessageKeys.loginPageSignUp.tr,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 15,
-                                                  color: HexColor("#44564a"),
-                                                ),
-                                              ),
-                                              onPressed: () => Get.to(
-                                                  () => const SignUpPage()),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Transform.translate(
-                          offset: const Offset(0, -253),
-                          child: Image.asset(
-                            'assets/images/plants2.png',
-                            scale: 1.5,
+      child: GestureDetector(
+        onTap: () => Get.focusScope?.unfocus(),
+        child: Scaffold(
+          backgroundColor: HexColor("#fed8c3"),
+          body: Stack(
+            children: [
+              ListView(
+                padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
                             width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: HexColor("#ffffff"),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(40),
+                                topRight: Radius.circular(40),
+                              ),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    MessageKeys.loginPageTitle.tr,
+                                    style: TextStyle(
+                                      fontSize: 40,
+                                      fontWeight: FontWeight.bold,
+                                      color: HexColor("#4f4f4f"),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(15, 0, 0, 20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          MessageKeys.loginPageUsername.tr,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: HexColor('#8d8d8d'),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        WidgetLoginTextField(
+                                          onChanged: (() {
+                                            validateEmail(
+                                                usernameController.text);
+                                          }),
+                                          controller: usernameController,
+                                          hintText: "salter",
+                                          obscureText: false,
+                                          prefixIcon:
+                                              const Icon(Icons.person_outline),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8, 0, 0, 0),
+                                          child: Text(
+                                            _errorMessage,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 12,
+                                                color: Colors.red),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          MessageKeys.loginPagePassword.tr,
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: HexColor('#8d8d8d')),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        WidgetLoginTextField(
+                                          controller: passwordController,
+                                          hintText: "**************",
+                                          obscureText: obscurePassword,
+                                          prefixIcon:
+                                              const Icon(Icons.lock_outline),
+                                          suffixWidget: IconButton(
+                                            icon: Icon(
+                                              obscurePassword
+                                                  ? Icons.visibility
+                                                  : Icons.visibility_off,
+                                              color: HexColor("#4f4f4f"),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                obscurePassword =
+                                                    !obscurePassword;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        WidgetCheckboxListTile(
+                                          title: Text(
+                                            MessageKeys.loginPageRememberMe.tr,
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                          value: rememberMe,
+                                          onChanged: (value) => setState(() =>
+                                              rememberMe = value ?? false),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        RoundedLoadingButton(
+                                          controller: _loginBtnController,
+                                          color: HexColor('#44564a'),
+                                          onPressed: signUserIn,
+                                          child: Text(
+                                              MessageKeys
+                                                  .loginPageSignInButton.tr,
+                                              style: const TextStyle(
+                                                  color: Colors.white)),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              35, 0, 0, 0),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                  MessageKeys
+                                                      .dontHaveAnAccount.tr,
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 15,
+                                                      color:
+                                                          HexColor("#8d8d8d"))),
+                                              TextButton(
+                                                child: Text(
+                                                  MessageKeys
+                                                      .loginPageSignUp.tr,
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 15,
+                                                      color:
+                                                          HexColor("#44564a")),
+                                                ),
+                                                onPressed: () => Get.to(
+                                                    () => const SignUpPage()),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ],
-            ),
-            const Positioned(
-              top: 20,
-              right: 10,
-              child: WidgetLanguageToggle(),
-            ),
-          ],
+                          Transform.translate(
+                            offset: const Offset(0, -253),
+                            child: Image.asset('assets/images/plants2.png',
+                                scale: 1.5, width: double.infinity),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              const Positioned(
+                top: 20,
+                right: 10,
+                child: WidgetLanguageToggle(),
+              ),
+            ],
+          ),
         ),
       ),
     );

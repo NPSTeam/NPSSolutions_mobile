@@ -9,6 +9,7 @@ class TaskModel {
   String? title;
   String? notes;
   bool? completed;
+  @JsonKey(fromJson: _fromJson, toJson: _toJson)
   DateTime? dueDate;
   int? priority;
   int? order;
@@ -32,6 +33,11 @@ class TaskModel {
       _$TaskModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$TaskModelToJson(this);
+
+  static DateTime _fromJson(String dateTime) =>
+      DateTime.parse(dateTime).toLocal();
+  static String? _toJson(DateTime? dateTime) =>
+      dateTime?.toUtc().toIso8601String();
 }
 
 Map<int, String> taskPriorityMap = {

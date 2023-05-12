@@ -44,4 +44,25 @@ class TaskDetailController extends GetxController {
     }
     return false;
   }
+
+  Future<bool> updateTask(TaskModel task) async {
+    ResponseModel? response = await taskRepo.updateTask(task);
+    if (response?.data != null) {
+      await getTaskDetail(task.id!);
+      update();
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> deleteTask(int taskId) async {
+    ResponseModel? response = await taskRepo.deleteTask(taskId);
+
+    if (response?.data != null) {
+      update();
+      return true;
+    }
+
+    return false;
+  }
 }

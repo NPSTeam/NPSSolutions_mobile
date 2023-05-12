@@ -54,7 +54,7 @@ class DioRepo {
           debugPrint("Error Response: ${e.response}");
           RequestOptions origin = e.requestOptions;
 
-          if (e.response?.statusCode == 401 || e.response?.statusCode == 400) {
+          if (e.response?.statusCode == 401) {
             try {
               Response<dynamic> data = await Dio(BaseOptions(
                 baseUrl: AppKey.BACKEND_URL,

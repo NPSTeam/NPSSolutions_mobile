@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:npssolutions_mobile/configs/themes/assets_const.dart';
-import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/pages/home_page/components/drawer_component.dart';
 import 'package:npssolutions_mobile/pages/home_page/scrumboard_tab/scrumboard_tab.dart';
 import 'package:npssolutions_mobile/widgets/widget_app_bar_avatar.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../configs/string_const.dart';
 import '../../configs/themes/color_const.dart';
 import '../../controllers/my_drawer_controller.dart';
 import 'task_tab/task_tab.dart';
@@ -58,9 +54,7 @@ class _HomePageState extends State<HomePage> {
               child: Image.asset(AssetsConst.npsLogo),
             ),
           ),
-          actions: const [
-            WidgetAppBarAvatar(),
-          ],
+          actions: const [WidgetAppBarAvatar()],
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: Center(

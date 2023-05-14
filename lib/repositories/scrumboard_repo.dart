@@ -1,4 +1,5 @@
 import 'package:npssolutions_mobile/models/board_card_model.dart';
+import 'package:npssolutions_mobile/models/board_list_model.dart';
 import 'package:npssolutions_mobile/models/scrumboard_model.dart';
 
 import '../models/response_model.dart';
@@ -36,7 +37,42 @@ class _ScrumboardRepo extends DioRepo {
     required int boardId,
     required BoardCardModel card,
   }) async {
-    return await post('/api/v1/scrumboards/cards/$boardId/cards',
+    return await post('/api/v1/scrumboards/boards/$boardId/cards',
         data: card.toJson());
+  }
+
+  Future<ResponseModel?> createList({
+    required int boardId,
+    required BoardListModel list,
+  }) async {
+    return await post('/api/v1/scrumboards/boards/$boardId/lists',
+        data: list.toJson());
+  }
+
+  Future<ResponseModel?> removeBoardList({
+    required int boardId,
+    required int listId,
+  }) async {
+    return await delete('/api/v1/scrumboards/boards/$boardId/lists/$listId');
+  }
+
+  Future<ResponseModel?> updateBoardList({
+    required int boardId,
+    required int listId,
+    required BoardListModel list,
+  }) async {
+    return await put('/api/v1/scrumboards/boards/$boardId/lists/$listId',
+        data: list.toJson());
+  }
+
+  Future<ResponseModel?> getCard({
+    required int boardId,
+    required int cardId,
+  }) async {
+    return await get('/api/v1/scrumboards/boards/$boardId/cards/$cardId');
+  }
+
+  Future<ResponseModel?> deleteScrumboard(int scrumboardId) async {
+    return await delete('/api/v1/scrumboards/boards/$scrumboardId');
   }
 }

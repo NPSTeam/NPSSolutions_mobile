@@ -6,6 +6,7 @@ class WidgetTextField extends StatelessWidget {
     required this.controller,
     this.labelText,
     this.hintText,
+    this.minLines,
     this.maxLines,
     this.onChanged,
   });
@@ -13,6 +14,7 @@ class WidgetTextField extends StatelessWidget {
   final TextEditingController controller;
   final String? labelText;
   final String? hintText;
+  final int? minLines;
   final int? maxLines;
   final Function(String)? onChanged;
 
@@ -25,9 +27,12 @@ class WidgetTextField extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
         labelText: labelText,
+        labelStyle: TextStyle(color: Colors.grey[500]),
         hintText: hintText,
+        hintStyle: TextStyle(color: Colors.grey[400]),
         // floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
+      minLines: minLines,
       maxLines: maxLines,
       onChanged: onChanged,
     );

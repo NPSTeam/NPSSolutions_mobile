@@ -14,8 +14,7 @@ ResponseModel _$ResponseModelFromJson(Map<String, dynamic> json) =>
           .toList(),
       message: json['message'] as String?,
       status: json['status'] as int?,
-      time:
-          json['time'] == null ? null : DateTime.parse(json['time'] as String),
+      time: ResponseModel._fromJson(json['time'] as String?),
       title: json['title'] as String?,
       took: json['took'] as int?,
     );
@@ -26,7 +25,7 @@ Map<String, dynamic> _$ResponseModelToJson(ResponseModel instance) =>
       'errors': instance.errors?.map((e) => e.toJson()).toList(),
       'message': instance.message,
       'status': instance.status,
-      'time': instance.time?.toIso8601String(),
+      'time': ResponseModel._toJson(instance.time),
       'title': instance.title,
       'took': instance.took,
     };

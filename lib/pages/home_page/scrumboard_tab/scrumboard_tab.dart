@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../configs/themes/color_const.dart';
 import '../../../controllers/scrumboard_list_controller.dart';
 import '../../../models/scrumboard_model.dart';
+import '../../../widgets/widget_dialog_overlay.dart';
 import 'scrumboard_board_page.dart';
 
 class ScrumboardTab extends StatefulWidget {
@@ -22,6 +24,9 @@ class _ScrumboardTabState extends State<ScrumboardTab>
       Get.put(ScrumboardListController());
 
   int? _selectedWorkspaceId;
+
+  final RoundedLoadingButtonController _deleteScrumboardBtnController =
+      RoundedLoadingButtonController();
 
   @override
   void initState() {
@@ -164,7 +169,15 @@ class _ScrumboardTabState extends State<ScrumboardTab>
                                                             value.id!),
                                                     transition:
                                                         Transition.cupertino,
-                                                  );
+                                                  )?.then((_) {
+                                                    EasyLoading.show();
+                                                    _scrumboardListController
+                                                        .getScrumboards(
+                                                            _selectedWorkspaceId!)
+                                                        .then((_) {
+                                                      EasyLoading.dismiss();
+                                                    });
+                                                  });
                                                 }
                                               });
                                             }
@@ -183,7 +196,7 @@ class _ScrumboardTabState extends State<ScrumboardTab>
                                       );
                                     }
 
-                                    return _scrumboardListItem(
+                                    return _scrumboardListItem(context,
                                         controller.scrumboards![index]);
                                   },
                                 ),
@@ -200,7 +213,9 @@ class _ScrumboardTabState extends State<ScrumboardTab>
     });
   }
 
-  Widget _scrumboardListItem(ScrumboardModel scrumboard) => Card(
+  Widget _scrumboardListItem(
+          BuildContext context, ScrumboardModel scrumboard) =>
+      Card(
         clipBehavior: Clip.hardEdge,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: InkWell(
@@ -210,6 +225,8 @@ class _ScrumboardTabState extends State<ScrumboardTab>
                   transition: Transition.cupertino);
             }
           },
+          onLongPress: () =>
+              showCreateBoardListDialog(context, boardId: scrumboard.id!),
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
@@ -237,4 +254,57 @@ class _ScrumboardTabState extends State<ScrumboardTab>
           ),
         ),
       );
+
+  Future<dynamic> showCreateBoardListDialog(BuildContext context,
+      {required int boardId}) {
+    return showDialog(
+      context: context,
+      builder: (_) => WidgetDialogOverlay(
+        title: 'Are you sure remove this board?',
+        body: Column(
+          children: [
+            Row(
+              children: [
+                Flexible(
+                  child: RoundedLoadingButton(
+                    controller: RoundedLoadingButtonController(),
+                    animateOnTap: false,
+                    color: Colors.grey,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Flexible(
+                  child: RoundedLoadingButton(
+                    controller: _deleteScrumboardBtnController,
+                    color: Colors.red,
+                    onPressed: () => _deleteBoardList(boardId),
+                    child: const Text('Remove',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _deleteBoardList(int boardId) async {
+    await _scrumboardListController.deleteScrumboard(boardId);
+
+    _deleteScrumboardBtnController.success();
+    await Future.delayed(const Duration(seconds: 1));
+    _deleteScrumboardBtnController.reset();
+    Get.back();
+
+    EasyLoading.show();
+    await _scrumboardListController.getScrumboards(_selectedWorkspaceId!);
+    await EasyLoading.dismiss();
+  }
 }

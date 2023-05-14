@@ -10,10 +10,12 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../../configs/themes/color_const.dart';
 import '../../../controllers/scrumboard_board_controller.dart';
+import '../../../models/board_list_model.dart';
 import '../../../models/board_model.dart';
 import '../../../models/scrumboard_model.dart';
 import '../../../widgets/widget_dialog_overlay.dart';
 import '../../../widgets/widget_text_form_field.dart';
+import 'card_detail_page.dart';
 
 class ScrumboardBoardPage extends StatefulWidget {
   const ScrumboardBoardPage({super.key, required this.scrumboardId});
@@ -34,10 +36,14 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
 
   final RoundedLoadingButtonController _createCardBtnController =
       RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _createListBtnController =
+      RoundedLoadingButtonController();
 
   final _createCardFormKey = GlobalKey<FormState>();
+  final _createListFormKey = GlobalKey<FormState>();
+  final _renameListFormKey = GlobalKey<FormState>();
 
-  Future loadData() async {
+  Future _loadData() async {
     EasyLoading.show();
 
     await _scrumboardBoardController.getScrumboard(widget.scrumboardId);
@@ -57,11 +63,68 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
     _contents = _scrumboardBoardController.boardLists
             ?.map(
               (boardList) => DragAndDropList(
+                contentsWhenEmpty: const SizedBox(),
                 header: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(boardList.title ?? ''),
+                      PopupMenuButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.all(0),
+                        icon: const Icon(Ionicons.ellipsis_vertical_outline),
+                        iconSize: 20,
+                        onSelected: (value) {
+                          switch (value) {
+                            case 'REMOVE_LIST':
+                              EasyLoading.show();
+                              _scrumboardBoardController
+                                  .removeBoardList(
+                                      boardId: widget.scrumboardId,
+                                      listId: boardList.id!)
+                                  .then((value) {
+                                EasyLoading.dismiss();
+                                if (value) {
+                                  _loadData();
+                                }
+                              });
+                              break;
+                            case 'RENAME_LIST':
+                              showRenameBoardListDialog(context,
+                                  boardId: widget.scrumboardId,
+                                  listId: boardList.id!);
+                              break;
+                          }
+                        },
+                        itemBuilder: (_) {
+                          return [
+                            PopupMenuItem(
+                              value: 'RENAME_LIST',
+                              child: Row(
+                                children: const [
+                                  Icon(Ionicons.create_outline,
+                                      color: Colors.black),
+                                  SizedBox(width: 10),
+                                  Text('Rename'),
+                                ],
+                              ),
+                            ),
+                            PopupMenuItem(
+                              value: 'REMOVE_LIST',
+                              child: Row(
+                                children: const [
+                                  Icon(Ionicons.trash_outline,
+                                      color: Colors.black),
+                                  SizedBox(width: 10),
+                                  Text('Remove'),
+                                ],
+                              ),
+                            ),
+                          ];
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -69,21 +132,56 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
                 rightSide: const SizedBox(width: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey[100],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 0.5,
+                      blurRadius: 0.5,
+                      offset: const Offset(0, 0.5),
+                    ),
+                  ],
                 ),
                 children: _scrumboardBoardController.boardCards
                         ?.where((e) => e.listId == boardList.id)
                         .map((boardCard) => DragAndDropItem(
                               child: Center(
                                 child: Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        Text(boardCard.title ?? ''),
-                                      ],
+                                  clipBehavior: Clip.hardEdge,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Get.to(
+                                        () => CardDetailPage(
+                                            boardId: widget.scrumboardId,
+                                            cardId: boardCard.id!),
+                                        transition: Transition.cupertino,
+                                      );
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        children: [
+                                          Text(
+                                            boardCard.title ?? '',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 20),
+                                          Row(
+                                            children: const [
+                                              Icon(Ionicons.eye_outline,
+                                                  size: 15),
+                                              Icon(Ionicons.attach_outline,
+                                                  size: 15),
+                                              Text('0'),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -102,10 +200,11 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: const [
-                        Icon(Ionicons.add_circle_outline, size: 15),
+                        Icon(Ionicons.add_circle_outline,
+                            size: 15, color: Colors.grey),
                         SizedBox(width: 5),
                         Text('Add another card',
-                            style: TextStyle(fontSize: 12)),
+                            style: TextStyle(fontSize: 12, color: Colors.grey)),
                       ],
                     ),
                   ),
@@ -120,7 +219,7 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
 
   @override
   void initState() {
-    loadData();
+    _loadData();
 
     _updateBoardOrderTimer = RestartableTimer(const Duration(seconds: 1),
         () => _scrumboardBoardController.updateBoard());
@@ -140,14 +239,19 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
           title:
               Text(scrumboardBoardController.scrumboard?.title ?? "Scrumboard"),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showCreateBoardListDialog(context, boardId: widget.scrumboardId);
+          },
+          child: const Icon(Ionicons.add_outline),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
           child: DragAndDropLists(
-            children: _contents,
             axis: Axis.horizontal,
             onItemReorder: _onItemReorder,
             onListReorder: _onListReorder,
-            listWidth: 175,
+            listWidth: 180,
             listPadding:
                 const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             onItemDraggingChanged: (item, isDragging) {
@@ -157,11 +261,14 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
             lastItemTargetHeight: 8,
             addLastItemTargetHeightToTop: true,
             lastListTargetSize: 40,
+            children: _getContent(),
           ),
         ),
       );
     });
   }
+
+  _getContent() => _contents;
 
   _onListReorder(int oldListIndex, int newListIndex) {
     setState(() {
@@ -259,6 +366,119 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
     );
   }
 
+  Future<dynamic> showCreateBoardListDialog(BuildContext context,
+      {required int boardId}) {
+    final TextEditingController listTitleController = TextEditingController();
+
+    return showDialog(
+      context: context,
+      builder: (_) => WidgetDialogOverlay(
+        title: 'Add Board List',
+        body: Column(
+          children: [
+            Form(
+              key: _createListFormKey,
+              child: WidgetTextFormField(
+                controller: listTitleController,
+                labelText: 'Title',
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) =>
+                    value?.isEmpty == true ? 'Title cannot be blank' : null,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Flexible(
+                  child: RoundedLoadingButton(
+                    controller: RoundedLoadingButtonController(),
+                    animateOnTap: false,
+                    color: Colors.grey,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Flexible(
+                  child: RoundedLoadingButton(
+                    controller: _createListBtnController,
+                    color: ColorConst.primary,
+                    onPressed: () => _createBoardList(
+                      title: listTitleController.text.trim(),
+                      boardId: boardId,
+                    ),
+                    child: const Text('Add',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<dynamic> showRenameBoardListDialog(BuildContext context,
+      {required int boardId, required int listId}) {
+    final TextEditingController listTitleController = TextEditingController();
+
+    return showDialog(
+      context: context,
+      builder: (_) => WidgetDialogOverlay(
+        title: 'Rename Board List',
+        body: Column(
+          children: [
+            Form(
+              key: _renameListFormKey,
+              child: WidgetTextFormField(
+                controller: listTitleController,
+                labelText: 'Title',
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) =>
+                    value?.isEmpty == true ? 'Title cannot be blank' : null,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Flexible(
+                  child: RoundedLoadingButton(
+                    controller: RoundedLoadingButtonController(),
+                    animateOnTap: false,
+                    color: Colors.grey,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Flexible(
+                  child: RoundedLoadingButton(
+                    controller: _createListBtnController,
+                    color: ColorConst.primary,
+                    onPressed: () => _renameBoardList(
+                      title: listTitleController.text.trim(),
+                      boardId: boardId,
+                      listId: listId,
+                    ),
+                    child: const Text('Rename',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   _createCard({
     required String title,
     required int boardId,
@@ -272,12 +492,62 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
 
     await _scrumboardBoardController.createCard(
       boardId: boardId,
-      card: BoardCardModel(title: title, listId: listId),
+      card: BoardCardModel(title: title, listId: listId, boardId: boardId),
     );
 
     _createCardBtnController.success();
     await Future.delayed(const Duration(seconds: 1));
     _createCardBtnController.reset();
     Get.back();
+
+    await _loadData();
+  }
+
+  _createBoardList({
+    required String title,
+    required int boardId,
+  }) async {
+    if (title.trim().isEmpty) {
+      _createListBtnController.reset();
+      _createListFormKey.currentState?.validate();
+      return;
+    }
+
+    await _scrumboardBoardController.createList(
+      boardId: boardId,
+      list: BoardListModel(title: title, boardId: boardId),
+    );
+
+    _createListBtnController.success();
+    await Future.delayed(const Duration(seconds: 1));
+    _createListBtnController.reset();
+    Get.back();
+
+    await _loadData();
+  }
+
+  _renameBoardList({
+    required String title,
+    required int boardId,
+    required int listId,
+  }) async {
+    if (title.trim().isEmpty) {
+      _createListBtnController.reset();
+      _renameListFormKey.currentState?.validate();
+      return;
+    }
+
+    await _scrumboardBoardController.renameBoardList(
+      boardId: boardId,
+      listId: listId,
+      list: BoardListModel(id: listId, title: title, boardId: boardId),
+    );
+
+    _createListBtnController.success();
+    await Future.delayed(const Duration(seconds: 1));
+    _createListBtnController.reset();
+    Get.back();
+
+    await _loadData();
   }
 }

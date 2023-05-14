@@ -428,7 +428,7 @@ class _TaskTabState extends State<TaskTab> {
                     WidgetTextField(
                       controller: _notesController,
                       labelText: 'Notes',
-                      maxLines: 10,
+                      minLines: 5,
                     ),
                     const SizedBox(height: 20),
                     Row(

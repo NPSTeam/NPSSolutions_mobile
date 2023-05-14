@@ -93,4 +93,50 @@ class ScrumboardBoardController extends GetxController {
 
     return false;
   }
+
+  Future<bool> createList({
+    required int boardId,
+    required BoardListModel list,
+  }) async {
+    ResponseModel? response =
+        await scrumboardRepo.createList(boardId: boardId, list: list);
+
+    if (response?.data != null) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> removeBoardList({
+    required int boardId,
+    required int listId,
+  }) async {
+    ResponseModel? response =
+        await scrumboardRepo.removeBoardList(boardId: boardId, listId: listId);
+
+    if (response?.data != null) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> renameBoardList({
+    required int boardId,
+    required int listId,
+    required BoardListModel list,
+  }) async {
+    ResponseModel? response = await scrumboardRepo.updateBoardList(
+      boardId: boardId,
+      listId: listId,
+      list: list,
+    );
+
+    if (response?.data != null) {
+      return true;
+    }
+
+    return false;
+  }
 }

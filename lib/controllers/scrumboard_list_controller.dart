@@ -49,9 +49,11 @@ class ScrumboardListController extends GetxController {
   Future<ScrumboardModel?> createScrumboard(int workspaceId) async {
     ResponseModel? response = await scrumboardRepo.createBoard(ScrumboardModel(
       title: 'Untitled',
+      icon: 'heroicons-outline:template',
       description: '...',
       lastActivity: DateTime.now(),
       settings: ScrumboardSettingModel(subscribed: true, cardCoverImages: true),
+      members: [],
       lists: [],
       workspaceId: workspaceId,
     ));
@@ -61,5 +63,16 @@ class ScrumboardListController extends GetxController {
     }
 
     return null;
+  }
+
+  Future<bool> deleteScrumboard(int scrumboardId) async {
+    ResponseModel? response =
+        await scrumboardRepo.deleteScrumboard(scrumboardId);
+
+    if (response?.data != null) {
+      return true;
+    }
+
+    return false;
   }
 }

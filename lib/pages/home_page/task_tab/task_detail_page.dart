@@ -53,7 +53,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
     init();
 
     _saveTaskTimer =
-        RestartableTimer(const Duration(seconds: 1), () => saveTask());
+        RestartableTimer(const Duration(milliseconds: 500), () => saveTask());
 
     super.initState();
   }
@@ -242,7 +242,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                       controller: _notesController,
                       labelText: 'Notes',
                       hintText: 'Write something...',
-                      maxLines: 10,
+                      minLines: 5,
                       onChanged: (value) => _saveTaskTimer.reset(),
                     ),
                   ],

@@ -36,6 +36,15 @@ class _DrawerComponentState extends State<DrawerComponent> {
   _buildTabItems() {
     _drawerTabItems = [
       DrawerTabItem(
+        id: DrawerTabId.NOTES,
+        label: 'Notes',
+        icon: Ionicons.create_outline,
+        onTap: () {
+          Get.find<MyDrawerController>().selectTab(DrawerTabId.NOTES);
+          Get.back();
+        },
+      ),
+      DrawerTabItem(
         id: DrawerTabId.TASKS,
         label: MessageKeys.tasks.tr,
         icon: Ionicons.checkmark_circle_outline,
@@ -50,6 +59,15 @@ class _DrawerComponentState extends State<DrawerComponent> {
         icon: Icons.calendar_view_week_outlined,
         onTap: () {
           Get.find<MyDrawerController>().selectTab(DrawerTabId.SCRUM_BOARD);
+          Get.back();
+        },
+      ),
+      DrawerTabItem(
+        id: DrawerTabId.AI_SERVICE,
+        label: 'AI Service',
+        icon: Ionicons.hardware_chip_outline,
+        onTap: () {
+          Get.find<MyDrawerController>().selectTab(DrawerTabId.AI_SERVICE);
           Get.back();
         },
       ),
@@ -261,8 +279,10 @@ class DrawerTabItem {
 }
 
 class DrawerTabId {
+  static const String NOTES = 'NOTES';
   static const String TASKS = 'TASKS';
   static const String SCRUM_BOARD = 'SCRUM_BOARD';
+  static const String AI_SERVICE = 'AI_SERVICE';
   static const String WORKSPACE_MANAGEMENT = 'WORKSPACE_MANAGEMENT';
   static const String LANGUAGE_TOGGLE = 'LANGUAGE_TOGGLE';
   static const String LOG_OUT = 'LOG_OUT';

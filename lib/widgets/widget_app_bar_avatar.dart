@@ -5,6 +5,7 @@ import 'package:npssolutions_mobile/configs/string_const.dart';
 import 'package:npssolutions_mobile/configs/themes/assets_const.dart';
 import 'package:npssolutions_mobile/configs/themes/size_const.dart';
 
+import '../configs/themes/text_style_const.dart';
 import '../controllers/auth_controller.dart';
 
 class WidgetAppBarAvatar extends StatefulWidget {
@@ -17,13 +18,13 @@ class WidgetAppBarAvatar extends StatefulWidget {
 class _WidgetAppBarAvatarState extends State<WidgetAppBarAvatar> {
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AuthController>(builder: (controller) {
+    return GetBuilder<AuthController>(builder: (authController) {
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
           child: InkWell(
             customBorder: const CircleBorder(),
-            onTap: () => _showMyDialog(context),
+            onTap: () => _showMyDialog(context, authController),
             child: CircleAvatar(
               radius: 22.0,
               backgroundColor: Colors.blueGrey,
@@ -33,7 +34,7 @@ class _WidgetAppBarAvatarState extends State<WidgetAppBarAvatar> {
                 backgroundImage:
                     Image.asset(AssetsConst.profileAvatarPlaceholder).image,
                 foregroundImage: NetworkImage(
-                    controller.auth?.currentUser?.photoURL ??
+                    authController.auth?.currentUser?.photoURL ??
                         StringConst.placeholderImageUrl),
               ),
             ),
@@ -43,7 +44,8 @@ class _WidgetAppBarAvatarState extends State<WidgetAppBarAvatar> {
     });
   }
 
-  Future _showMyDialog(BuildContext context) async {
+  Future _showMyDialog(
+      BuildContext context, AuthController authController) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -54,58 +56,59 @@ class _WidgetAppBarAvatarState extends State<WidgetAppBarAvatar> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(SizeConst.boxRadius),
             ),
-            title: const Text("Privacy Info"),
-            content: _content(),
+            title: Align(
+              alignment: Alignment.center,
+              child: Text('Account',
+                  style: TextStyleConst.semiBoldStyle(fontSize: 20)),
+            ),
+            content: _content(authController),
           ),
         );
       },
     );
   }
 
-  Widget _content() {
-    final size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const Text(
-              "The backup created with this functionality may contain some sensitive data."),
-          const SizedBox(height: 22.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                  height: size.height * 0.045,
-                  width: size.width * 0.3,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(SizeConst.boxRadius),
-                  ),
-                  child: const Text(
-                    "Cancel",
-                    style: TextStyle(color: Colors.black45),
-                  ),
-                ),
+  Widget _content(AuthController authController) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: Get.height * 0.4),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              margin: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                      blurRadius: 10,
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 3)
+                ],
               ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-                height: size.height * 0.045,
-                width: size.width * 0.3,
-                alignment: Alignment.center,
-                child: const Text(
-                  "Confirm",
-                  style: TextStyle(color: Colors.white),
-                ),
+              child: CircleAvatar(
+                radius: 40.0,
+                backgroundColor: Colors.transparent,
+                backgroundImage:
+                    Image.asset(AssetsConst.profileAvatarPlaceholder).image,
+                foregroundImage: NetworkImage(
+                    authController.auth?.currentUser?.photoURL ??
+                        StringConst.placeholderImageUrl),
               ),
-            ],
-          ),
-        ],
+            ),
+            Text(
+              authController.auth?.currentUser?.displayName ?? '',
+              style: TextStyleConst.mediumStyle(),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              authController.auth?.currentUser?.email ?? '',
+              style: TextStyleConst.mediumStyle(),
+            ),
+          ],
+        ),
       ),
     );
   }

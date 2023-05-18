@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:npssolutions_mobile/configs/themes/assets_const.dart';
+import 'package:npssolutions_mobile/pages/home_page/ai_service_tab/ai_service_tab.dart';
 import 'package:npssolutions_mobile/pages/home_page/components/drawer_component.dart';
+import 'package:npssolutions_mobile/pages/home_page/note_tab/note_tab.dart';
 import 'package:npssolutions_mobile/pages/home_page/scrumboard_tab/scrumboard_tab.dart';
 import 'package:npssolutions_mobile/widgets/widget_app_bar_avatar.dart';
 
@@ -75,10 +77,14 @@ class _HomePageState extends State<HomePage> {
     return GetBuilder<MyDrawerController>(
       builder: (controller) {
         switch (controller.selectedTabId) {
+          case DrawerTabId.NOTES:
+            return const NoteTab();
           case DrawerTabId.TASKS:
             return const TaskTab();
           case DrawerTabId.SCRUM_BOARD:
             return const ScrumboardTab();
+          case DrawerTabId.AI_SERVICE:
+            return const AISerivceTab();
           case DrawerTabId.WORKSPACE_MANAGEMENT:
             return const WorkspaceTab();
           default:
@@ -91,10 +97,14 @@ class _HomePageState extends State<HomePage> {
 
   String _getTitle() {
     switch (_drawerController.selectedTabId) {
+      case DrawerTabId.NOTES:
+        return 'Notes';
       case DrawerTabId.TASKS:
         return MessageKeys.homeTitleTask.tr;
       case DrawerTabId.SCRUM_BOARD:
         return MessageKeys.homeTitleScrumboard.tr;
+      case DrawerTabId.AI_SERVICE:
+        return 'AI Service';
       case DrawerTabId.WORKSPACE_MANAGEMENT:
         return MessageKeys.homeTitleWorkspace.tr;
       default:

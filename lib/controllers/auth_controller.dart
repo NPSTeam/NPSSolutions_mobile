@@ -117,8 +117,8 @@ class AuthController extends GetxController {
   Future<bool> logout() async {
     auth = null;
 
-    if (EasyLoading.isShow) {
-      EasyLoading.dismiss();
+    if (!EasyLoading.isShow) {
+      await EasyLoading.show();
     }
 
     await SharedPreferences.getInstance().then((instance) async {
@@ -130,6 +130,7 @@ class AuthController extends GetxController {
     Get.offAll(() => const OnboardingPage());
     Get.delete<MyDrawerController>();
 
+    await EasyLoading.dismiss();
     update();
 
     return true;

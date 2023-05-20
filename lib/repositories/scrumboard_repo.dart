@@ -75,4 +75,13 @@ class _ScrumboardRepo extends DioRepo {
   Future<ResponseModel?> deleteScrumboard(int scrumboardId) async {
     return await delete('/api/v1/scrumboards/boards/$scrumboardId');
   }
+
+  Future<ResponseModel?> updateCard({
+    required int boardId,
+    required int cardId,
+    required BoardCardModel card,
+  }) async {
+    return await put('/api/v1/scrumboards/boards/$boardId/cards/$cardId',
+        data: card.toJson());
+  }
 }

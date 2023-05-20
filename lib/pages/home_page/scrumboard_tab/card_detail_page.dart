@@ -88,7 +88,7 @@ class _CardDetailPageState extends State<CardDetailPage> {
                     validator: (value) =>
                         value?.isEmpty == true ? 'Title cannot be blank' : null,
                     onChanged: (value) => _saveCardTimer.reset(),
-                    onEditingComplete: () => _saveCardTimer.reset(),
+                    // onEditingComplete: () => _saveCardTimer.reset(),
                   ),
                   const SizedBox(height: 10),
                   WidgetDateTimeField(
@@ -142,18 +142,17 @@ class _CardDetailPageState extends State<CardDetailPage> {
       return;
     }
 
-    if (_cardDetailController.card != null) {}
+    if (_cardDetailController.card != null) {
+      _cardDetailController.card!.title = _titleController.text.trim();
+      _cardDetailController.card!.dueDate = _dueDate;
+      _cardDetailController.card!.description =
+          _descriptionController.text.trim();
 
-    // if (_taskDetailController.task != null) {
-    //   _taskDetailController.task!.title = _titleController.text.trim();
-    //   _taskDetailController.task!.notes = _notesController.text.trim();
-    //   _taskDetailController.task!.tags = _selectedTags;
-    //   _taskDetailController.task!.dueDate = _dueDate;
-    //   _taskDetailController.task!.priority = taskPriorityMap.entries
-    //       .firstWhere((element) => element.value == _dropdownController.text)
-    //       .key;
-
-    //   _taskDetailController.updateTask(_taskDetailController.task!);
-    // }
+      _cardDetailController.updateCard(
+        boardId: widget.boardId,
+        cardId: widget.cardId,
+        card: _cardDetailController.card!,
+      );
+    }
   }
 }

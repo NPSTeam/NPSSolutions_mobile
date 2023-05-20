@@ -143,7 +143,12 @@ class _NoteTabState extends State<NoteTab> {
       elevation: 1,
       child: InkWell(
         onTap: () {
-          Get.to(() => const NoteDetailPage(), transition: Transition.zoom);
+          if (noteListController.notes?[index].id != null) {
+            Get.to(
+                () => NoteDetailPage(
+                    noteId: noteListController.notes![index].id!),
+                transition: Transition.zoom);
+          }
         },
         child: ConstrainedBox(
           constraints: BoxConstraints(

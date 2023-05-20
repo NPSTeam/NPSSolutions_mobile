@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:npssolutions_mobile/models/workspace_model.dart';
 
 import '../models/response_model.dart';
+import '../models/workspace_service_model.dart';
 import '../models/workspace_user_model.dart';
 import '../repositories/workspace_repo.dart';
 
@@ -80,5 +81,17 @@ class WorkspaceDetailController extends GetxController {
     }
 
     return false;
+  }
+
+  Future<List<WorkspaceServiceModel>> getWorkspaceServices() async {
+    ResponseModel? response = await workspaceRepo.getServices();
+
+    if (response?.data != null) {
+      return (response?.data as List)
+          .map((e) => WorkspaceServiceModel.fromJson(e))
+          .toList();
+    }
+
+    return [];
   }
 }

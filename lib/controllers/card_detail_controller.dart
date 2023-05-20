@@ -25,4 +25,26 @@ class CardDetailController extends GetxController {
 
     return false;
   }
+
+  Future<bool> updateCard({
+    required int boardId,
+    required int cardId,
+    required BoardCardModel card,
+  }) async {
+    ResponseModel? response = await scrumboardRepo.updateCard(
+      boardId: boardId,
+      cardId: cardId,
+      card: card,
+    );
+
+    if (response?.data != null) {
+      await getCard(boardId: boardId, cardId: cardId);
+
+      update();
+
+      return true;
+    }
+
+    return false;
+  }
 }

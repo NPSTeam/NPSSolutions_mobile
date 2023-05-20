@@ -63,4 +63,8 @@ class _WorkspaceRepo extends DioRepo {
       },
     );
   }
+
+  Future<ResponseModel?> getServices() async {
+    return await get('/api/v1/workspace/enums');
+  }
 }

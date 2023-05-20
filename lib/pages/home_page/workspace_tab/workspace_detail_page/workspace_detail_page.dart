@@ -10,6 +10,8 @@ import 'package:npssolutions_mobile/pages/home_page/workspace_tab/workspace_deta
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../../../models/workspace_model.dart';
+import '../../../../widgets/widget_multi_select_bottom_sheet_field.dart';
+import '../../../../widgets/widget_text_field.dart';
 
 class WorkspaceDetailPage extends StatefulWidget {
   const WorkspaceDetailPage({super.key, required this.workspaceId});
@@ -29,23 +31,18 @@ class _WorkspaceDetailPageState extends State<WorkspaceDetailPage> {
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
 
-  final _serviceItemList = StringConst.serviceList
-      .map((e) => MultiSelectItem<String>(e, e))
-      .toList();
+  List<MultiSelectItem> _serviceItemList = [];
   List<String> _selectedServices = [];
 
   final RoundedLoadingButtonController _updateWorkspaceBtnController =
       RoundedLoadingButtonController();
 
-  @override
-  void initState() {
-    // Get.showOverlay(
-    //   asyncFunction: () =>
-    //       _workspaceDetailController.getWorkspaceDetail(widget.workspaceId),
-    // );
-
+  _loadData() async {
     EasyLoading.show();
-    _workspaceDetailController.getWorkspaceDetail(widget.workspaceId).then(
+
+    await _workspaceDetailController
+        .getWorkspaceDetail(widget.workspaceId)
+        .then(
       (value) {
         if (value) {
           _codeController.text =
@@ -60,9 +57,27 @@ class _WorkspaceDetailPageState extends State<WorkspaceDetailPage> {
         setState(() {
           isLoadingWorkspace = false;
         });
-        EasyLoading.dismiss();
       },
     );
+
+    await _workspaceDetailController.getWorkspaceServices().then((value) {
+      _serviceItemList.clear();
+      _serviceItemList = value
+          .map((e) => MultiSelectItem<String>(e.value ?? '', e.label ?? ''))
+          .toList();
+    });
+
+    EasyLoading.dismiss();
+  }
+
+  @override
+  void initState() {
+    // Get.showOverlay(
+    //   asyncFunction: () =>
+    //       _workspaceDetailController.getWorkspaceDetail(widget.workspaceId),
+    // );
+
+    _loadData();
 
     super.initState();
   }
@@ -97,30 +112,26 @@ class _WorkspaceDetailPageState extends State<WorkspaceDetailPage> {
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
                   children: [
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: "Code",
-                      ),
+                    WidgetTextField(
+                      labelText: 'Code',
+                      hintText: 'Code',
                       controller: _codeController,
                     ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: "Name",
-                      ),
+                    const SizedBox(height: 10),
+                    WidgetTextField(
+                      labelText: 'Name',
+                      hintText: 'Name',
                       controller: _nameController,
                     ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: "Address",
-                      ),
+                    const SizedBox(height: 10),
+                    WidgetTextField(
+                      labelText: 'Address',
+                      hintText: 'Address',
                       controller: _addressController,
                     ),
-                    MultiSelectBottomSheetField(
-                      buttonIcon: const Icon(Ionicons.grid_outline),
-                      initialChildSize: 0.4,
-                      listType: MultiSelectListType.CHIP,
-                      searchable: true,
-                      buttonText: const Text("Services"),
+                    const SizedBox(height: 10),
+                    WidgetMultiSelectBottomSheetField(
+                      buttonText: 'Services',
                       title: const Text("Services"),
                       items: _serviceItemList,
                       initialValue: _selectedServices,

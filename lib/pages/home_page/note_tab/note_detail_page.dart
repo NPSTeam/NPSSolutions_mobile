@@ -1,8 +1,16 @@
+import 'dart:io';
+
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:npssolutions_mobile/configs/themes/text_style_const.dart';
 import 'package:npssolutions_mobile/controllers/note_detail_controller.dart';
+import 'package:npssolutions_mobile/helpers/util_function.dart';
 
 import '../../../configs/themes/color_const.dart';
 import '../../../widgets/widget_text_field.dart';
@@ -58,30 +66,134 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
             backgroundColor: ColorConst.primary,
             centerTitle: true,
             title: const Text('Note Detail'),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  WidgetTextField(
-                    controller: _titleController,
-                    labelText: 'Title',
-                    hintText: 'Title',
-                    onChanged: (value) => _saveNoteTimer.reset(),
-                  ),
-                  const SizedBox(height: 10),
-                  WidgetTextField(
-                    controller: _contentController,
-                    labelText: 'Content',
-                    maxLines: 5,
-                    hintText: 'Write something...',
-                    onChanged: (value) => _saveNoteTimer.reset(),
-                  ),
-                ],
+            actions: [
+              PopupMenuButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                onSelected: (value) async {
+                  if (value == 'DELETE') {
+                    EasyLoading.show(status: 'Deleting...');
+                    await _noteDetailController.deleteNote(widget.noteId);
+                    await EasyLoading.dismiss();
+
+                    Get.back();
+                  }
+                },
+                itemBuilder: (_) {
+                  return [
+                    PopupMenuItem(
+                      value: 'DELETE',
+                      child: Row(
+                        children: const [
+                          Icon(Ionicons.trash_outline, color: Colors.black),
+                          SizedBox(width: 10),
+                          Text('Delete'),
+                        ],
+                      ),
+                    ),
+                  ];
+                },
               ),
-            ),
+            ],
+          ),
+          body: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      if (_noteDetailController.note?.image != null &&
+                          _noteDetailController.note?.image != '')
+                        Stack(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: _noteDetailController.note?.image ?? '',
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
+                            Positioned(
+                              right: 10,
+                              bottom: 10,
+                              child: FloatingActionButton(
+                                onPressed: () {
+                                  _noteDetailController.note!.image = '';
+                                  _noteDetailController
+                                      .updateNote(_noteDetailController.note!);
+                                },
+                                mini: true,
+                                backgroundColor: ColorConst.primary,
+                                child: const Icon(Ionicons.trash_outline,
+                                    color: Colors.white, size: 20),
+                              ),
+                            ),
+                          ],
+                        ),
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: _titleController,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Title',
+                              ),
+                              style: TextStyleConst.boldStyle(fontSize: 24),
+                              onChanged: (value) => _saveNoteTimer.reset(),
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: _contentController,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Content',
+                              ),
+                              maxLines: 10,
+                              onChanged: (value) => _saveNoteTimer.reset(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () async {
+                        XFile? imageXFile = await ImagePicker()
+                            .pickImage(source: ImageSource.gallery);
+
+                        if (imageXFile == null) {
+                          return;
+                        }
+
+                        EasyLoading.show(status: 'Uploading...');
+                        _noteDetailController.note!.image =
+                            await UtilFunction.fileToBase64(
+                                File(imageXFile.path));
+                        await _noteDetailController
+                            .updateNote(_noteDetailController.note!);
+                        await _noteDetailController
+                            .getNoteDetail(widget.noteId);
+                        await EasyLoading.dismiss();
+                      },
+                      child: const Icon(Ionicons.image_outline),
+                    ),
+                    Text(
+                      'Edited ${DateFormat('MMM d, yy - HH:mm').format(_noteDetailController.note?.updatedAt ?? DateTime.now())}',
+                      style: TextStyleConst.regularStyle(fontSize: 12),
+                    ),
+                    const SizedBox(),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       );

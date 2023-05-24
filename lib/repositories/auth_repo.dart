@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:npssolutions_mobile/helpers/util_function.dart';
 import 'package:path/path.dart' as p;
 
 import '../models/response_model.dart';
@@ -37,8 +38,7 @@ class _AuthRepo extends DioRepo {
   }) async {
     try {
       File imageFile = File(avatarFilePath);
-      String base64String =
-          "data:image/${p.extension(avatarFilePath).replaceFirst('.', '')};base64,${base64Encode(await imageFile.readAsBytes())}";
+      String base64String = await UtilFunction.fileToBase64(imageFile);
 
       return await post(
         '/api/v1/auth/register',

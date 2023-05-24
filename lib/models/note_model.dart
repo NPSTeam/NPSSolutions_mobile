@@ -16,6 +16,10 @@ class NoteModel {
   bool? archived;
   List<int>? labels;
   List<NoteTaskModel>? tasks;
+  @JsonKey(fromJson: _fromJson, toJson: _toJson)
+  DateTime? createdAt;
+  @JsonKey(fromJson: _fromJson, toJson: _toJson)
+  DateTime? updatedAt;
 
   NoteModel({
     this.id,
@@ -27,6 +31,8 @@ class NoteModel {
     this.archived,
     this.labels,
     this.tasks,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory NoteModel.fromJson(Map<String, dynamic> json) =>

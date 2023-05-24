@@ -16,4 +16,12 @@ class _NoteRepo extends DioRepo {
   Future<ResponseModel?> updateNote(NoteModel note) async {
     return await put('/api/v1/notes', data: note.toJson());
   }
+
+  Future<ResponseModel?> createNote(NoteModel note) async {
+    return await post('/api/v1/notes', data: note.toJson());
+  }
+
+  Future<ResponseModel?> deleteNote(int noteId) async {
+    return await delete('/api/v1/notes/$noteId');
+  }
 }

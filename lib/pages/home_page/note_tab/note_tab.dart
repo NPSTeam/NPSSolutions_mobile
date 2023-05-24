@@ -3,13 +3,21 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../../configs/themes/color_const.dart';
 import '../../../controllers/note_list_controller.dart';
+import '../../../internationalization/message_keys.dart';
+import '../../../models/note_model.dart';
+import '../../../widgets/widget_dialog_overlay.dart';
 import '../../../widgets/widget_refresher.dart';
+import '../../../widgets/widget_text_field.dart';
+import '../../../widgets/widget_text_form_field.dart';
 import 'note_detail_page.dart';
 
 class NoteTab extends StatefulWidget {
@@ -20,10 +28,18 @@ class NoteTab extends StatefulWidget {
 }
 
 class _NoteTabState extends State<NoteTab> {
-  NoteListController _noteListController = Get.put(NoteListController());
+  final NoteListController _noteListController = Get.put(NoteListController());
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+
+  final _titleController = TextEditingController();
+  final _contentController = TextEditingController();
+
+  final RoundedLoadingButtonController _createNoteBtnController =
+      RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _deleteNoteBtnController =
+      RoundedLoadingButtonController();
 
   loadData() async {
     EasyLoading.show();
@@ -57,6 +73,27 @@ class _NoteTabState extends State<NoteTab> {
     return GetBuilder<NoteListController>(builder: (noteListController) {
       return Scaffold(
         backgroundColor: ColorConst.primary,
+        floatingActionButton: SpeedDial(
+          animatedIcon: AnimatedIcons.menu_close,
+          animatedIconTheme: const IconThemeData(size: 22.0),
+          visible: true,
+          curve: Curves.bounceIn,
+          overlayColor: Colors.black,
+          overlayOpacity: 0.5,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 8.0,
+          shape: const CircleBorder(),
+          animationDuration: const Duration(milliseconds: 200),
+          children: [
+            SpeedDialChild(
+              child: const Icon(Ionicons.add),
+              backgroundColor: ColorConst.primary,
+              label: 'Add Note',
+              onTap: () => showCreateNoteDialog(context),
+            ),
+          ],
+        ),
         body: SafeArea(
           child: Column(
             children: [
@@ -150,10 +187,11 @@ class _NoteTabState extends State<NoteTab> {
                 transition: Transition.zoom);
           }
         },
+        onLongPress: () =>
+            showDeleteNoteDialog(context, noteListController.notes![index].id!),
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: Random().nextDouble() * 100 + 200,
-          ),
+          constraints:
+              BoxConstraints(maxHeight: Random().nextDouble() * 100 + 200),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -161,9 +199,6 @@ class _NoteTabState extends State<NoteTab> {
                   noteListController.notes?[index].image != '')
                 CachedNetworkImage(
                   imageUrl: noteListController.notes?[index].image ?? '',
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      CircularProgressIndicator(
-                          value: downloadProgress.progress),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               Padding(
@@ -192,5 +227,153 @@ class _NoteTabState extends State<NoteTab> {
         ),
       ),
     );
+  }
+
+  Future<dynamic> showCreateNoteDialog(BuildContext context) {
+    _titleController.clear();
+    _contentController.clear();
+
+    return showDialog(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (context, setState) {
+          return WidgetDialogOverlay(
+            title: "Add Note",
+            body: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: Get.height * 0.4),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    WidgetTextFormField(
+                      controller: _titleController,
+                      labelText: 'Title',
+                    ),
+                    // const SizedBox(height: 10),
+                    // GetBuilder<TaskListController>(builder: (controller) {
+                    //   return MultiSelectBottomSheetField(
+                    //     initialChildSize: 0.4,
+                    //     listType: MultiSelectListType.CHIP,
+                    //     searchable: true,
+                    //     buttonText: const Text('Tags'),
+                    //     title: const Text('Tags'),
+                    //     items: controller.tags
+                    //             ?.map((e) =>
+                    //                 MultiSelectItem<int>(e.id!, e.title!))
+                    //             .toList() ??
+                    //         [],
+                    //     initialValue: _selectedTags,
+                    //     onConfirm: (values) => _selectedTags = values.cast(),
+                    //     chipDisplay: MultiSelectChipDisplay(
+                    //       onTap: (value) =>
+                    //           setState(() => _selectedTags.remove(value)),
+                    //     ),
+                    //   );
+                    // }),
+                    const SizedBox(height: 10),
+                    WidgetTextField(
+                      controller: _contentController,
+                      labelText: 'Content',
+                      minLines: 5,
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: RoundedLoadingButton(
+                            controller: RoundedLoadingButtonController(),
+                            animateOnTap: false,
+                            color: Colors.grey,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Cancel',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Flexible(
+                          child: RoundedLoadingButton(
+                            controller: _createNoteBtnController,
+                            onPressed: () => _createNote(),
+                            child: const Text('Add',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _createNote() async {
+    await _noteListController.createNote(NoteModel(
+      title: _titleController.text,
+      content: _contentController.text,
+    ));
+
+    _createNoteBtnController.success();
+    await Future.delayed(const Duration(seconds: 1));
+    _createNoteBtnController.reset();
+    Get.back();
+  }
+
+  Future<dynamic> showDeleteNoteDialog(BuildContext context, int noteId) {
+    return showDialog(
+      context: context,
+      builder: (_) => WidgetDialogOverlay(
+        title: "Delete Note",
+        body: Column(
+          children: [
+            const Text(
+              "Are you sure you want to delete this note?",
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Flexible(
+                  child: RoundedLoadingButton(
+                    controller: RoundedLoadingButtonController(),
+                    animateOnTap: false,
+                    color: Colors.grey,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Flexible(
+                  child: RoundedLoadingButton(
+                    controller: _deleteNoteBtnController,
+                    color: Colors.red,
+                    onPressed: () => _deleteNote(noteId),
+                    child: const Text('Delete',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _deleteNote(int noteId) async {
+    await _noteListController.deleteNote(noteId);
+
+    _deleteNoteBtnController.success();
+    await Future.delayed(const Duration(seconds: 1));
+    _deleteNoteBtnController.reset();
+    Get.back();
   }
 }

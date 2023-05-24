@@ -3,7 +3,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:npssolutions_mobile/configs/string_const.dart';
 import 'package:npssolutions_mobile/configs/themes/color_const.dart';
 import 'package:npssolutions_mobile/controllers/workspace_detail_controller.dart';
 import 'package:npssolutions_mobile/pages/home_page/workspace_tab/workspace_detail_page/workspace_users_page.dart';
@@ -54,9 +53,6 @@ class _WorkspaceDetailPageState extends State<WorkspaceDetailPage> {
           _selectedServices =
               _workspaceDetailController.workspace!.registerServices ?? [];
         }
-        setState(() {
-          isLoadingWorkspace = false;
-        });
       },
     );
 
@@ -65,6 +61,10 @@ class _WorkspaceDetailPageState extends State<WorkspaceDetailPage> {
       _serviceItemList = value
           .map((e) => MultiSelectItem<String>(e.value ?? '', e.label ?? ''))
           .toList();
+    });
+
+    setState(() {
+      isLoadingWorkspace = false;
     });
 
     EasyLoading.dismiss();
@@ -84,76 +84,77 @@ class _WorkspaceDetailPageState extends State<WorkspaceDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<WorkspaceDetailController>(builder: (controller) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: ColorConst.primary,
-          title: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(controller.workspace?.name ?? "Workspace"),
-          ),
-          actions: [
-            InkWell(
-              onTap: () {
-                Get.to(
-                    () => WorkspaceUsersPage(workspaceId: widget.workspaceId),
-                    transition: Transition.cupertino);
-              },
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Ionicons.people),
-              ),
+    return GetBuilder<WorkspaceDetailController>(
+      builder: (controller) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: ColorConst.primary,
+            title: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(controller.workspace?.name ?? "Workspace"),
             ),
-          ],
-        ),
-        body: isLoadingWorkspace
-            ? const SizedBox()
-            : Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  children: [
-                    WidgetTextField(
-                      labelText: 'Code',
-                      hintText: 'Code',
-                      controller: _codeController,
-                    ),
-                    const SizedBox(height: 10),
-                    WidgetTextField(
-                      labelText: 'Name',
-                      hintText: 'Name',
-                      controller: _nameController,
-                    ),
-                    const SizedBox(height: 10),
-                    WidgetTextField(
-                      labelText: 'Address',
-                      hintText: 'Address',
-                      controller: _addressController,
-                    ),
-                    const SizedBox(height: 10),
-                    WidgetMultiSelectBottomSheetField(
-                      buttonText: 'Services',
-                      title: const Text("Services"),
-                      items: _serviceItemList,
-                      initialValue: _selectedServices,
-                      onConfirm: (values) => _selectedServices = values.cast(),
-                      chipDisplay: MultiSelectChipDisplay(
-                        onTap: (value) =>
-                            setState(() => _selectedServices.remove(value)),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    RoundedLoadingButton(
-                      controller: _updateWorkspaceBtnController,
-                      animateOnTap: false,
-                      onPressed: _updateWorkspace,
-                      child: const Text('Update',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                  ],
-                ),
+            actions: [
+              InkWell(
+                onTap: () {
+                  Get.to(
+                      () => WorkspaceUsersPage(workspaceId: widget.workspaceId),
+                      transition: Transition.cupertino);
+                },
+                child: const Padding(
+                    padding: EdgeInsets.all(8.0), child: Icon(Ionicons.people)),
               ),
-      );
-    });
+            ],
+          ),
+          body: isLoadingWorkspace
+              ? const SizedBox()
+              : Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      WidgetTextField(
+                        labelText: 'Code',
+                        hintText: 'Code',
+                        controller: _codeController,
+                      ),
+                      const SizedBox(height: 10),
+                      WidgetTextField(
+                        labelText: 'Name',
+                        hintText: 'Name',
+                        controller: _nameController,
+                      ),
+                      const SizedBox(height: 10),
+                      WidgetTextField(
+                        labelText: 'Address',
+                        hintText: 'Address',
+                        controller: _addressController,
+                      ),
+                      const SizedBox(height: 10),
+                      WidgetMultiSelectBottomSheetField(
+                        buttonText: 'Services',
+                        title: const Text("Services"),
+                        items: _serviceItemList,
+                        initialValue: _selectedServices,
+                        onConfirm: (values) =>
+                            _selectedServices = values.cast(),
+                        chipDisplay: MultiSelectChipDisplay(
+                          onTap: (value) =>
+                              setState(() => _selectedServices.remove(value)),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      RoundedLoadingButton(
+                        controller: _updateWorkspaceBtnController,
+                        animateOnTap: false,
+                        onPressed: _updateWorkspace,
+                        child: const Text('Update',
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  ),
+                ),
+        );
+      },
+    );
   }
 
   void _updateWorkspace() async {

@@ -40,5 +40,5 @@ class ScrumboardModel {
       dateTime == null ? null : DateTime.parse(dateTime).toLocal();
   static String? _toJson(DateTime? dateTime) => dateTime == null
       ? null
-      : '${DateFormat('yyyy-MM-ddTHH:mm:ss.mmm').format(dateTime.toUtc())}Z';
+      : '${DateFormat('yyyy-MM-ddTHH:mm:ss').format(dateTime.toUtc())}Z';
 }

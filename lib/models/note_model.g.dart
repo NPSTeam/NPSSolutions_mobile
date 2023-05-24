@@ -18,6 +18,8 @@ NoteModel _$NoteModelFromJson(Map<String, dynamic> json) => NoteModel(
       tasks: (json['tasks'] as List<dynamic>?)
           ?.map((e) => NoteTaskModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      createdAt: NoteModel._fromJson(json['createdAt'] as String?),
+      updatedAt: NoteModel._fromJson(json['updatedAt'] as String?),
     );
 
 Map<String, dynamic> _$NoteModelToJson(NoteModel instance) => <String, dynamic>{
@@ -30,4 +32,6 @@ Map<String, dynamic> _$NoteModelToJson(NoteModel instance) => <String, dynamic>{
       'archived': instance.archived,
       'labels': instance.labels,
       'tasks': instance.tasks?.map((e) => e.toJson()).toList(),
+      'createdAt': NoteModel._toJson(instance.createdAt),
+      'updatedAt': NoteModel._toJson(instance.updatedAt),
     };

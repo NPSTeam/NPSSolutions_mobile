@@ -20,4 +20,29 @@ class NoteListController extends GetxController {
 
     return false;
   }
+
+  Future<bool> createNote(NoteModel note) async {
+    // note.createdAt = DateTime.now();
+    ResponseModel? response = await noteRepo.createNote(note);
+
+    if (response?.data != null) {
+      notes?.add(NoteModel.fromJson(response?.data));
+      update();
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> deleteNote(int noteId) async {
+    ResponseModel? response = await noteRepo.deleteNote(noteId);
+
+    if (response?.data != null) {
+      notes?.removeWhere((element) => element.id == noteId);
+      update();
+      return true;
+    }
+
+    return false;
+  }
 }

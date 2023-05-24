@@ -20,14 +20,24 @@ class NoteDetailController extends GetxController {
   }
 
   Future updateNote(NoteModel noteModel) async {
-    ResponseModel? response = await noteRepo.updateNote(
-      noteModel,
-    );
+    // noteModel.updatedAt = DateTime.now();
+    ResponseModel? response = await noteRepo.updateNote(noteModel);
     if (response?.data != null) {
       noteModel = NoteModel.fromJson(response?.data);
       update();
       return true;
     }
+    return false;
+  }
+
+  Future<bool> deleteNote(int noteId) async {
+    ResponseModel? response = await noteRepo.deleteNote(noteId);
+
+    if (response?.data != null) {
+      update();
+      return true;
+    }
+
     return false;
   }
 }

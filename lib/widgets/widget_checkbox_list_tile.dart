@@ -8,11 +8,13 @@ class WidgetCheckboxListTile extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.title,
+    this.visualDensity,
   });
 
   final bool? value;
   final Function(bool?)? onChanged;
   final Widget? title;
+  final VisualDensity? visualDensity;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class WidgetCheckboxListTile extends StatelessWidget {
       activeColor: ColorConst.primary,
       contentPadding: const EdgeInsets.all(0),
       title: title,
+      visualDensity: visualDensity,
       value: value,
       onChanged: onChanged,
     );

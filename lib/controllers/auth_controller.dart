@@ -95,7 +95,7 @@ class AuthController extends GetxController {
     required String password,
     required String confirmPassword,
     required DateTime birthday,
-    required String avatarFilePath,
+    String? avatarFilePath,
   }) async {
     ResponseModel? response = await authRepo.register(
       username: username,

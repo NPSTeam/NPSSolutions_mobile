@@ -11,6 +11,8 @@ class WidgetLoginTextField extends StatelessWidget {
   final Icon prefixIcon;
   final Function? onChanged;
   final Widget? suffixWidget;
+  final AutovalidateMode? autovalidateMode;
+  final String? Function(String?)? validator;
 
   const WidgetLoginTextField({
     super.key,
@@ -20,11 +22,13 @@ class WidgetLoginTextField extends StatelessWidget {
     required this.prefixIcon,
     this.onChanged,
     this.suffixWidget,
+    this.autovalidateMode,
+    this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       obscureText: obscureText,
       cursorColor: HexColor("#4f4f4f"),
@@ -45,6 +49,8 @@ class WidgetLoginTextField extends StatelessWidget {
         filled: true,
         suffixIcon: suffixWidget,
       ),
+      autovalidateMode: autovalidateMode ?? AutovalidateMode.onUserInteraction,
+      validator: validator,
     );
   }
 }

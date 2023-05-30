@@ -51,7 +51,7 @@ class ScrumboardListController extends GetxController {
       title: 'Untitled',
       icon: 'heroicons-outline:template',
       description: '...',
-      lastActivity: DateTime.now(),
+      lastActivity: DateTime.now().toUtc(),
       settings: ScrumboardSettingModel(subscribed: true, cardCoverImages: true),
       members: [],
       lists: [],

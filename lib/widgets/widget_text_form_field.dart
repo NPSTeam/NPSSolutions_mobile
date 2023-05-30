@@ -10,6 +10,8 @@ class WidgetTextFormField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.onEditingComplete,
+    this.minLines,
+    this.maxLines,
   });
 
   final TextEditingController? controller;
@@ -19,6 +21,8 @@ class WidgetTextFormField extends StatelessWidget {
   final String? Function(String?)? validator;
   final Function(String)? onChanged;
   final Function()? onEditingComplete;
+  final int? minLines;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +41,8 @@ class WidgetTextFormField extends StatelessWidget {
       validator: validator,
       onChanged: (value) => onChanged,
       onEditingComplete: onEditingComplete,
+      minLines: minLines,
+      maxLines: maxLines,
     );
   }
 }

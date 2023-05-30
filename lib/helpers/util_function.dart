@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 
@@ -16,5 +17,9 @@ class UtilFunction {
 
   static Future<String> fileToBase64(File file) async {
     return "data:image/${p.extension(file.path).replaceFirst('.', '')};base64,${base64Encode(await file.readAsBytes())}";
+  }
+
+  static bool isShowKeyboard(BuildContext context) {
+    return MediaQuery.of(context).viewInsets.bottom > 0;
   }
 }

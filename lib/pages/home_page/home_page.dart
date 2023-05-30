@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:npssolutions_mobile/configs/themes/assets_const.dart';
 import 'package:npssolutions_mobile/pages/home_page/ai_service_tab/ai_service_tab.dart';
+import 'package:npssolutions_mobile/pages/home_page/calendar_tab/calendar_tab.dart';
 import 'package:npssolutions_mobile/pages/home_page/components/drawer_component.dart';
 import 'package:npssolutions_mobile/pages/home_page/note_tab/note_tab.dart';
 import 'package:npssolutions_mobile/pages/home_page/scrumboard_tab/scrumboard_tab.dart';
@@ -83,6 +84,8 @@ class _HomePageState extends State<HomePage> {
             return const TaskTab();
           case DrawerTabId.SCRUM_BOARD:
             return const ScrumboardTab();
+          case DrawerTabId.CALENDAR:
+            return const CalendarTab();
           case DrawerTabId.AI_SERVICE:
             return const AISerivceTab();
           case DrawerTabId.WORKSPACE_MANAGEMENT:
@@ -103,6 +106,8 @@ class _HomePageState extends State<HomePage> {
         return MessageKeys.homeTitleTask.tr;
       case DrawerTabId.SCRUM_BOARD:
         return MessageKeys.homeTitleScrumboard.tr;
+      case DrawerTabId.CALENDAR:
+        return 'Calendar';
       case DrawerTabId.AI_SERVICE:
         return 'AI Service';
       case DrawerTabId.WORKSPACE_MANAGEMENT:

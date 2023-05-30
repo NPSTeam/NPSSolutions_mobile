@@ -34,24 +34,29 @@ class _AuthRepo extends DioRepo {
     required String password,
     required String confirmPassword,
     required DateTime birthday,
-    required String avatarFilePath,
+    String? avatarFilePath,
   }) async {
     try {
-      File imageFile = File(avatarFilePath);
-      String base64String = await UtilFunction.fileToBase64(imageFile);
+      dynamic data = {
+        "username": username,
+        "email": email,
+        "phoneNumber": phone,
+        "password": password,
+        "confirmPassword": confirmPassword,
+        "birthDay": '${birthday.month}/${birthday.day}/${birthday.year}',
+      };
+
+      if (avatarFilePath != null) {
+        File imageFile = File(avatarFilePath);
+        String base64String = await UtilFunction.fileToBase64(imageFile);
+
+        data['fileContent'] = base64String;
+        data['fileName'] = "$username${p.extension(avatarFilePath)}";
+      }
 
       return await post(
         '/api/v1/auth/register',
-        data: {
-          "username": username,
-          "phone": phone,
-          "email": email,
-          "password": password,
-          "confirmPassword": confirmPassword,
-          "birthDay": '$birthday',
-          "fileContent": base64String,
-          "fileName": "$username${p.extension(avatarFilePath)}",
-        },
+        data: data,
         unAuth: true,
       );
     } catch (e) {

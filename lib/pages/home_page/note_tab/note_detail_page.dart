@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -10,9 +11,13 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:npssolutions_mobile/configs/themes/text_style_const.dart';
 import 'package:npssolutions_mobile/controllers/note_detail_controller.dart';
+import 'package:npssolutions_mobile/controllers/note_list_controller.dart';
 import 'package:npssolutions_mobile/helpers/util_function.dart';
+import 'package:npssolutions_mobile/models/note_task_model.dart';
+import 'package:npssolutions_mobile/widgets/widget_checkbox_list_tile.dart';
 
 import '../../../configs/themes/color_const.dart';
+import '../../../widgets/widget_bouncing.dart';
 import '../../../widgets/widget_text_field.dart';
 
 class NoteDetailPage extends StatefulWidget {
@@ -32,6 +37,9 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
   final TextEditingController _contentController = TextEditingController();
 
   late RestartableTimer _saveNoteTimer;
+
+  bool isAddingTask = false;
+  final TextEditingController _addTaskTitleController = TextEditingController();
 
   _loadData() async {
     EasyLoading.show();
@@ -159,37 +167,207 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                   ),
                 ),
               ),
-              Container(
+              Padding(
                 padding: const EdgeInsets.all(15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InkWell(
-                      onTap: () async {
-                        XFile? imageXFile = await ImagePicker()
-                            .pickImage(source: ImageSource.gallery);
+                    if (!UtilFunction.isShowKeyboard(context))
+                      ...List.generate(
+                        _noteDetailController.note?.tasks?.length ?? 0,
+                        (index) => Row(
+                          children: [
+                            Expanded(
+                              child: WidgetCheckboxListTile(
+                                visualDensity: VisualDensity.compact,
+                                value: _noteDetailController
+                                    .note?.tasks?[index].completed,
+                                onChanged: (value) async {
+                                  setState(() {
+                                    _noteDetailController
+                                        .note?.tasks?[index].completed = value;
+                                  });
 
-                        if (imageXFile == null) {
-                          return;
-                        }
+                                  _saveNoteTimer.reset();
+                                },
+                                title: Text(_noteDetailController
+                                        .note?.tasks?[index].content ??
+                                    ''),
+                              ),
+                            ),
+                            WidgetBouncing(
+                              onTap: () {
+                                setState(() {
+                                  _noteDetailController.note?.tasks
+                                      ?.removeAt(index);
+                                });
 
-                        EasyLoading.show(status: 'Uploading...');
-                        _noteDetailController.note!.image =
-                            await UtilFunction.fileToBase64(
-                                File(imageXFile.path));
-                        await _noteDetailController
-                            .updateNote(_noteDetailController.note!);
-                        await _noteDetailController
-                            .getNoteDetail(widget.noteId);
-                        await EasyLoading.dismiss();
-                      },
-                      child: const Icon(Ionicons.image_outline),
+                                _saveNoteTimer.reset();
+                              },
+                              child:
+                                  const Icon(Ionicons.trash_outline, size: 20),
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (isAddingTask)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            WidgetBouncing(
+                              onTap: () async {
+                                setState(() {
+                                  isAddingTask = false;
+
+                                  _noteDetailController.note?.tasks?.add(
+                                      NoteTaskModel(
+                                          content: _addTaskTitleController.text,
+                                          completed: false));
+                                });
+
+                                _saveNoteTimer.reset();
+                              },
+                              child: const Icon(Ionicons.add_outline, size: 20),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                controller: _addTaskTitleController,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Add task',
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (_noteDetailController.note?.reminder != null &&
+                        !UtilFunction.isShowKeyboard(context))
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          color: Colors.grey[200],
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Ionicons.time_outline, size: 20),
+                                const SizedBox(width: 10),
+                                Text(DateFormat('MMM d, yy - HH:mm').format(
+                                    _noteDetailController.note!.reminder!)),
+                                const SizedBox(width: 10),
+                                WidgetBouncing(
+                                  onTap: () async {
+                                    await EasyLoading.show();
+                                    _noteDetailController.note?.reminder = null;
+                                    _noteDetailController.updateNote(
+                                        _noteDetailController.note!);
+                                    await EasyLoading.dismiss();
+                                  },
+                                  child: const Icon(
+                                      Ionicons.close_circle_outline,
+                                      size: 20),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                _noteDetailController.note!.reminder =
+                                    await showDatePicker(
+                                  context: context,
+                                  firstDate: DateTime(1900),
+                                  initialDate:
+                                      _noteDetailController.note!.reminder ??
+                                          DateTime.now(),
+                                  lastDate: DateTime(2100),
+                                ).then((DateTime? date) async {
+                                  if (date != null) {
+                                    final time = await showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.fromDateTime(
+                                          _noteDetailController
+                                                  .note!.reminder ??
+                                              DateTime.now()),
+                                    );
+                                    return DateTimeField.combine(date, time);
+                                  } else {
+                                    return _noteDetailController
+                                            .note!.reminder ??
+                                        DateTime.now();
+                                  }
+                                });
+
+                                await EasyLoading.show();
+                                await _noteDetailController
+                                    .updateNote(_noteDetailController.note!);
+                                await _noteDetailController
+                                    .getNoteDetail(widget.noteId);
+                                await EasyLoading.dismiss();
+                              },
+                              child: const Icon(Ionicons.notifications_outline),
+                            ),
+                            const SizedBox(width: 15),
+                            InkWell(
+                              onTap: () async {
+                                XFile? imageXFile = await ImagePicker()
+                                    .pickImage(source: ImageSource.gallery);
+
+                                if (imageXFile == null) {
+                                  return;
+                                }
+
+                                await EasyLoading.show(status: 'Uploading...');
+                                _noteDetailController.note!.image =
+                                    await UtilFunction.fileToBase64(
+                                        File(imageXFile.path));
+                                await _noteDetailController
+                                    .updateNote(_noteDetailController.note!);
+                                await _noteDetailController
+                                    .getNoteDetail(widget.noteId);
+                                await EasyLoading.dismiss();
+                              },
+                              child: const Icon(Ionicons.image_outline),
+                            ),
+                            const SizedBox(width: 15),
+                            InkWell(
+                              onTap: () async {
+                                setState(() {
+                                  isAddingTask = true;
+                                });
+
+                                // await EasyLoading.show(status: 'Uploading...');
+                                // _noteDetailController.note!.image =
+                                //     await UtilFunction.fileToBase64(
+                                //         File(imageXFile.path));
+                                // await _noteDetailController
+                                //     .updateNote(_noteDetailController.note!);
+                                // await _noteDetailController
+                                //     .getNoteDetail(widget.noteId);
+                                // await EasyLoading.dismiss();
+                              },
+                              child: const Icon(Ionicons.create_outline),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          'Edited ${DateFormat('MMM d, yy - HH:mm').format(_noteDetailController.note?.updatedAt ?? DateTime.now())}',
+                          style: TextStyleConst.regularStyle(fontSize: 12),
+                        ),
+                      ],
                     ),
-                    Text(
-                      'Edited ${DateFormat('MMM d, yy - HH:mm').format(_noteDetailController.note?.updatedAt ?? DateTime.now())}',
-                      style: TextStyleConst.regularStyle(fontSize: 12),
-                    ),
-                    const SizedBox(),
                   ],
                 ),
               ),

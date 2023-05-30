@@ -63,6 +63,15 @@ class _DrawerComponentState extends State<DrawerComponent> {
         },
       ),
       DrawerTabItem(
+        id: DrawerTabId.CALENDAR,
+        label: 'Calendar',
+        icon: Ionicons.calendar_outline,
+        onTap: () {
+          Get.find<MyDrawerController>().selectTab(DrawerTabId.CALENDAR);
+          Get.back();
+        },
+      ),
+      DrawerTabItem(
         id: DrawerTabId.AI_SERVICE,
         label: 'AI Service',
         icon: Ionicons.hardware_chip_outline,
@@ -282,6 +291,7 @@ class DrawerTabId {
   static const String NOTES = 'NOTES';
   static const String TASKS = 'TASKS';
   static const String SCRUM_BOARD = 'SCRUM_BOARD';
+  static const String CALENDAR = 'CALENDAR';
   static const String AI_SERVICE = 'AI_SERVICE';
   static const String WORKSPACE_MANAGEMENT = 'WORKSPACE_MANAGEMENT';
   static const String LANGUAGE_TOGGLE = 'LANGUAGE_TOGGLE';

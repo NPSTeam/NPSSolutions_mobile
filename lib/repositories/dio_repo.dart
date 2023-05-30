@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart' as getx;
 import 'package:npssolutions_mobile/configs/app_key.dart';
 import 'package:npssolutions_mobile/models/response_model.dart';
@@ -109,6 +110,10 @@ class DioRepo {
 
               return;
             }
+          }
+
+          if (EasyLoading.isShow) {
+            await EasyLoading.dismiss();
           }
         },
       ),

@@ -41,18 +41,45 @@ class _NoteTabState extends State<NoteTab> {
   final RoundedLoadingButtonController _deleteNoteBtnController =
       RoundedLoadingButtonController();
 
+  Map<String, String> _noteTypes = {
+    'Notes': 'Notes',
+    'Reminders': 'Reminders',
+    'Archive': 'Archive'
+  };
+  String _selectedNoteType = 'Notes';
+
+  final _createNoteFormKey = GlobalKey<FormState>();
+
   loadData() async {
     EasyLoading.show();
-    await _noteListController.getNotes();
+
+    switch (_selectedNoteType) {
+      case 'Notes':
+        await _noteListController.getNotes();
+        break;
+      case 'Reminders':
+        await _noteListController.getReminders();
+        break;
+      case 'Archive':
+        await _noteListController.getArchives();
+        break;
+      default:
+        await _noteListController.getNotesWithLabel(_selectedNoteType);
+        break;
+    }
+
+    await _noteListController.getLabels();
+    for (var element in _noteListController.labels) {
+      _noteTypes[element.id.toString()] = element.title ?? '';
+    }
+
+    setState(() {});
     EasyLoading.dismiss();
   }
 
   void _onRefresh() async {
-    if (await _noteListController.getNotes()) {
-      _refreshController.refreshCompleted();
-    } else {
-      _refreshController.refreshFailed();
-    }
+    await loadData();
+    _refreshController.refreshCompleted();
   }
 
   void _onLoading() async {
@@ -101,16 +128,67 @@ class _NoteTabState extends State<NoteTab> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    SizedBox(height: 25.0),
-                    Text(
-                      'Search your notes',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w500),
+                  children: [
+                    const SizedBox(height: 25.0),
+                    Center(
+                      child: SizedBox(
+                        height: 40,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: _noteTypes.length,
+                          itemBuilder: (context, index) => InkWell(
+                            onTap: () async {
+                              _selectedNoteType =
+                                  _noteTypes.keys.elementAt(index);
+
+                              await EasyLoading.show();
+                              switch (_selectedNoteType) {
+                                case 'Notes':
+                                  await _noteListController.getNotes();
+                                  break;
+                                case 'Reminders':
+                                  await _noteListController.getReminders();
+                                  break;
+                                case 'Archive':
+                                  await _noteListController.getArchives();
+                                  break;
+                                default:
+                                  await _noteListController
+                                      .getNotesWithLabel(_selectedNoteType);
+                                  break;
+                              }
+
+                              await EasyLoading.dismiss();
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 15),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: _selectedNoteType ==
+                                        _noteTypes.keys.elementAt(index)
+                                    ? Colors.white
+                                    : Colors.transparent,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  _noteTypes.values.elementAt(index),
+                                  style: TextStyle(
+                                    color: _selectedNoteType ==
+                                            _noteTypes.keys.elementAt(index)
+                                        ? ColorConst.primary
+                                        : Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    SizedBox(height: 25.0),
+                    const SizedBox(height: 25.0),
                   ],
                 ),
               ),
@@ -243,66 +321,55 @@ class _NoteTabState extends State<NoteTab> {
               constraints: BoxConstraints(maxHeight: Get.height * 0.4),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    WidgetTextFormField(
-                      controller: _titleController,
-                      labelText: 'Title',
-                    ),
-                    // const SizedBox(height: 10),
-                    // GetBuilder<TaskListController>(builder: (controller) {
-                    //   return MultiSelectBottomSheetField(
-                    //     initialChildSize: 0.4,
-                    //     listType: MultiSelectListType.CHIP,
-                    //     searchable: true,
-                    //     buttonText: const Text('Tags'),
-                    //     title: const Text('Tags'),
-                    //     items: controller.tags
-                    //             ?.map((e) =>
-                    //                 MultiSelectItem<int>(e.id!, e.title!))
-                    //             .toList() ??
-                    //         [],
-                    //     initialValue: _selectedTags,
-                    //     onConfirm: (values) => _selectedTags = values.cast(),
-                    //     chipDisplay: MultiSelectChipDisplay(
-                    //       onTap: (value) =>
-                    //           setState(() => _selectedTags.remove(value)),
-                    //     ),
-                    //   );
-                    // }),
-                    const SizedBox(height: 10),
-                    WidgetTextField(
-                      controller: _contentController,
-                      labelText: 'Content',
-                      minLines: 5,
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Flexible(
-                          child: RoundedLoadingButton(
-                            controller: RoundedLoadingButtonController(),
-                            animateOnTap: false,
-                            color: Colors.grey,
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Cancel',
-                                style: TextStyle(color: Colors.white)),
+                child: Form(
+                  key: _createNoteFormKey,
+                  child: Column(
+                    children: [
+                      WidgetTextFormField(
+                        controller: _titleController,
+                        labelText: 'Title *',
+                        validator: (value) => value?.isEmpty == true
+                            ? 'Title cannot be blank'
+                            : null,
+                      ),
+                      const SizedBox(height: 10),
+                      WidgetTextFormField(
+                        controller: _contentController,
+                        labelText: 'Content *',
+                        minLines: 5,
+                        maxLines: 10,
+                        validator: (value) => value?.isEmpty == true
+                            ? 'Content cannot be blank'
+                            : null,
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: RoundedLoadingButton(
+                              controller: RoundedLoadingButtonController(),
+                              animateOnTap: false,
+                              color: Colors.grey,
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cancel',
+                                  style: TextStyle(color: Colors.white)),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 20),
-                        Flexible(
-                          child: RoundedLoadingButton(
-                            controller: _createNoteBtnController,
-                            onPressed: () => _createNote(),
-                            child: const Text('Add',
-                                style: TextStyle(color: Colors.white)),
+                          const SizedBox(width: 20),
+                          Flexible(
+                            child: RoundedLoadingButton(
+                              controller: _createNoteBtnController,
+                              onPressed: () => _createNote(),
+                              child: const Text('Add',
+                                  style: TextStyle(color: Colors.white)),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -313,6 +380,13 @@ class _NoteTabState extends State<NoteTab> {
   }
 
   void _createNote() async {
+    if (_createNoteFormKey.currentState?.validate() != true) {
+      _createNoteBtnController.error();
+      await Future.delayed(const Duration(seconds: 1));
+      _createNoteBtnController.reset();
+      return;
+    }
+
     await _noteListController.createNote(NoteModel(
       title: _titleController.text,
       content: _contentController.text,

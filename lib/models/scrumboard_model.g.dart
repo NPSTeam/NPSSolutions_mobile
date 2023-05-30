@@ -23,7 +23,7 @@ ScrumboardModel _$ScrumboardModelFromJson(Map<String, dynamic> json) =>
               json['settings'] as Map<String, dynamic>),
       members:
           (json['members'] as List<dynamic>?)?.map((e) => e as int).toList(),
-    );
+    )..isCreate = json['isCreate'] as bool?;
 
 Map<String, dynamic> _$ScrumboardModelToJson(ScrumboardModel instance) =>
     <String, dynamic>{
@@ -36,4 +36,5 @@ Map<String, dynamic> _$ScrumboardModelToJson(ScrumboardModel instance) =>
       'lists': instance.lists?.map((e) => e.toJson()).toList(),
       'settings': instance.settings?.toJson(),
       'members': instance.members,
+      'isCreate': instance.isCreate,
     };

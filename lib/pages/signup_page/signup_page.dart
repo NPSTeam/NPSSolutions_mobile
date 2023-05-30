@@ -22,6 +22,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final displayNameController = TextEditingController();
   final usernameController = TextEditingController();
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
@@ -45,7 +46,7 @@ class _SignUpPageState extends State<SignUpPage> {
       password: passwordController.text,
       confirmPassword: confirmPasswordController.text,
       birthday: birthday,
-      avatarFilePath: avatarImageXFile?.path ?? '',
+      avatarFilePath: avatarImageXFile?.path,
     )) {
       _signUpBtnController.success();
       await Future.delayed(const Duration(milliseconds: 500));
@@ -55,13 +56,6 @@ class _SignUpPageState extends State<SignUpPage> {
       await Future.delayed(const Duration(milliseconds: 500));
       _signUpBtnController.reset();
     }
-
-    // try {
-    //   await FirebaseAuth.instance.signInWithEmailAndPassword(
-    //       email: emailController.text, password: passwordController.text);
-    // } on FirebaseAuthException catch (e) {
-    //   showErrorMessage(e.code);
-    // }
   }
 
   @override
@@ -148,7 +142,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       ),
                                     ),
                                     Text(
-                                      MessageKeys.signUpPageUsername.tr,
+                                      '${MessageKeys.signUpPageUsername.tr} *',
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: HexColor('#8d8d8d'),
@@ -173,24 +167,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                     //     ),
                                     //   ),
                                     // ),
-                                    Text(
-                                      MessageKeys.signUpPhone.tr,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: HexColor('#8d8d8d'),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    WidgetLoginTextField(
-                                      controller: phoneController,
-                                      hintText: "+0123456789",
-                                      obscureText: false,
-                                      prefixIcon:
-                                          const Icon(Icons.phone_outlined),
-                                    ),
                                     const SizedBox(height: 10),
                                     Text(
-                                      "Email",
+                                      "Email *",
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: HexColor('#8d8d8d'),
@@ -204,6 +183,22 @@ class _SignUpPageState extends State<SignUpPage> {
                                       prefixIcon:
                                           const Icon(Icons.mail_outline),
                                     ),
+                                    Text(
+                                      '${MessageKeys.signUpPhone.tr} *',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: HexColor('#8d8d8d'),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    WidgetLoginTextField(
+                                      controller: phoneController,
+                                      hintText: "+0123456789",
+                                      obscureText: false,
+                                      prefixIcon:
+                                          const Icon(Icons.phone_outlined),
+                                    ),
+
                                     const SizedBox(height: 10),
                                     Text(
                                       MessageKeys.signUpPassword.tr,

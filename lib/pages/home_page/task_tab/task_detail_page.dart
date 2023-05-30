@@ -3,6 +3,7 @@ import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:npssolutions_mobile/controllers/task_detail_controller.dart';
@@ -213,6 +214,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                       controller: TextEditingController(
                           text: UtilFunction.dateTimeToString(_dueDate)),
                       initialValue: _dueDate,
+                      format: DateFormat('dd/MM/yyyy – HH:mm'),
                       labelText: 'Due Date',
                       onShowPicker: (context, currentValue) async {
                         _dueDate = await showDatePicker(

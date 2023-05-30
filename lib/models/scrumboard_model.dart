@@ -18,6 +18,7 @@ class ScrumboardModel {
   List<BoardModel>? lists;
   ScrumboardSettingModel? settings;
   List<int>? members;
+  bool? isCreate;
 
   ScrumboardModel({
     this.id,
@@ -40,5 +41,7 @@ class ScrumboardModel {
       dateTime == null ? null : DateTime.parse(dateTime).toLocal();
   static String? _toJson(DateTime? dateTime) => dateTime == null
       ? null
-      : '${DateFormat('yyyy-MM-ddTHH:mm:ss').format(dateTime.toUtc())}Z';
+      : (dateTime.isUtc
+          ? '${DateFormat('yyyy-MM-ddTHH:mm:ss.mmm').format(dateTime)}Z'
+          : '${DateFormat('yyyy-MM-ddTHH:mm:ss').format(dateTime.toUtc())}Z');
 }

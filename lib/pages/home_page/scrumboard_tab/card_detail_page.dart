@@ -3,6 +3,7 @@ import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:npssolutions_mobile/controllers/card_detail_controller.dart';
 
@@ -96,8 +97,9 @@ class _CardDetailPageState extends State<CardDetailPage> {
                         text: UtilFunction.dateTimeToString(_dueDate)),
                     initialValue: _dueDate,
                     labelText: 'Due Date',
+                    format: DateFormat('dd/MM/yyyy – HH:mm'),
                     onShowPicker: (context, currentValue) async {
-                      _dueDate = await showDatePicker(
+                      DateTime? dateTime = await showDatePicker(
                         context: context,
                         firstDate: DateTime(1900),
                         initialDate: currentValue ?? DateTime.now(),
@@ -111,11 +113,15 @@ class _CardDetailPageState extends State<CardDetailPage> {
                           );
                           return DateTimeField.combine(date, time);
                         } else {
-                          return currentValue ?? DateTime.now();
+                          return null;
                         }
                       });
 
-                      _saveCardTimer.reset();
+                      if (dateTime != null) {
+                        _dueDate = dateTime;
+                        _saveCardTimer.reset();
+                      }
+
                       return _dueDate;
                     },
                   ),

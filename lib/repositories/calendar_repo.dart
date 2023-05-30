@@ -21,4 +21,8 @@ class _CalendarRepo extends DioRepo {
   Future<ResponseModel?> deleteEvent(int eventId) async {
     return await delete('/api/v1/calendar/events/$eventId');
   }
+
+  Future<ResponseModel?> getEvent(int eventId) async {
+    return await get('/api/v1/calendar/events/$eventId/detail');
+  }
 }

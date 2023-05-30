@@ -60,4 +60,14 @@ class CalendarController extends GetxController {
 
     return false;
   }
+
+  Future<EventModel?> getEvent(int eventId) async {
+    final response = await calendarRepo.getEvent(eventId);
+
+    if (response?.data != null) {
+      return EventModel.fromJson(response?.data);
+    }
+
+    return null;
+  }
 }

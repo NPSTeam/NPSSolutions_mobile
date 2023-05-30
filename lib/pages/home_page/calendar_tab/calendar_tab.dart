@@ -52,7 +52,7 @@ class _CalendarTabState extends State<CalendarTab> {
       _eventController.add(CalendarEventData(
         date: e.start ?? DateTime.now(),
         title: e.title ?? '',
-        event: e,
+        event: e.id,
       ));
     }
 
@@ -123,7 +123,7 @@ class _CalendarTabState extends State<CalendarTab> {
                                 showCreateEventDialog(context),
                             onEventTap: (event, date) => Get.to(
                                 () => CalendarDetailPage(
-                                    event: event.event as EventModel),
+                                    eventId: event.event as int),
                                 transition: Transition.cupertino),
                           ),
                         ),

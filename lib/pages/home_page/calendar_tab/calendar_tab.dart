@@ -8,6 +8,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:npssolutions_mobile/controllers/calendar_controller.dart';
 import 'package:npssolutions_mobile/pages/home_page/calendar_tab/calendar_detail_page.dart';
+import 'package:npssolutions_mobile/widgets/widget_refresher.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../../configs/themes/color_const.dart';
@@ -40,6 +42,20 @@ class _CalendarTabState extends State<CalendarTab> {
   int? _selectedLabel;
 
   final _createEventFormKey = GlobalKey<FormState>();
+
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  void _onRefresh() async {
+    await _loadData();
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (mounted) setState(() {});
+    _refreshController.loadComplete();
+  }
 
   _loadData() async {
     await EasyLoading.show();
@@ -114,17 +130,23 @@ class _CalendarTabState extends State<CalendarTab> {
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 10.0),
-                          child: MonthView(
-                            controller: _eventController,
-                            borderSize: 0.5,
-                            minMonth: DateTime(1900),
-                            maxMonth: DateTime(2100),
-                            onCellTap: (event, date) =>
-                                showCreateEventDialog(context),
-                            onEventTap: (event, date) => Get.to(
-                                () => CalendarDetailPage(
-                                    eventId: event.event as int),
-                                transition: Transition.cupertino),
+                          child: WidgetRefresher(
+                            controller: _refreshController,
+                            onRefresh: _onRefresh,
+                            onLoading: _onLoading,
+                            child: MonthView(
+                              controller: _eventController,
+                              borderSize: 0.5,
+                              minMonth: DateTime(1900),
+                              maxMonth: DateTime(2100),
+                              onCellTap: (event, date) =>
+                                  showCreateEventDialog(context, date),
+                              onEventTap: (event, date) => Get.to(
+                                      () => CalendarDetailPage(
+                                          eventId: event.event as int),
+                                      transition: Transition.cupertino)
+                                  ?.then((_) => _loadData()),
+                            ),
                           ),
                         ),
                       ),
@@ -139,10 +161,10 @@ class _CalendarTabState extends State<CalendarTab> {
     );
   }
 
-  Future<dynamic> showCreateEventDialog(BuildContext context) {
+  Future<dynamic> showCreateEventDialog(BuildContext context, DateTime date) {
     _titleController.clear();
-    _startDate = DateTime.now();
-    _endDate = DateTime.now().add(const Duration(days: 1));
+    _startDate = date;
+    _endDate = date.add(const Duration(days: 1));
     _descriptionController.clear();
 
     return showDialog(

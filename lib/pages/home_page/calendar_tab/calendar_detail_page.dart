@@ -162,6 +162,7 @@ class _CalendarDetailPageState extends State<CalendarDetailPage> {
                                 onChanged: (value) {
                                   setState(() => _eventModel!
                                       .extendedProps?.label = value);
+                                  _saveTaskTimer.reset();
                                 },
                               ),
                             ),
@@ -260,6 +261,13 @@ class _CalendarDetailPageState extends State<CalendarDetailPage> {
   Future saveTask() async {
     if (_taskDetailFormKey.currentState?.validate() == false) {
       return;
+    }
+
+    if (_eventModel != null) {
+      _eventModel!.title = _titleController.text.trim();
+      _eventModel!.extendedProps?.desc = _descriptionController.text.trim();
+
+      await _calendarController.updateEvent(_eventModel!);
     }
 
     // if (_taskDetailController.task != null) {

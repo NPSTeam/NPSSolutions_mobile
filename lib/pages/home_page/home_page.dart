@@ -12,6 +12,7 @@ import 'package:npssolutions_mobile/widgets/widget_app_bar_avatar.dart';
 import '../../configs/themes/color_const.dart';
 import '../../controllers/my_drawer_controller.dart';
 import '../../internationalization/message_keys.dart';
+import 'chat_tab/chat_tab.dart';
 import 'task_tab/task_tab.dart';
 import 'workspace_tab/workspace_tab.dart';
 
@@ -86,6 +87,8 @@ class _HomePageState extends State<HomePage> {
             return const ScrumboardTab();
           case DrawerTabId.CALENDAR:
             return const CalendarTab();
+          case DrawerTabId.CHAT:
+            return const ChatTab();
           case DrawerTabId.AI_SERVICE:
             return const AISerivceTab();
           case DrawerTabId.WORKSPACE_MANAGEMENT:
@@ -108,6 +111,8 @@ class _HomePageState extends State<HomePage> {
         return MessageKeys.homeTitleScrumboard.tr;
       case DrawerTabId.CALENDAR:
         return 'Calendar';
+      case DrawerTabId.CHAT:
+        return 'Chat';
       case DrawerTabId.AI_SERVICE:
         return 'AI Service';
       case DrawerTabId.WORKSPACE_MANAGEMENT:

@@ -70,4 +70,17 @@ class CalendarController extends GetxController {
 
     return null;
   }
+
+  Future<bool> updateEvent(EventModel event) async {
+    final response = await calendarRepo.updateEvent(event);
+
+    if (response?.data != null) {
+      final index = events.indexWhere((element) => element.id == event.id);
+      events[index] = event;
+      update();
+      return true;
+    }
+
+    return false;
+  }
 }

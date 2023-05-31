@@ -39,7 +39,7 @@ class WidgetTextFormField extends StatelessWidget {
       ),
       autovalidateMode: autovalidateMode ?? AutovalidateMode.onUserInteraction,
       validator: validator,
-      onChanged: (value) => onChanged,
+      onChanged: onChanged,
       onEditingComplete: onEditingComplete,
       minLines: minLines,
       maxLines: maxLines,

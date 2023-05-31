@@ -25,4 +25,8 @@ class _CalendarRepo extends DioRepo {
   Future<ResponseModel?> getEvent(int eventId) async {
     return await get('/api/v1/calendar/events/$eventId/detail');
   }
+
+  Future<ResponseModel?> updateEvent(EventModel event) async {
+    return await put('/api/v1/calendar/events', data: event.toJson());
+  }
 }

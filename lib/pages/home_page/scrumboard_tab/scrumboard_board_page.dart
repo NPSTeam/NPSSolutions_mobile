@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:npssolutions_mobile/configs/themes/text_style_const.dart';
 import 'package:npssolutions_mobile/models/board_card_model.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -43,8 +44,10 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
   final _createListFormKey = GlobalKey<FormState>();
   final _renameListFormKey = GlobalKey<FormState>();
 
+  bool isLoading = true;
+
   Future _loadData() async {
-    EasyLoading.show();
+    await EasyLoading.show();
 
     await _scrumboardBoardController.getScrumboard(widget.scrumboardId);
     await _scrumboardBoardController.getBoardLists(widget.scrumboardId);
@@ -65,65 +68,86 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
               (boardList) => DragAndDropList(
                 contentsWhenEmpty: const SizedBox(),
                 header: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.only(
+                      left: 10, top: 10, bottom: 10, right: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(boardList.title ?? ''),
-                      PopupMenuButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        padding: const EdgeInsets.all(0),
-                        icon: const Icon(Ionicons.ellipsis_vertical_outline),
-                        iconSize: 20,
-                        onSelected: (value) {
-                          switch (value) {
-                            case 'REMOVE_LIST':
-                              EasyLoading.show();
-                              _scrumboardBoardController
-                                  .removeBoardList(
-                                      boardId: widget.scrumboardId,
-                                      listId: boardList.id!)
-                                  .then((value) {
-                                EasyLoading.dismiss();
-                                if (value) {
-                                  _loadData();
-                                }
-                              });
-                              break;
-                            case 'RENAME_LIST':
-                              showRenameBoardListDialog(context,
-                                  boardId: widget.scrumboardId,
-                                  listId: boardList.id!);
-                              break;
-                          }
-                        },
-                        itemBuilder: (_) {
-                          return [
-                            PopupMenuItem(
-                              value: 'RENAME_LIST',
-                              child: Row(
-                                children: const [
-                                  Icon(Ionicons.create_outline,
-                                      color: Colors.black),
-                                  SizedBox(width: 10),
-                                  Text('Rename'),
-                                ],
+                      Expanded(
+                          child: Text(
+                        boardList.title ?? '',
+                        overflow: TextOverflow.ellipsis,
+                      )),
+                      Container(
+                        height: 20,
+                        width: 20,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey[300],
+                        ),
+                        child: Center(
+                          child: Text(
+                              '${_scrumboardBoardController.boardCards?.where((e) => e.listId == boardList.id).length ?? 0}',
+                              style: TextStyleConst.regularStyle(fontSize: 12)),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      SizedBox(
+                        width: 20,
+                        child: PopupMenuButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          padding: const EdgeInsets.all(0),
+                          icon: const Icon(Ionicons.ellipsis_vertical_outline),
+                          iconSize: 20,
+                          onSelected: (value) {
+                            switch (value) {
+                              case 'REMOVE_LIST':
+                                EasyLoading.show();
+                                _scrumboardBoardController
+                                    .removeBoardList(
+                                        boardId: widget.scrumboardId,
+                                        listId: boardList.id!)
+                                    .then((value) {
+                                  EasyLoading.dismiss();
+                                  if (value) {
+                                    _loadData();
+                                  }
+                                });
+                                break;
+                              case 'RENAME_LIST':
+                                showRenameBoardListDialog(context,
+                                    boardId: widget.scrumboardId,
+                                    listId: boardList.id!);
+                                break;
+                            }
+                          },
+                          itemBuilder: (_) {
+                            return [
+                              PopupMenuItem(
+                                value: 'RENAME_LIST',
+                                child: Row(
+                                  children: const [
+                                    Icon(Ionicons.create_outline,
+                                        color: Colors.black),
+                                    SizedBox(width: 10),
+                                    Text('Rename'),
+                                  ],
+                                ),
                               ),
-                            ),
-                            PopupMenuItem(
-                              value: 'REMOVE_LIST',
-                              child: Row(
-                                children: const [
-                                  Icon(Ionicons.trash_outline,
-                                      color: Colors.black),
-                                  SizedBox(width: 10),
-                                  Text('Remove'),
-                                ],
+                              PopupMenuItem(
+                                value: 'REMOVE_LIST',
+                                child: Row(
+                                  children: const [
+                                    Icon(Ionicons.trash_outline,
+                                        color: Colors.black),
+                                    SizedBox(width: 10),
+                                    Text('Remove'),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ];
-                        },
+                            ];
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -154,8 +178,12 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
                                     onTap: () {
                                       Get.to(
                                         () => CardDetailPage(
-                                            boardId: widget.scrumboardId,
-                                            cardId: boardCard.id!),
+                                          boardId: widget.scrumboardId,
+                                          cardId: boardCard.id!,
+                                          workspaceId:
+                                              _scrumboardBoardController
+                                                  .scrumboard!.workspaceId!,
+                                        ),
                                         transition: Transition.cupertino,
                                       );
                                     },
@@ -214,6 +242,8 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
             .toList() ??
         [];
 
+    setState(() => isLoading = false);
+
     await EasyLoading.dismiss();
   }
 
@@ -245,25 +275,27 @@ class _ScrumboardBoardPageState extends State<ScrumboardBoardPage> {
           },
           child: const Icon(Ionicons.add_outline),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: DragAndDropLists(
-            axis: Axis.horizontal,
-            onItemReorder: _onItemReorder,
-            onListReorder: _onListReorder,
-            listWidth: 180,
-            listPadding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            onItemDraggingChanged: (item, isDragging) {
-              HapticFeedback.lightImpact();
-            },
-            listDragOnLongPress: false,
-            lastItemTargetHeight: 8,
-            addLastItemTargetHeightToTop: true,
-            lastListTargetSize: 40,
-            children: _getContent(),
-          ),
-        ),
+        body: isLoading
+            ? const SizedBox()
+            : Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: DragAndDropLists(
+                  axis: Axis.horizontal,
+                  onItemReorder: _onItemReorder,
+                  onListReorder: _onListReorder,
+                  listWidth: 200,
+                  listPadding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  onItemDraggingChanged: (item, isDragging) {
+                    HapticFeedback.lightImpact();
+                  },
+                  listDragOnLongPress: false,
+                  lastItemTargetHeight: 8,
+                  addLastItemTargetHeightToTop: true,
+                  lastListTargetSize: 40,
+                  children: _getContent(),
+                ),
+              ),
       );
     });
   }

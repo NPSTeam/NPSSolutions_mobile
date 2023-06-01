@@ -49,6 +49,8 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
 
   late RestartableTimer _saveTaskTimer;
 
+  bool isLoading = true;
+
   @override
   void initState() {
     init();
@@ -60,7 +62,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
   }
 
   init() async {
-    EasyLoading.show();
+    await EasyLoading.show();
 
     await _taskDetailController.getTaskDetail(widget.taskId);
     await _taskDetailController.getTagList();
@@ -72,9 +74,11 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
           taskPriorityMap[_taskDetailController.task?.priority] ?? '';
       _dueDate = _taskDetailController.task?.dueDate;
       _notesController.text = _taskDetailController.task?.notes ?? '';
+
+      isLoading = false;
     });
 
-    EasyLoading.dismiss();
+    await EasyLoading.dismiss();
   }
 
   @override
@@ -124,134 +128,138 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
               ),
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Form(
-                key: _taskDetailFormKey,
-                child: Column(
-                  children: [
-                    WidgetCheckboxListTile(
-                      title: Text('MARK AS COMPLETE',
-                          style: TextStyleConst.mediumStyle()),
-                      value: controller.task?.completed ?? false,
-                      onChanged: (value) {
-                        setState(() => controller.task?.completed = value);
-                        _saveTaskTimer.reset();
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    WidgetTextFormField(
-                      controller: _titleController,
-                      labelText: 'Title',
-                      hintText: 'Title',
-                      validator: (value) => value?.isEmpty == true
-                          ? 'Title cannot be blank'
-                          : null,
-                      onChanged: (value) => _saveTaskTimer.reset(),
-                      onEditingComplete: () => _saveTaskTimer.reset(),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: WidgetMultiSelectBottomSheetField(
-                            buttonText: 'Tags',
-                            title: const Text('Tags'),
-                            initialValue: _selectedTags,
-                            items: controller.tagList
-                                    ?.map((e) => MultiSelectItem<int>(
-                                        e.id ?? 0, e.title ?? ''))
-                                    .toList() ??
-                                [],
-                            onConfirm: (values) {
-                              _selectedTags = values.cast();
+          body: isLoading
+              ? const SizedBox()
+              : Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Form(
+                      key: _taskDetailFormKey,
+                      child: Column(
+                        children: [
+                          WidgetCheckboxListTile(
+                            title: Text('MARK AS COMPLETE',
+                                style: TextStyleConst.mediumStyle()),
+                            value: controller.task?.completed ?? false,
+                            onChanged: (value) {
+                              setState(
+                                  () => controller.task?.completed = value);
                               _saveTaskTimer.reset();
                             },
-                            chipDisplay: MultiSelectChipDisplay(
-                              onTap: (value) =>
-                                  setState(() => _selectedTags.remove(value)),
-                            ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () => showCreateTagDialog(context),
-                          icon: const Icon(Ionicons.add_circle_outline),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    WidgetDropdown(
-                      hintText: 'Priority',
-                      items:
-                          taskPriorityMap.entries.map((e) => e.value).toList(),
-                      controller: _dropdownController,
-                      listItemBuilder: (context, value) => Row(
-                        children: [
-                          if (value == 'Low')
-                            const Icon(Ionicons.arrow_down_outline,
-                                color: Colors.red),
-                          if (value == 'Normal')
-                            const Icon(Ionicons.remove_outline),
-                          if (value == 'High')
-                            const Icon(Ionicons.arrow_up_outline,
-                                color: Colors.green),
-                          const SizedBox(width: 5),
-                          Text(
-                            value,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 16),
+                          const SizedBox(height: 10),
+                          WidgetTextFormField(
+                            controller: _titleController,
+                            labelText: 'Title',
+                            hintText: 'Title',
+                            validator: (value) => value?.isEmpty == true
+                                ? 'Title cannot be blank'
+                                : null,
+                            onChanged: (value) => _saveTaskTimer.reset(),
+                            onEditingComplete: () => _saveTaskTimer.reset(),
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: WidgetMultiSelectBottomSheetField(
+                                  buttonText: 'Tags',
+                                  title: const Text('Tags'),
+                                  initialValue: _selectedTags,
+                                  items: controller.tagList
+                                          ?.map((e) => MultiSelectItem<int>(
+                                              e.id ?? 0, e.title ?? ''))
+                                          .toList() ??
+                                      [],
+                                  onConfirm: (values) {
+                                    _selectedTags = values.cast();
+                                    _saveTaskTimer.reset();
+                                  },
+                                  chipDisplay: MultiSelectChipDisplay(
+                                    onTap: (value) => setState(
+                                        () => _selectedTags.remove(value)),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () => showCreateTagDialog(context),
+                                icon: const Icon(Ionicons.add_circle_outline),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          WidgetDropdown(
+                            hintText: 'Priority',
+                            items: taskPriorityMap.entries
+                                .map((e) => e.value)
+                                .toList(),
+                            controller: _dropdownController,
+                            listItemBuilder: (context, value) => Row(
+                              children: [
+                                if (value == 'Low')
+                                  const Icon(Ionicons.arrow_down_outline,
+                                      color: Colors.red),
+                                if (value == 'Normal')
+                                  const Icon(Ionicons.remove_outline),
+                                if (value == 'High')
+                                  const Icon(Ionicons.arrow_up_outline,
+                                      color: Colors.green),
+                                const SizedBox(width: 5),
+                                Text(
+                                  value,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                            onChanged: (value) => _saveTaskTimer.reset(),
+                          ),
+                          const SizedBox(height: 10),
+                          WidgetDateTimeField(
+                            controller: TextEditingController(
+                                text: UtilFunction.dateTimeToString(_dueDate)),
+                            initialValue: _dueDate,
+                            format: DateFormat('dd/MM/yyyy – HH:mm'),
+                            labelText: 'Due Date',
+                            onShowPicker: (context, currentValue) async {
+                              _dueDate = await showDatePicker(
+                                context: context,
+                                firstDate: DateTime(1900),
+                                initialDate: currentValue ?? DateTime.now(),
+                                lastDate: DateTime(2100),
+                              ).then((DateTime? date) async {
+                                if (date != null) {
+                                  final time = await showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.fromDateTime(
+                                        currentValue ?? DateTime.now()),
+                                  );
+                                  return DateTimeField.combine(date, time);
+                                } else {
+                                  return currentValue ?? DateTime.now();
+                                }
+                              });
+
+                              _saveTaskTimer.reset();
+                              return _dueDate;
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          WidgetTextField(
+                            controller: _notesController,
+                            labelText: 'Notes',
+                            hintText: 'Write something...',
+                            minLines: 5,
+                            onChanged: (value) => _saveTaskTimer.reset(),
                           ),
                         ],
                       ),
-                      onChanged: (value) => _saveTaskTimer.reset(),
                     ),
-                    const SizedBox(height: 10),
-                    WidgetDateTimeField(
-                      controller: TextEditingController(
-                          text: UtilFunction.dateTimeToString(_dueDate)),
-                      initialValue: _dueDate,
-                      format: DateFormat('dd/MM/yyyy – HH:mm'),
-                      labelText: 'Due Date',
-                      onShowPicker: (context, currentValue) async {
-                        _dueDate = await showDatePicker(
-                          context: context,
-                          firstDate: DateTime(1900),
-                          initialDate: currentValue ?? DateTime.now(),
-                          lastDate: DateTime(2100),
-                        ).then((DateTime? date) async {
-                          if (date != null) {
-                            final time = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay.fromDateTime(
-                                  currentValue ?? DateTime.now()),
-                            );
-                            return DateTimeField.combine(date, time);
-                          } else {
-                            return currentValue ?? DateTime.now();
-                          }
-                        });
-
-                        _saveTaskTimer.reset();
-                        return _dueDate;
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    WidgetTextField(
-                      controller: _notesController,
-                      labelText: 'Notes',
-                      hintText: 'Write something...',
-                      minLines: 5,
-                      onChanged: (value) => _saveTaskTimer.reset(),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
         ),
       );
     });

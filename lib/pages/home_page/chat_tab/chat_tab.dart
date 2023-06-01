@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:npssolutions_mobile/pages/home_page/chat_tab/chat_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../configs/themes/assets_const.dart';
@@ -18,7 +20,11 @@ class ChatTab extends StatefulWidget {
 class _ChatTabState extends State<ChatTab> {
   final ChatListController _chatListController = Get.put(ChatListController());
 
+  bool isLoading = true;
+
   _loadData() async {
+    await EasyLoading.show();
+
     await _chatListController.getChatList();
     await _chatListController.getContactList();
 
@@ -27,6 +33,10 @@ class _ChatTabState extends State<ChatTab> {
           (contact) => contact.id == element.contactId,
           orElse: () => ContactModel());
     }
+
+    setState(() => isLoading = false);
+
+    await EasyLoading.dismiss();
   }
 
   final RefreshController _refreshController =
@@ -103,85 +113,104 @@ class _ChatTabState extends State<ChatTab> {
                           ),
                         ),
                         Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 20.0),
-                            child: WidgetRefresher(
-                              controller: _refreshController,
-                              onRefresh: _onRefresh,
-                              onLoading: _onLoading,
-                              child: ListView.separated(
-                                itemCount: chatListController.chats.length,
-                                separatorBuilder: (context, index) => Divider(
-                                  color: Colors.grey.shade300,
-                                  height: 0.5,
-                                ),
-                                itemBuilder: (context, index) => Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Stack(
-                                          children: [
-                                            Container(
-                                              height: 50,
-                                              width: 50,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Colors.grey[300],
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  chatListController
-                                                          .chats[index]
-                                                          .contact
-                                                          ?.name?[0] ??
-                                                      '#',
-                                                  style: const TextStyle(
-                                                    fontSize: 25,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black54,
+                          child: isLoading
+                              ? const SizedBox()
+                              : Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: WidgetRefresher(
+                                    controller: _refreshController,
+                                    onRefresh: _onRefresh,
+                                    onLoading: _onLoading,
+                                    child: ListView.separated(
+                                      itemCount:
+                                          chatListController.chats.length,
+                                      separatorBuilder: (context, index) =>
+                                          Divider(
+                                        color: Colors.grey.shade300,
+                                        height: 0.5,
+                                      ),
+                                      itemBuilder: (context, index) => Card(
+                                        clipBehavior: Clip.hardEdge,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: InkWell(
+                                          onTap: () => Get.to(
+                                              () => const ChatPage(),
+                                              transition: Transition.cupertino),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              children: [
+                                                Stack(
+                                                  children: [
+                                                    Container(
+                                                      height: 50,
+                                                      width: 50,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Colors.grey[300],
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          chatListController
+                                                                  .chats[index]
+                                                                  .contact
+                                                                  ?.name?[0] ??
+                                                              '#',
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 25,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                Colors.black54,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                          chatListController
+                                                                  .chats[index]
+                                                                  .contact
+                                                                  ?.name ??
+                                                              '',
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 16,
+                                                          )),
+                                                      Text(
+                                                        chatListController
+                                                                .chats[index]
+                                                                .lastMessage ??
+                                                            '',
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: const TextStyle(
+                                                            color: Colors.grey),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                  chatListController
-                                                          .chats[index]
-                                                          .contact
-                                                          ?.name ??
-                                                      '',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16,
-                                                  )),
-                                              Text(
-                                                chatListController.chats[index]
-                                                        .lastMessage ??
-                                                    '',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
                                           ),
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ),
                         ),
                       ],
                     ),

@@ -2,10 +2,13 @@ import 'package:get/get.dart';
 import 'package:npssolutions_mobile/models/board_card_model.dart';
 
 import '../models/response_model.dart';
+import '../models/workspace_user_model.dart';
 import '../repositories/scrumboard_repo.dart';
+import '../repositories/workspace_repo.dart';
 
 class CardDetailController extends GetxController {
   BoardCardModel? card;
+  List<WorkspaceUserModel>? workspaceUsers;
 
   Future<bool> getCard({
     required int boardId,
@@ -42,6 +45,22 @@ class CardDetailController extends GetxController {
 
       update();
 
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> getWorkspaceUsers(int workspaceId) async {
+    workspaceUsers = null;
+    ResponseModel? response =
+        await workspaceRepo.getWorkspaceUsers(workspaceId);
+
+    if (response?.data != null) {
+      workspaceUsers = (response?.data as List)
+          .map((e) => WorkspaceUserModel.fromJson(e))
+          .toList();
+      update();
       return true;
     }
 

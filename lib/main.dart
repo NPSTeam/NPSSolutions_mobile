@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:npssolutions_mobile/configs/themes/color_const.dart';
 import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/pages/home_page/home_page.dart';
 import 'package:npssolutions_mobile/pages/onboarding_page/onboarding_page.dart';
@@ -26,24 +27,26 @@ Future main() async {
 
   EasyLoading.instance
     ..indicatorType = EasyLoadingIndicatorType.ring
-    ..loadingStyle = EasyLoadingStyle.light
+    ..loadingStyle = EasyLoadingStyle.custom
     ..indicatorSize = 45.0
     ..radius = 10.0
-    ..progressColor = Colors.yellow
-    ..backgroundColor = Colors.green
-    ..indicatorColor = Colors.yellow
-    ..textColor = Colors.yellow
+    ..progressColor = ColorConst.primary
+    ..backgroundColor = Colors.white
+    ..indicatorColor = ColorConst.primary
+    ..textColor = Colors.grey
     ..maskColor = Colors.blue.withOpacity(0.5)
     ..maskType = EasyLoadingMaskType.black
     ..userInteractions = true
     ..dismissOnTap = false
-    ..boxShadow = const [
+    ..boxShadow = [
       BoxShadow(
-        color: Colors.black,
-        offset: Offset(0.0, 5.0),
-        blurRadius: 10.0,
+        color: Colors.black.withOpacity(0.2),
+        offset: const Offset(0.0, 1.0),
+        blurRadius: 5.0,
+        spreadRadius: 2,
       )
-    ];
+    ]
+    ..animationDuration = const Duration(milliseconds: 400);
 
   runApp(MyApp());
 }

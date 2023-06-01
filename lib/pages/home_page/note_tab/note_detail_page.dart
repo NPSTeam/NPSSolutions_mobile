@@ -4,6 +4,7 @@ import 'package:async/async.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -41,17 +42,21 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
   bool isAddingTask = false;
   final TextEditingController _addTaskTitleController = TextEditingController();
 
+  bool isLoading = true;
+
   _loadData() async {
-    EasyLoading.show();
+    await EasyLoading.show();
 
     await _noteDetailController.getNoteDetail(widget.noteId);
 
     setState(() {
       _titleController.text = _noteDetailController.note?.title ?? '';
       _contentController.text = _noteDetailController.note?.content ?? '';
+
+      isLoading = false;
     });
 
-    EasyLoading.dismiss();
+    await EasyLoading.dismiss();
   }
 
   @override
@@ -104,274 +109,310 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
               ),
             ],
           ),
-          body: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
+          body: Animate(
+            effects: const [FadeEffect(duration: Duration(milliseconds: 500))],
+            child: isLoading
+                ? const SizedBox()
+                : Column(
                     children: [
-                      if (_noteDetailController.note?.image != null &&
-                          _noteDetailController.note?.image != '')
-                        Stack(
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl: _noteDetailController.note?.image ?? '',
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                            ),
-                            Positioned(
-                              right: 10,
-                              bottom: 10,
-                              child: FloatingActionButton(
-                                onPressed: () {
-                                  _noteDetailController.note!.image = '';
-                                  _noteDetailController
-                                      .updateNote(_noteDetailController.note!);
-                                },
-                                mini: true,
-                                backgroundColor: ColorConst.primary,
-                                child: const Icon(Ionicons.trash_outline,
-                                    color: Colors.white, size: 20),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Column(
+                            children: [
+                              if (_noteDetailController.note?.image != null &&
+                                  _noteDetailController.note?.image != '')
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: Stack(
+                                    children: [
+                                      Center(
+                                        child: CachedNetworkImage(
+                                          imageUrl: _noteDetailController
+                                                  .note?.image ??
+                                              '',
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        right: 10,
+                                        bottom: 10,
+                                        child: FloatingActionButton(
+                                          onPressed: () {
+                                            _noteDetailController.note!.image =
+                                                '';
+                                            _noteDetailController.updateNote(
+                                                _noteDetailController.note!);
+                                          },
+                                          mini: true,
+                                          backgroundColor: ColorConst.primary,
+                                          child: const Icon(
+                                              Ionicons.trash_outline,
+                                              color: Colors.white,
+                                              size: 20),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Column(
+                                  children: [
+                                    TextField(
+                                      controller: _titleController,
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: 'Title',
+                                      ),
+                                      style: TextStyleConst.boldStyle(
+                                          fontSize: 24),
+                                      onChanged: (value) =>
+                                          _saveNoteTimer.reset(),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    TextField(
+                                      controller: _contentController,
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: 'Content',
+                                      ),
+                                      maxLines: null,
+                                      // expands: true,
+                                      onChanged: (value) =>
+                                          _saveNoteTimer.reset(),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(15),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TextField(
-                              controller: _titleController,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Title',
+                            if (!UtilFunction.isShowKeyboard(context))
+                              ...List.generate(
+                                _noteDetailController.note?.tasks?.length ?? 0,
+                                (index) => Row(
+                                  children: [
+                                    Expanded(
+                                      child: WidgetCheckboxListTile(
+                                        visualDensity: VisualDensity.compact,
+                                        value: _noteDetailController
+                                            .note?.tasks?[index].completed,
+                                        onChanged: (value) async {
+                                          setState(() {
+                                            _noteDetailController
+                                                .note
+                                                ?.tasks?[index]
+                                                .completed = value;
+                                          });
+
+                                          _saveNoteTimer.reset();
+                                        },
+                                        title: Text(_noteDetailController
+                                                .note?.tasks?[index].content ??
+                                            ''),
+                                      ),
+                                    ),
+                                    WidgetBouncing(
+                                      onTap: () {
+                                        setState(() {
+                                          _noteDetailController.note?.tasks
+                                              ?.removeAt(index);
+                                        });
+
+                                        _saveNoteTimer.reset();
+                                      },
+                                      child: const Icon(Ionicons.trash_outline,
+                                          size: 20),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              style: TextStyleConst.boldStyle(fontSize: 24),
-                              onChanged: (value) => _saveNoteTimer.reset(),
-                            ),
-                            const SizedBox(height: 10),
-                            TextField(
-                              controller: _contentController,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Content',
+                            if (isAddingTask &&
+                                !UtilFunction.isShowKeyboard(context))
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    WidgetBouncing(
+                                      onTap: () async {
+                                        setState(() {
+                                          isAddingTask = false;
+
+                                          _noteDetailController.note?.tasks
+                                              ?.add(NoteTaskModel(
+                                                  content:
+                                                      _addTaskTitleController
+                                                          .text,
+                                                  completed: false));
+                                        });
+
+                                        _saveNoteTimer.reset();
+                                      },
+                                      child: const Icon(Ionicons.add_outline,
+                                          size: 20),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: TextField(
+                                        controller: _addTaskTitleController,
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: 'Add task',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              maxLines: 10,
-                              onChanged: (value) => _saveNoteTimer.reset(),
+                            if (_noteDetailController.note?.reminder != null &&
+                                !UtilFunction.isShowKeyboard(context))
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
+                                  color: Colors.grey[200],
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(Ionicons.time_outline,
+                                            size: 20),
+                                        const SizedBox(width: 10),
+                                        Text(DateFormat('MMM d, yy - HH:mm')
+                                            .format(_noteDetailController
+                                                .note!.reminder!)),
+                                        const SizedBox(width: 10),
+                                        WidgetBouncing(
+                                          onTap: () async {
+                                            await EasyLoading.show();
+                                            _noteDetailController
+                                                .note?.reminder = null;
+                                            _noteDetailController.updateNote(
+                                                _noteDetailController.note!);
+                                            await EasyLoading.dismiss();
+                                          },
+                                          child: const Icon(
+                                              Ionicons.close_circle_outline,
+                                              size: 20),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () async {
+                                        _noteDetailController.note!.reminder =
+                                            await showDatePicker(
+                                          context: context,
+                                          firstDate: DateTime(1900),
+                                          initialDate: _noteDetailController
+                                                  .note!.reminder ??
+                                              DateTime.now(),
+                                          lastDate: DateTime(2100),
+                                        ).then((DateTime? date) async {
+                                          if (date != null) {
+                                            final time = await showTimePicker(
+                                              context: context,
+                                              initialTime:
+                                                  TimeOfDay.fromDateTime(
+                                                      _noteDetailController
+                                                              .note!.reminder ??
+                                                          DateTime.now()),
+                                            );
+                                            return DateTimeField.combine(
+                                                date, time);
+                                          } else {
+                                            return _noteDetailController
+                                                    .note!.reminder ??
+                                                DateTime.now();
+                                          }
+                                        });
+
+                                        await EasyLoading.show();
+                                        await _noteDetailController.updateNote(
+                                            _noteDetailController.note!);
+                                        await _noteDetailController
+                                            .getNoteDetail(widget.noteId);
+                                        await EasyLoading.dismiss();
+                                      },
+                                      child: const Icon(
+                                          Ionicons.notifications_outline),
+                                    ),
+                                    const SizedBox(width: 15),
+                                    InkWell(
+                                      onTap: () async {
+                                        XFile? imageXFile = await ImagePicker()
+                                            .pickImage(
+                                                source: ImageSource.gallery);
+
+                                        if (imageXFile == null) {
+                                          return;
+                                        }
+
+                                        await EasyLoading.show(
+                                            status: 'Uploading...');
+                                        _noteDetailController.note!.image =
+                                            await UtilFunction.fileToBase64(
+                                                File(imageXFile.path));
+                                        await _noteDetailController.updateNote(
+                                            _noteDetailController.note!);
+                                        await _noteDetailController
+                                            .getNoteDetail(widget.noteId);
+                                        await EasyLoading.dismiss();
+                                      },
+                                      child: const Icon(Ionicons.image_outline),
+                                    ),
+                                    const SizedBox(width: 15),
+                                    InkWell(
+                                      onTap: () async {
+                                        setState(() {
+                                          isAddingTask = true;
+                                        });
+
+                                        // await EasyLoading.show(status: 'Uploading...');
+                                        // _noteDetailController.note!.image =
+                                        //     await UtilFunction.fileToBase64(
+                                        //         File(imageXFile.path));
+                                        // await _noteDetailController
+                                        //     .updateNote(_noteDetailController.note!);
+                                        // await _noteDetailController
+                                        //     .getNoteDetail(widget.noteId);
+                                        // await EasyLoading.dismiss();
+                                      },
+                                      child:
+                                          const Icon(Ionicons.create_outline),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  'Edited ${DateFormat('MMM d, yy - HH:mm').format(_noteDetailController.note?.updatedAt ?? DateTime.now())}',
+                                  style:
+                                      TextStyleConst.regularStyle(fontSize: 12),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (!UtilFunction.isShowKeyboard(context))
-                      ...List.generate(
-                        _noteDetailController.note?.tasks?.length ?? 0,
-                        (index) => Row(
-                          children: [
-                            Expanded(
-                              child: WidgetCheckboxListTile(
-                                visualDensity: VisualDensity.compact,
-                                value: _noteDetailController
-                                    .note?.tasks?[index].completed,
-                                onChanged: (value) async {
-                                  setState(() {
-                                    _noteDetailController
-                                        .note?.tasks?[index].completed = value;
-                                  });
-
-                                  _saveNoteTimer.reset();
-                                },
-                                title: Text(_noteDetailController
-                                        .note?.tasks?[index].content ??
-                                    ''),
-                              ),
-                            ),
-                            WidgetBouncing(
-                              onTap: () {
-                                setState(() {
-                                  _noteDetailController.note?.tasks
-                                      ?.removeAt(index);
-                                });
-
-                                _saveNoteTimer.reset();
-                              },
-                              child:
-                                  const Icon(Ionicons.trash_outline, size: 20),
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (isAddingTask)
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            WidgetBouncing(
-                              onTap: () async {
-                                setState(() {
-                                  isAddingTask = false;
-
-                                  _noteDetailController.note?.tasks?.add(
-                                      NoteTaskModel(
-                                          content: _addTaskTitleController.text,
-                                          completed: false));
-                                });
-
-                                _saveNoteTimer.reset();
-                              },
-                              child: const Icon(Ionicons.add_outline, size: 20),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: TextField(
-                                controller: _addTaskTitleController,
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: 'Add task',
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (_noteDetailController.note?.reminder != null &&
-                        !UtilFunction.isShowKeyboard(context))
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          color: Colors.grey[200],
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Ionicons.time_outline, size: 20),
-                                const SizedBox(width: 10),
-                                Text(DateFormat('MMM d, yy - HH:mm').format(
-                                    _noteDetailController.note!.reminder!)),
-                                const SizedBox(width: 10),
-                                WidgetBouncing(
-                                  onTap: () async {
-                                    await EasyLoading.show();
-                                    _noteDetailController.note?.reminder = null;
-                                    _noteDetailController.updateNote(
-                                        _noteDetailController.note!);
-                                    await EasyLoading.dismiss();
-                                  },
-                                  child: const Icon(
-                                      Ionicons.close_circle_outline,
-                                      size: 20),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            InkWell(
-                              onTap: () async {
-                                _noteDetailController.note!.reminder =
-                                    await showDatePicker(
-                                  context: context,
-                                  firstDate: DateTime(1900),
-                                  initialDate:
-                                      _noteDetailController.note!.reminder ??
-                                          DateTime.now(),
-                                  lastDate: DateTime(2100),
-                                ).then((DateTime? date) async {
-                                  if (date != null) {
-                                    final time = await showTimePicker(
-                                      context: context,
-                                      initialTime: TimeOfDay.fromDateTime(
-                                          _noteDetailController
-                                                  .note!.reminder ??
-                                              DateTime.now()),
-                                    );
-                                    return DateTimeField.combine(date, time);
-                                  } else {
-                                    return _noteDetailController
-                                            .note!.reminder ??
-                                        DateTime.now();
-                                  }
-                                });
-
-                                await EasyLoading.show();
-                                await _noteDetailController
-                                    .updateNote(_noteDetailController.note!);
-                                await _noteDetailController
-                                    .getNoteDetail(widget.noteId);
-                                await EasyLoading.dismiss();
-                              },
-                              child: const Icon(Ionicons.notifications_outline),
-                            ),
-                            const SizedBox(width: 15),
-                            InkWell(
-                              onTap: () async {
-                                XFile? imageXFile = await ImagePicker()
-                                    .pickImage(source: ImageSource.gallery);
-
-                                if (imageXFile == null) {
-                                  return;
-                                }
-
-                                await EasyLoading.show(status: 'Uploading...');
-                                _noteDetailController.note!.image =
-                                    await UtilFunction.fileToBase64(
-                                        File(imageXFile.path));
-                                await _noteDetailController
-                                    .updateNote(_noteDetailController.note!);
-                                await _noteDetailController
-                                    .getNoteDetail(widget.noteId);
-                                await EasyLoading.dismiss();
-                              },
-                              child: const Icon(Ionicons.image_outline),
-                            ),
-                            const SizedBox(width: 15),
-                            InkWell(
-                              onTap: () async {
-                                setState(() {
-                                  isAddingTask = true;
-                                });
-
-                                // await EasyLoading.show(status: 'Uploading...');
-                                // _noteDetailController.note!.image =
-                                //     await UtilFunction.fileToBase64(
-                                //         File(imageXFile.path));
-                                // await _noteDetailController
-                                //     .updateNote(_noteDetailController.note!);
-                                // await _noteDetailController
-                                //     .getNoteDetail(widget.noteId);
-                                // await EasyLoading.dismiss();
-                              },
-                              child: const Icon(Ionicons.create_outline),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          'Edited ${DateFormat('MMM d, yy - HH:mm').format(_noteDetailController.note?.updatedAt ?? DateTime.now())}',
-                          style: TextStyleConst.regularStyle(fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
         ),
       );

@@ -187,12 +187,17 @@ class _CardDetailPageState extends State<CardDetailPage> {
                                   ),
                                   const SizedBox(width: 10),
                                   Expanded(
-                                    child: WidgetTextField(
-                                      controller: _descriptionController,
-                                      labelText: 'Comment',
-                                      hintText: 'Add comment',
-                                      onChanged: (value) =>
-                                          _saveCardTimer.reset(),
+                                    child: Column(
+                                      children: [
+                                        WidgetTextField(
+                                          controller: _descriptionController,
+                                          labelText: 'Comment',
+                                          hintText: 'Add comment',
+                                          onChanged: (value) =>
+                                              _saveCardTimer.reset(),
+                                        ),
+                                        const SizedBox(height: 10),
+                                      ],
                                     ),
                                   ),
                                 ],

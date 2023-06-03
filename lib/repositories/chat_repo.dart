@@ -11,4 +11,8 @@ class _ChatRepo extends DioRepo {
   Future<ResponseModel?> getChatList() async {
     return await get('/api/v1/chat/chats');
   }
+
+  Future<ResponseModel?> getChatMessages(int chatId) async {
+    return await get('/api/v1/chat/chats/$chatId');
+  }
 }

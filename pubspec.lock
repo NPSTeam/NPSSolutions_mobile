@@ -337,6 +337,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
+  file_picker:
+    dependency: "direct main"
+    description:
+      name: file_picker
+      sha256: "9d6e95ec73abbd31ec54d0e0df8a961017e165aba1395e462e5b31ea0c165daf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.3.1"
   fixnum:
     dependency: transitive
     description:
@@ -374,6 +382,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0"
+  flutter_chat_bubble:
+    dependency: "direct main"
+    description:
+      name: flutter_chat_bubble
+      sha256: ede33df7237fea3d89464c8493bfa0bee2f94f50fd097ebd30c517c3c0d4fcf9
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   flutter_dotenv:
     dependency: "direct main"
     description:
@@ -402,10 +418,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "4bef634684b2c7f3468c77c766c831229af829a0cd2d4ee6c1b99558bd14e5d2"
+      sha256: "950e77c2bbe1692bc0874fc7fb491b96a4dc340457f4ea1641443d0a6c1ea360"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.8"
+    version: "2.0.15"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -780,10 +796,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_windows
-      sha256: bcabbe399d4042b8ee687e17548d5d3f527255253b4a639f5f8d2094a9c2b45c
+      sha256: d3f80b32e83ec208ac95253e0cd4d298e104fbc63cb29c5c69edaed43b0c69d6
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.3"
+    version: "2.1.6"
   pedantic:
     dependency: transitive
     description:
@@ -812,10 +828,10 @@ packages:
     dependency: transitive
     description:
       name: plugin_platform_interface
-      sha256: dbf0f707c78beedc9200146ad3cb0ab4d5da13c246336987be6940f026500d3a
+      sha256: "6a2128648c854906c53fa8e33986fc0247a1116122f9534dd20e3ab9e16a32bc"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.3"
+    version: "2.1.4"
   pool:
     dependency: transitive
     description:
@@ -1201,10 +1217,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: c9ebe7ee4ab0c2194e65d3a07d8c54c5d00bb001b76081c4a04cdb8448b59e46
+      sha256: "5a751eddf9db89b3e5f9d50c20ab8612296e4e8db69009788d6c8b060a84191c"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.3"
+    version: "4.1.4"
   xdg_directories:
     dependency: transitive
     description:

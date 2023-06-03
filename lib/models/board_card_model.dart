@@ -1,8 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'card_attachment_model.dart';
+
 part 'board_card_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class BoardCardModel {
   int? id;
   int? boardId;
@@ -13,6 +15,7 @@ class BoardCardModel {
   DateTime? dueDate;
   List<int>? memberIds;
   bool? subscribed;
+  List<CardAttachmentModel>? attachments;
 
   BoardCardModel({
     this.id,
@@ -23,6 +26,7 @@ class BoardCardModel {
     this.dueDate,
     this.memberIds,
     this.subscribed,
+    this.attachments,
   });
 
   factory BoardCardModel.fromJson(Map<String, dynamic> json) =>

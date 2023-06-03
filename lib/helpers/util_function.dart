@@ -15,8 +15,8 @@ class UtilFunction {
     return DateFormat(format).format(dateTime);
   }
 
-  static Future<String> fileToBase64(File file) async {
-    return "data:image/${p.extension(file.path).replaceFirst('.', '')};base64,${base64Encode(await file.readAsBytes())}";
+  static Future<String> fileToBase64(File file, {bool isFile = false}) async {
+    return "data:${isFile ? 'application/octet-stream' : 'image'}/${p.extension(file.path).replaceFirst('.', '')};base64,${base64Encode(await file.readAsBytes())}";
   }
 
   static bool isShowKeyboard(BuildContext context) {

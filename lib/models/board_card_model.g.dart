@@ -17,6 +17,9 @@ BoardCardModel _$BoardCardModelFromJson(Map<String, dynamic> json) =>
       memberIds:
           (json['memberIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
       subscribed: json['subscribed'] as bool?,
+      attachments: (json['attachments'] as List<dynamic>?)
+          ?.map((e) => CardAttachmentModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$BoardCardModelToJson(BoardCardModel instance) =>
@@ -29,4 +32,5 @@ Map<String, dynamic> _$BoardCardModelToJson(BoardCardModel instance) =>
       'dueDate': BoardCardModel._toJson(instance.dueDate),
       'memberIds': instance.memberIds,
       'subscribed': instance.subscribed,
+      'attachments': instance.attachments?.map((e) => e.toJson()).toList(),
     };

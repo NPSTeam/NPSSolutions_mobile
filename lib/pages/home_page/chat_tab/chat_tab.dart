@@ -136,7 +136,9 @@ class _ChatTabState extends State<ChatTab> {
                                                 BorderRadius.circular(10)),
                                         child: InkWell(
                                           onTap: () => Get.to(
-                                              () => const ChatPage(),
+                                              () => ChatPage(
+                                                  chat: chatListController
+                                                      .chats[index]),
                                               transition: Transition.cupertino),
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),

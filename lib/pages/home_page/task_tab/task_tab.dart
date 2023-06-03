@@ -148,11 +148,18 @@ class _TaskTabState extends State<TaskTab> {
                                           ),
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 12, horizontal: 12),
-                                        child: Text(e.title ?? ''),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 12),
+                                          child: Text(
+                                            e.title ?? '',
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
                                       ),
+                                      const SizedBox(width: 5),
                                     ],
                                   ),
                                 )

@@ -20,4 +20,17 @@ class ChatController extends GetxController {
 
     return false;
   }
+
+  Future<bool> sendMessage(MessageModel message) async {
+    messages.insert(0, message);
+    update();
+
+    final response = await chatRepo.sendMessage(message);
+
+    if (response?.data != null) {
+      return true;
+    }
+
+    return false;
+  }
 }

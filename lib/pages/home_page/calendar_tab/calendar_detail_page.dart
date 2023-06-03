@@ -41,8 +41,13 @@ class _CalendarDetailPageState extends State<CalendarDetailPage> {
 
     _eventModel = await _calendarController.getEvent(widget.eventId);
 
-    _titleController.text = _eventModel!.title!;
-    _descriptionController.text = _eventModel!.extendedProps!.desc!;
+    if (_eventModel?.title != null) {
+      _titleController.text = _eventModel!.title!;
+    }
+
+    if (_eventModel?.extendedProps?.desc != null) {
+      _descriptionController.text = _eventModel!.extendedProps!.desc!;
+    }
 
     setState(() {});
     await EasyLoading.dismiss();

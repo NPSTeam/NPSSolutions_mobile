@@ -25,9 +25,13 @@ dependencies:
   intl: ^0.18.0
   package_info_plus: ^3.0.3
   timeago: ^3.4.0
-  # webviewx: ^0.2.2
   webview_flutter: ^3.0.4
   file_picker: ^5.3.0
+  stomp_dart_client: ^0.4.4
+  flutter_local_notifications: ^14.1.1
+  # workmanager: ^0.5.1
+  flutter_background_service: ^2.4.6
+  device_info_plus: ^9.0.2
 
   # UI packages
   cupertino_icons: ^1.0.2

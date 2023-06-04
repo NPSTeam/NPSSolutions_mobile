@@ -7,6 +7,8 @@ class Messages extends Translations {
         'en_US': {
           // Common
           MessageKeys.notFoundPage: 'Not found page',
+          MessageKeys.cancel: 'Cancel',
+          MessageKeys.add: 'Add',
           // Onboarding Page
           MessageKeys.npsSolutions: 'NPS Solutions',
           MessageKeys.onboardingSlogan: 'Technology Solutions for Everyone',
@@ -40,10 +42,21 @@ class Messages extends Translations {
           MessageKeys.languageToggle: 'Language',
           MessageKeys.logOut: 'Log Out',
           // Home Title
+          MessageKeys.homeTitleNote: 'Notes',
           MessageKeys.homeTitleTask: 'Tasks',
           MessageKeys.homeTitleScrumboard: 'Scrum Board',
+          MessageKeys.homeTitleMail: 'Mail',
+          MessageKeys.homeTitleChat: 'Chat',
+          MessageKeys.homeTitleAIService: 'AI Service',
           MessageKeys.homeTitleWorkspace: 'Workspace',
           MessageKeys.homeTitleUntitled: 'Untitled',
+          // Note Tab
+          MessageKeys.addNoteDialogTitle: 'Note',
+          MessageKeys.addNoteDialogTitleLabel: 'Title',
+          MessageKeys.addNoteDialogTitleCannotBeBlank: 'Title cannot be blank',
+          MessageKeys.addNoteDialogContent: 'Content',
+          MessageKeys.addNoteDialogContentCannotBeBlank:
+              'Content cannot be blank',
           // Task Tab
           MessageKeys.remainingTasks: '@value remaining tasks',
           MessageKeys.addTask: 'Add Task',
@@ -52,6 +65,8 @@ class Messages extends Translations {
         'vi_VN': {
           // Common
           MessageKeys.notFoundPage: 'Không tìm thấy trang',
+          MessageKeys.cancel: 'Huỷ',
+          MessageKeys.add: 'Thêm',
           // Onboarding Page
           MessageKeys.npsSolutions: 'NPS Solutions',
           MessageKeys.onboardingSlogan: 'Giải pháp cho mọi nhà',
@@ -85,10 +100,22 @@ class Messages extends Translations {
           MessageKeys.languageToggle: 'Ngôn ngữ',
           MessageKeys.logOut: 'Đăng xuất',
           // Home Title
+          MessageKeys.homeTitleNote: 'Ghi chú',
           MessageKeys.homeTitleTask: 'Công việc',
           MessageKeys.homeTitleScrumboard: 'Scrum Board',
+          MessageKeys.homeTitleMail: 'Thư',
+          MessageKeys.homeTitleChat: 'Nhắn tin',
+          MessageKeys.homeTitleAIService: 'Dịch vụ AI',
           MessageKeys.homeTitleWorkspace: 'Không gian làm việc',
           MessageKeys.homeTitleUntitled: 'Untitled',
+          // Note Tab
+          MessageKeys.addNoteDialogTitle: 'Ghi chú',
+          MessageKeys.addNoteDialogTitleLabel: 'Tiêu đề',
+          MessageKeys.addNoteDialogTitleCannotBeBlank:
+              'Tiêu đề không được để trống',
+          MessageKeys.addNoteDialogContent: 'Nội dung',
+          MessageKeys.addNoteDialogContentCannotBeBlank:
+              'Nội dung không được để trống',
           // Task Tab
           MessageKeys.remainingTasks: '@value chưa hoàn thành',
           MessageKeys.addTask: 'Thêm Task',

@@ -316,7 +316,7 @@ class _NoteTabState extends State<NoteTab> {
       builder: (_) => StatefulBuilder(
         builder: (context, setState) {
           return WidgetDialogOverlay(
-            title: "Add Note",
+            title: MessageKeys.addNoteDialogTitle.tr,
             body: ConstrainedBox(
               constraints: BoxConstraints(maxHeight: Get.height * 0.4),
               child: SingleChildScrollView(
@@ -327,19 +327,20 @@ class _NoteTabState extends State<NoteTab> {
                     children: [
                       WidgetTextFormField(
                         controller: _titleController,
-                        labelText: 'Title *',
+                        labelText:
+                            '${MessageKeys.addNoteDialogTitleLabel.tr} *',
                         validator: (value) => value?.isEmpty == true
-                            ? 'Title cannot be blank'
+                            ? MessageKeys.addNoteDialogTitleCannotBeBlank.tr
                             : null,
                       ),
                       const SizedBox(height: 10),
                       WidgetTextFormField(
                         controller: _contentController,
-                        labelText: 'Content *',
+                        labelText: '${MessageKeys.addNoteDialogContent.tr} *',
                         minLines: 5,
                         maxLines: 10,
                         validator: (value) => value?.isEmpty == true
-                            ? 'Content cannot be blank'
+                            ? MessageKeys.addNoteDialogContentCannotBeBlank.tr
                             : null,
                       ),
                       const SizedBox(height: 20),
@@ -353,8 +354,8 @@ class _NoteTabState extends State<NoteTab> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: const Text('Cancel',
-                                  style: TextStyle(color: Colors.white)),
+                              child: Text(MessageKeys.cancel.tr,
+                                  style: const TextStyle(color: Colors.white)),
                             ),
                           ),
                           const SizedBox(width: 20),
@@ -362,8 +363,8 @@ class _NoteTabState extends State<NoteTab> {
                             child: RoundedLoadingButton(
                               controller: _createNoteBtnController,
                               onPressed: () => _createNote(),
-                              child: const Text('Add',
-                                  style: TextStyle(color: Colors.white)),
+                              child: Text(MessageKeys.add.tr,
+                                  style: const TextStyle(color: Colors.white)),
                             ),
                           ),
                         ],

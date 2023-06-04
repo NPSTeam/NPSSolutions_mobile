@@ -1,6 +1,8 @@
 class MessageKeys {
   // Common
   static const String notFoundPage = 'notFoundPage';
+  static const String cancel = 'cancel';
+  static const String add = 'add';
 
   // Onboarding Page
   static const String npsSolutions = 'NPSSolutions';
@@ -39,10 +41,23 @@ class MessageKeys {
   static const String logOut = 'logOut';
 
   // Home Title
+  static const String homeTitleNote = 'homeTitleNote';
   static const String homeTitleTask = 'homeTitleTask';
   static const String homeTitleScrumboard = 'homeTitleScrumboard';
+  static const String homeTitleMail = 'homeTitleMail';
+  static const String homeTitleChat = 'homeTitleChat';
+  static const String homeTitleAIService = 'homeTitleAIService';
   static const String homeTitleWorkspace = 'homeTitleWorkspace';
   static const String homeTitleUntitled = 'homeTitleUntitled';
+
+  // Note Tab
+  static const String addNoteDialogTitle = 'addNoteDialogTitle';
+  static const String addNoteDialogTitleLabel = 'addNoteDialogTitleLabel';
+  static const String addNoteDialogTitleCannotBeBlank =
+      'addNoteDialogTitleCannotBeBlank';
+  static const String addNoteDialogContent = 'addNoteDialogTitleContent';
+  static const String addNoteDialogContentCannotBeBlank =
+      'addNoteDialogContentCannotBeBlank';
 
   // Task Tab
   static const String remainingTasks = 'remainingTasks';

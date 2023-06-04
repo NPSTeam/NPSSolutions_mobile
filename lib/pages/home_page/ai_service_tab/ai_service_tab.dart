@@ -16,7 +16,7 @@ class _AISerivceTabState extends State<AISerivceTab> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: const WebView(
-          initialUrl: 'https://d31e6b24a00ea19456.gradio.live/',
+          initialUrl: 'https://npssocial.site/',
           javascriptMode: JavascriptMode.unrestricted,
         ),
       ),

@@ -16,37 +16,37 @@ class MessageNotificationTask {
   static Future<void> execute() async {
     final response = await chatRepo.getContactList();
 
-    if (response?.data != null) {
-      List<ContactModel> contacts = (response?.data as List)
-          .map((e) => ContactModel.fromJson(e))
-          .toList();
+    // if (response?.data != null) {
+    //   List<ContactModel> contacts = (response?.data as List)
+    //       .map((e) => ContactModel.fromJson(e))
+    //       .toList();
 
-      if (sockJS.client.isActive) {
-        sockJS.client.deactivate();
-      }
+    //   if (sockJS.client.isActive) {
+    //     sockJS.client.deactivate();
+    //   }
 
-      if (sockJS.client.isActive) {
-        sockJS.client.activate();
+    //   if (sockJS.client.isActive) {
+    //     sockJS.client.activate();
 
-        for (ContactModel contact in contacts) {
-          sockJS.client.subscribe(
-            destination:
-                '/chat-contact/userId/${Get.find<AuthController>().auth?.currentUser?.id}/chatId/${contact.id}',
-            callback: (message) {
-              debugPrint(message.body);
+    //     for (ContactModel contact in contacts) {
+    //       sockJS.client.subscribe(
+    //         destination:
+    //             '/chat-contact/userId/${Get.find<AuthController>().auth?.currentUser?.id}/chatId/${contact.id}',
+    //         callback: (message) {
+    //           debugPrint(message.body);
 
-              if (message.body != null) {
-                MessageModel messageModel =
-                    MessageModel.fromJson(jsonDecode(message.body!));
+    //           if (message.body != null) {
+    //             MessageModel messageModel =
+    //                 MessageModel.fromJson(jsonDecode(message.body!));
 
-                NotificationService.showNotification(
-                    title: contact.name ?? 'New message',
-                    body: messageModel.value ?? '');
-              }
-            },
-          );
-        }
-      }
-    }
+    //             NotificationService.showNotification(
+    //                 title: contact.name ?? 'New message',
+    //                 body: messageModel.value ?? '');
+    //           }
+    //         },
+    //       );
+    //     }
+    //   }
+    // }
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -8,10 +10,16 @@ import 'package:npssolutions_mobile/pages/home_page/components/drawer_component.
 import 'package:npssolutions_mobile/pages/home_page/note_tab/note_tab.dart';
 import 'package:npssolutions_mobile/pages/home_page/scrumboard_tab/scrumboard_tab.dart';
 import 'package:npssolutions_mobile/widgets/widget_app_bar_avatar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../configs/spref_key.dart';
 import '../../configs/themes/color_const.dart';
+import '../../controllers/auth_controller.dart';
 import '../../controllers/my_drawer_controller.dart';
 import '../../internationalization/message_keys.dart';
+import '../../models/contact_model.dart';
+import '../../repositories/chat_repo.dart';
+import '../../services/in_app_message_notification_task.dart';
 import 'chat_tab/chat_tab.dart';
 import 'task_tab/task_tab.dart';
 import 'workspace_tab/workspace_tab.dart';
@@ -30,6 +38,29 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    Timer.periodic(const Duration(seconds: 5), (timer) async {
+      // InAppMessageNotificationTask().execute();
+
+      if (Get.find<AuthController>().auth == null) {
+        return;
+      }
+
+      final response = await chatRepo.getContactList();
+      if (response?.data != null) {
+        List<ContactModel> contacts = (response?.data as List)
+            .map((e) => ContactModel.fromJson(e))
+            .toList();
+
+        await SharedPreferences.getInstance().then((instance) async {
+          await instance.setStringList(SPrefKey.contactIdList,
+              contacts.map((e) => e.id?.toStringAsFixed(0) ?? '').toList());
+
+          await instance.setStringList(SPrefKey.contactNameList,
+              contacts.map((e) => e.name ?? '').toList());
+        });
+      }
+    });
+
     super.initState();
   }
 
@@ -104,17 +135,19 @@ class _HomePageState extends State<HomePage> {
   String _getTitle() {
     switch (_drawerController.selectedTabId) {
       case DrawerTabId.NOTES:
-        return 'Notes';
+        return MessageKeys.homeTitleNote.tr;
       case DrawerTabId.TASKS:
         return MessageKeys.homeTitleTask.tr;
       case DrawerTabId.SCRUM_BOARD:
         return MessageKeys.homeTitleScrumboard.tr;
       case DrawerTabId.CALENDAR:
         return 'Calendar';
+      case DrawerTabId.MAIL:
+        return MessageKeys.homeTitleMail.tr;
       case DrawerTabId.CHAT:
-        return 'Chat';
+        return MessageKeys.homeTitleChat.tr;
       case DrawerTabId.AI_SERVICE:
-        return 'AI Service';
+        return MessageKeys.homeTitleAIService.tr;
       case DrawerTabId.WORKSPACE_MANAGEMENT:
         return MessageKeys.homeTitleWorkspace.tr;
       default:

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
@@ -68,6 +70,15 @@ class _DrawerComponentState extends State<DrawerComponent> {
         icon: Ionicons.calendar_outline,
         onTap: () {
           Get.find<MyDrawerController>().selectTab(DrawerTabId.CALENDAR);
+          Get.back();
+        },
+      ),
+      DrawerTabItem(
+        id: DrawerTabId.MAIL,
+        label: 'Mail',
+        icon: Ionicons.mail_outline,
+        onTap: () {
+          Get.find<MyDrawerController>().selectTab(DrawerTabId.MAIL);
           Get.back();
         },
       ),
@@ -301,6 +312,7 @@ class DrawerTabId {
   static const String TASKS = 'TASKS';
   static const String SCRUM_BOARD = 'SCRUM_BOARD';
   static const String CALENDAR = 'CALENDAR';
+  static const String MAIL = 'MAIL';
   static const String CHAT = 'CHAT';
   static const String AI_SERVICE = 'AI_SERVICE';
   static const String WORKSPACE_MANAGEMENT = 'WORKSPACE_MANAGEMENT';

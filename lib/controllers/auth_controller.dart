@@ -79,6 +79,7 @@ class AuthController extends GetxController {
         await instance.setString(SPrefKey.accessToken, auth?.accessToken ?? '');
         await instance.setString(
             SPrefKey.refreshToken, auth?.refreshToken ?? '');
+        await instance.setInt(SPrefKey.userId, auth?.currentUser?.id ?? 0);
       });
 
       update();
@@ -124,6 +125,9 @@ class AuthController extends GetxController {
     await SharedPreferences.getInstance().then((instance) async {
       await instance.remove(SPrefKey.accessToken);
       await instance.remove(SPrefKey.refreshToken);
+      await instance.remove(SPrefKey.userId);
+      await instance.remove(SPrefKey.contactIdList);
+      await instance.remove(SPrefKey.contactNameList);
     });
 
     await init();

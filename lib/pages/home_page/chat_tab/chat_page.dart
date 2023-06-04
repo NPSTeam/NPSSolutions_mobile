@@ -28,8 +28,6 @@ class _ChatPageState extends State<ChatPage> {
 
   final TextEditingController _messageController = TextEditingController();
 
-  SockJS sockJS = SockJS();
-
   _loadData() async {
     await EasyLoading.show();
 
@@ -37,12 +35,12 @@ class _ChatPageState extends State<ChatPage> {
     _chatController.messages
         .sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
-    if (!sockJS.client.isActive) {
-      sockJS.client.activate();
+    if (!SockJS.client.isActive) {
+      SockJS.client.activate();
     }
 
-    if (sockJS.client.isActive) {
-      sockJS.client.subscribe(
+    if (SockJS.client.isActive) {
+      SockJS.client.subscribe(
         destination:
             '/chat-contact/userId/${Get.find<AuthController>().auth?.currentUser?.id}/chatId/${widget.chat.contactId}',
         callback: (message) {
@@ -71,13 +69,6 @@ class _ChatPageState extends State<ChatPage> {
     _loadData();
 
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    sockJS.client.deactivate();
-
-    super.dispose();
   }
 
   @override

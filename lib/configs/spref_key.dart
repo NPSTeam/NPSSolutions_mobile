@@ -6,4 +6,7 @@ class SPrefKey {
   static const String backendUrl = 'backend-url';
 
   static const String languageCode = 'language-code';
+
+  static const String contactIdList = 'contact-id-list';
+  static const String contactNameList = 'contact-name-list';
 }

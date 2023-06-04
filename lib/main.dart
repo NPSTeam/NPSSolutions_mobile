@@ -17,6 +17,7 @@ import 'package:npssolutions_mobile/controllers/auth_controller.dart';
 import 'package:npssolutions_mobile/pages/home_page/home_page.dart';
 import 'package:npssolutions_mobile/pages/onboarding_page/onboarding_page.dart';
 import 'package:npssolutions_mobile/repositories/chat_repo.dart';
+import 'package:npssolutions_mobile/services/in_app_message_notification_task.dart';
 import 'package:npssolutions_mobile/services/message_notification_task.dart';
 import 'package:npssolutions_mobile/services/notification_service.dart';
 import 'package:npssolutions_mobile/services/sockjs.dart';
@@ -91,9 +92,11 @@ Future main() async {
   await SPref.init();
   AppKey.init();
   final AuthController _authController = Get.put(AuthController());
+  SockJS.connect();
   await NotificationService.init();
   // BackgroundNotificationService.init();
   await initializeService();
+  // InAppMessageNotificationTask.execute();
 
   EasyLoading.instance
     ..indicatorType = EasyLoadingIndicatorType.ring
@@ -214,47 +217,32 @@ Future<bool> onIosBackground(ServiceInstance service) async {
 
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
-  // Only available for flutter 3.0.0 and later
   DartPluginRegistrant.ensureInitialized();
 
   SharedPreferences preferences = await SharedPreferences.getInstance();
   await preferences.setString("hello", "world");
 
-  /// OPTIONAL when use custom notification
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   // bring to foreground
   Timer.periodic(const Duration(seconds: 5), (timer) async {
-    flutterLocalNotificationsPlugin.show(
-      888,
-      'COOL SERVICE',
-      'Awesome ${DateTime.now()}',
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'my_foreground',
-          'MY FOREGROUND SERVICE',
-          icon: 'ic_bg_service_small',
-          ongoing: true,
-        ),
-      ),
-    );
+    // flutterLocalNotificationsPlugin.show(
+    //   888,
+    //   'COOL SERVICE',
+    //   'Awesome ${DateTime.now()}',
+    //   const NotificationDetails(
+    //     android: AndroidNotificationDetails(
+    //       'my_foreground',
+    //       'MY FOREGROUND SERVICE',
+    //       icon: 'ic_bg_service_small',
+    //       ongoing: true,
+    //     ),
+    //   ),
+    // );
 
-    /// you can see this log in logcat
-    print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
+    debugPrint('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
 
-    //
-    // try {
-    //   if (Get.find<AuthController>().auth?.currentUser?.id == null) {
-    //     await Future.delayed(const Duration(seconds: 5));
-    //   }
-    // } on Exception catch (e) {
-    //   await Future.delayed(const Duration(seconds: 5));
-    // }
-
-    MessageNotificationTask.execute();
-
-    // test using external plugin
     final deviceInfo = DeviceInfoPlugin();
     String? device;
     if (Platform.isAndroid) {
@@ -274,6 +262,9 @@ void onStart(ServiceInstance service) async {
         "device": device,
       },
     );
+
+    // InAppMessageNotificationTask.execute();
+    InAppMessageNotificationTask().execute();
   });
 }
 
@@ -312,7 +303,6 @@ class MyApp extends StatelessWidget {
         ),
         translations: Messages(), // your translations
         locale: _languageController.currentLocale?.locale,
-        // fallbackLocale: const Locale('en', 'UK'), // specify the fallback locale in case an invalid locale is selected.
         localizationsDelegates: const [RefreshLocalizations.delegate],
         builder: EasyLoading.init(),
         home: GetBuilder<AuthController>(

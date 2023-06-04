@@ -4,9 +4,9 @@ import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 
 class SockJS {
-  StompClient client = StompClient(
+  static StompClient client = StompClient(
       config: StompConfig.SockJS(
-    url: '${AppKey.BACKEND_SOCKJS_URL}/our-websocket',
+    url: 'https://npssolutions.works/our-websocket',
     webSocketConnectHeaders: {
       'Upgrade': 'websocket',
       'Connection': 'Upgrade',
@@ -17,4 +17,10 @@ class SockJS {
     onWebSocketError: (frame) =>
         debugPrint('SockJS - onWebSocketError: $frame'),
   ));
+
+  static Future<void> connect() async {
+    // if (!client.isActive) {
+    client.activate();
+    // }
+  }
 }
